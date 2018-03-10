@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TDJGame.Engine.Tiled;
+using TDJGame.Utils;
 
 namespace TDJGame
 {
@@ -16,8 +18,11 @@ namespace TDJGame
 
         SpriteFont font;
         Texture2D ball;
+        Texture2D tilemapTexture;
 
-        Sprite player;
+        TileMap tilemap;
+
+        Player player;
 
         #endregion
 
@@ -38,13 +43,26 @@ namespace TDJGame
 
             font = this.content.Load<SpriteFont>("Font");
             ball = this.content.Load<Texture2D>("ball");
+            tilemapTexture = this.content.Load<Texture2D>("tilemap");
 
-            this.player = new Sprite(
+            this.player = new Player(
                 ball,
                 new Vector2(
                     this.Graphics.PreferredBackBufferWidth / 2,
                     this.Graphics.PreferredBackBufferHeight / 2)
                 );
+
+            this.tilemap = new TileMap(tilemapTexture, 16);
+            this.tilemap.ParseData();
+
+            XMLLevelLoader XMLloader = new XMLLevelLoader();
+            Level level = XMLloader.LoadLevel("C:\\Users\\Noro\\Desktop\\TestMap\\test_map.tmx");
+
+            // TODO: make this not necessary...
+            foreach(Layer l in level.Layers)
+            {
+                l.Texture = tilemapTexture;
+            }
 
             this.ContentLoaded = true;
 
@@ -71,8 +89,9 @@ namespace TDJGame
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.Clear(Color.CornflowerBlue);
-
-            spriteBatch.Begin();
+            
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            this.tilemap.Draw(spriteBatch);
             spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.", Vector2.Zero, Color.OrangeRed);
             this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();

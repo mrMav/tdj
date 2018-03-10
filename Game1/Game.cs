@@ -26,8 +26,8 @@ namespace TDJGame
         protected override void Initialize()
         {
 
-            StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
-            StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
+            //StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
+            //StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
             StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
 
             base.Initialize();
@@ -40,7 +40,7 @@ namespace TDJGame
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("StartupState");
+            StateManager.Instance.StartGameState("PlayState");
 
         }
 
