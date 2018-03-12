@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Engine\Tiled\Layer.cs" />
     <Compile Include="Engine\Tiled\Level.cs" />
-    <Compile Include="Engine\Tile.cs" />
+    <Compile Include="Engine\Tiled\Tile.cs" />
     <Compile Include="Engine\Tiled\Tileset.cs" />
     <Compile Include="Engine\TileMap.cs" />
     <Compile Include="Game.cs" />

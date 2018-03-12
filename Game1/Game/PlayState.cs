@@ -20,7 +20,7 @@ namespace TDJGame
         Texture2D ball;
         Texture2D tilemapTexture;
 
-        TileMap tilemap;
+        Level level;
 
         Player player;
 
@@ -52,18 +52,9 @@ namespace TDJGame
                     this.Graphics.PreferredBackBufferHeight / 2)
                 );
 
-            this.tilemap = new TileMap(tilemapTexture, 16);
-            this.tilemap.ParseData();
-
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            Level level = XMLloader.LoadLevel("C:\\Users\\Noro\\Desktop\\TestMap\\test_map.tmx");
-
-            // TODO: make this not necessary...
-            foreach(Layer l in level.Layers)
-            {
-                l.Texture = tilemapTexture;
-            }
-
+            this.level = XMLloader.LoadLevel("C:\\Users\\Noro\\Desktop\\TestMap\\test_map.tmx", tilemapTexture);
+            
             this.ContentLoaded = true;
 
         }
@@ -91,7 +82,7 @@ namespace TDJGame
             graphicsDevice.Clear(Color.CornflowerBlue);
             
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-            this.tilemap.Draw(spriteBatch);
+            this.level.Draw(spriteBatch);
             spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.", Vector2.Zero, Color.OrangeRed);
             this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();

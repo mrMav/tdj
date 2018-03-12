@@ -10,38 +10,93 @@ namespace TDJGame.Engine.Tiled
 {
     public class Layer
     {
+        // the raw level data
         public int[] Data { get; set; }
-        public int Height { get; set; }
-        public string Name { get; set; }
-        public int Opacity { get; set; }
-        public string Type { get; set; }
-        public bool Visible { get; set; }
-        public int Width { get; set; }
+
+        // reference to the level
+        public Level Level;
+
+        // the texture from the tiles will
+        // be rendered from
+        public Texture2D Texture;
+
+        // may be used to offset layers
         public int X { get; set; }
         public int Y { get; set; }
+        
+        // size of the layer in tile count
+        public int Width { get; set; }
+        public int Height { get; set; }
 
-        // TODO: adicionar suporte do xml do tiled
-        public Texture2D Texture { get; set; }
+        // name of the layer
+        public string Name { get; set; }
+
+        public int Opacity { get; set; }
+        public string Type { get; set; }
+
+        // if it is visible or not
+        public bool Visible { get; set; }
+
+        // the level data represented in an two-dimensional array
+        // may not be the best option.
+        // maybe just use the raw data instead.
         public Tile[,] TileMap;
+
+        public Layer(Level level, Texture2D texture, int width, int height)
+        {
+            this.Level = level;
+            this.Texture = texture;
+
+            this.Width = width;
+            this.Height = height;
+
+            this.TileMap = new Tile[height, width];
+
+        }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-
-            // Column = TileID mod Rows
-            // Row = TileID div Rows
-
-            //this.tileMap[y, x] = new Tile(
-            //    texture,
-            //    new Vector2(this.data[y, x] % this.textureTilesWidth, this.data[y, x] / this.textureTilesWidth),
-            //    new Vector2(x * this.tileSize, y * this.tileSize),
-            //    this.tileSize
-            //);
-
-            int l = this.Data.Length;
-            for(int i = 0; i < l; i++)
+            
+            for(int y = 0; y < this.TileMap.GetLength(0); y++)
             {
-                
-                spriteBatch.Draw(this.Texture, this.worldBoundingRect, this.textureBoundingRect, Color.White);
+
+                for(int x = 0; x < this.TileMap.GetLength(1); x++)
+                {
+
+                    this.TileMap[y, x]?.Draw(spriteBatch);
+
+                }
+
+            }
+
+        }
+
+        public void MakeTiles()
+        {
+
+            for(int i = 0; i < this.Data.Length; i++)
+            {
+
+                if (this.Data[i] != 0)
+                {
+
+                    // Column = TileID mod Rows
+                    // Row = TileID div Rows
+
+                    int x = i % this.Height;
+                    int y = i / this.Height;
+
+                    this.TileMap[y, x] = new Tile(
+                        this,
+                        this.Texture,
+                        new Vector2(
+                            this.Data[i] % this.Level.TileWidth - 1,
+                            this.Data[i] / this.Level.TileHeight
+                        ),
+                        new Vector2(x * this.Level.TileWidth, y * this.Level.TileHeight)
+                    );
+
+                }
 
             }
 
