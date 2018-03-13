@@ -17,6 +17,8 @@ namespace TDJGame
 
         #region [Porperties]
 
+        Camera2D camera;
+
         SpriteFont font;
         Texture2D ball;
         Texture2D tilemapTexture;
@@ -27,10 +29,10 @@ namespace TDJGame
 
         #endregion
 
-        public PlayState(string key, GraphicsDeviceManager graphics)
+        public PlayState(string key, Game game)
         {
             this.Key = key;
-            this.Graphics = graphics;
+            this.Game = game;
         }
 
         public override void Initialize()
@@ -42,6 +44,8 @@ namespace TDJGame
         {
             base.LoadContent();
 
+            camera = new Camera2D(Vector2.Zero);
+            
             font = this.content.Load<SpriteFont>("Font");
             ball = this.content.Load<Texture2D>("ball");
             tilemapTexture = this.content.Load<Texture2D>("tilemap");
@@ -49,8 +53,8 @@ namespace TDJGame
             this.player = new Player(
                 ball,
                 new Vector2(
-                    this.Graphics.PreferredBackBufferWidth / 2,
-                    this.Graphics.PreferredBackBufferHeight / 2)
+                    this.Game.graphics.PreferredBackBufferWidth / 2,
+                    this.Game.graphics.PreferredBackBufferHeight / 2)
                 );
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
@@ -70,21 +74,44 @@ namespace TDJGame
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
-            if (kState.IsKeyDown(Keys.Enter))
+            //if (kState.IsKeyDown(Keys.Enter))
+            //{
+            //    StateManager.Instance.StartGameState("MenuState");
+            //}
+
+            float inc = 0.1f;
+
+            if (kState.IsKeyDown(Keys.Q))
             {
-                StateManager.Instance.StartGameState("MenuState");
+                this.camera.Zoom += inc;
+            }
+
+            if (kState.IsKeyDown(Keys.E))
+            {
+                this.camera.Zoom -= inc;
             }
 
             this.player.Update(gameTime, kState);
+
+            this.camera.Position = this.player.position;
+            
+            this.camera.GetTransform(this.Game.GraphicsDevice);
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.Clear(Color.CornflowerBlue);
-            
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+
+            //spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+
+            //world render
+            spriteBatch.Begin(
+                samplerState: SamplerState.PointClamp,                
+                transformMatrix: this.camera.Transform
+            );
             this.level.Draw(spriteBatch);
-            spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.", Vector2.Zero, Color.OrangeRed);
+            spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.\nQ & E to zoom in and out!", Vector2.Zero, Color.OrangeRed);
             this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
         }

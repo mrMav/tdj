@@ -12,6 +12,10 @@ namespace TDJGame.Engine
     public class GameState
     {
         #region [Properties]
+
+        // a reference to the game
+        public Game Game;
+
         public string Key { get; set; }
         protected ContentManager content;
         public bool ContentLoaded { get; set; }
@@ -21,10 +25,11 @@ namespace TDJGame.Engine
         #endregion
         public GameState() { }
 
-        public GameState(string key, GraphicsDeviceManager graphics)
+        public GameState(string key, Game game)
         {
             this.Key = key;
-            this.Graphics = graphics;
+            this.Game = game;
+
             this.ContentLoaded = false;
         }
 

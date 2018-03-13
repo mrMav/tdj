@@ -12,7 +12,7 @@ namespace TDJGame
     public class Game : Microsoft.Xna.Framework.Game
     {
 
-        GraphicsDeviceManager graphics;
+        public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         public Game()
@@ -29,7 +29,7 @@ namespace TDJGame
 
             //StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
             //StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
-            StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
+            StateManager.Instance.AddGameState(new PlayState("PlayState", this));
 
             base.Initialize();
         }
