@@ -34,7 +34,7 @@ namespace TDJGame.Engine
 
             this.textureBoundingRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
-            this.acceleration = new Vector2(1f);
+            this.acceleration = new Vector2(0.5f);
             this.velocity = new Vector2();
             this.origin = new Vector2(this.texture.Width / 2, this.texture.Height / 2);
 

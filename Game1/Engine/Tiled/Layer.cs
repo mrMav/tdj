@@ -83,14 +83,14 @@ namespace TDJGame.Engine.Tiled
                     // Column = TileID mod Rows
                     // Row = TileID div Rows
 
-                    int x = i % this.Height;
-                    int y = i / this.Height;
+                    int x = i % this.Width;
+                    int y = i / this.Width;
 
                     this.TileMap[y, x] = new Tile(
                         this,
                         this.Texture,
                         new Vector2(
-                            this.Data[i] % this.Level.TileWidth - 1,
+                            this.Data[i] % this.Level.TileHeight - 1,
                             this.Data[i] / this.Level.TileHeight
                         ),
                         new Vector2(x * this.Level.TileWidth, y * this.Level.TileHeight)

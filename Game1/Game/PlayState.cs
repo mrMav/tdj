@@ -48,7 +48,8 @@ namespace TDJGame
             
             font = this.content.Load<SpriteFont>("Font");
             ball = this.content.Load<Texture2D>("ball");
-            tilemapTexture = this.content.Load<Texture2D>("tilemap");
+            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
+            
 
             this.player = new Player(
                 ball,
@@ -56,9 +57,10 @@ namespace TDJGame
                     this.Game.graphics.PreferredBackBufferWidth / 2,
                     this.Game.graphics.PreferredBackBufferHeight / 2)
                 );
+            
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            this.level = XMLloader.LoadLevel("C:\\Users\\Noro\\Desktop\\TestMap\\test_map.tmx", tilemapTexture);
+            this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
             
             this.ContentLoaded = true;
 
@@ -111,8 +113,8 @@ namespace TDJGame
                 transformMatrix: this.camera.Transform
             );
             this.level.Draw(spriteBatch);
-            spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.\nQ & E to zoom in and out!", Vector2.Zero, Color.OrangeRed);
-            this.player.Draw(gameTime, spriteBatch);
+            //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.\nQ & E to zoom in and out!", Vector2.Zero, Color.OrangeRed);
+            //this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
         }
     }
