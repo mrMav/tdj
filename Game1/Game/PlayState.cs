@@ -53,9 +53,7 @@ namespace TDJGame
 
             this.player = new Player(
                 ball,
-                new Vector2(
-                    this.Game.graphics.PreferredBackBufferWidth / 2,
-                    this.Game.graphics.PreferredBackBufferHeight / 2)
+                Vector2.Zero
                 );
             
 
@@ -95,7 +93,7 @@ namespace TDJGame
 
             this.player.Update(gameTime, kState);
 
-            this.camera.Position = this.player.position;
+            this.camera.Position = new Vector2(this.player.position.X, this.player.position.Y);
             
             this.camera.GetTransform(this.Game.GraphicsDevice);
 
@@ -105,17 +103,22 @@ namespace TDJGame
         {
             graphicsDevice.Clear(Color.CornflowerBlue);
 
-            //spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-
             //world render
             spriteBatch.Begin(
                 samplerState: SamplerState.PointClamp,                
                 transformMatrix: this.camera.Transform
             );
             this.level.Draw(spriteBatch);
-            //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter.\nQ & E to zoom in and out!", Vector2.Zero, Color.OrangeRed);
             //this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
+
+
+            // GUI render
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
+            spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}", new Vector2(0, this.Game.graphics.PreferredBackBufferHeight - 16), Color.Red);
+            spriteBatch.End();
+
         }
     }
 }

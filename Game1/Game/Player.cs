@@ -56,7 +56,7 @@ namespace TDJGame
                 this.position = this.position + this.velocity;
                 // apply drag
                 this.velocity *= this.drag;
-
+                
             }
 
         }

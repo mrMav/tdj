@@ -13,7 +13,25 @@ namespace TDJGame.Engine
     public class Camera2D
     {
 
-        public float Zoom { get; set; }
+        public float _zoom;
+        public float Zoom
+        {
+            get
+            {
+                return _zoom;
+            }
+            set
+            {
+                if(value >= 0.1f)
+                {
+                    _zoom = value;
+                } else
+                {
+                    _zoom = 0.1f;
+                }
+            }
+        }
+
         protected float Rotation { get; set; }
 
         public Matrix Transform { get; set; }
@@ -21,10 +39,12 @@ namespace TDJGame.Engine
 
         public Camera2D(Vector2 position)
         {
-            this.Zoom = 1.0f;
+            this._zoom = 1.0f;
             this.Rotation = 0.0f;
             this.Position = position == null ? Vector2.Zero : position;
         }
+
+
 
         public void Move(Vector2 amount)
         {
