@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace TDJGame.Engine
 {
-
-    //http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
+    
+    /// <see>
+    /// http://www.david-amador.com/2009/10/xna-camera-2d-with-zoom-and-rotation/
+    /// https://gamedev.stackexchange.com/questions/59301/xna-2d-camera-scrolling-why-use-matrix-transform
+    /// </see>
     public class Camera2D
     {
 
@@ -57,7 +60,7 @@ namespace TDJGame.Engine
             // try and use the ref and outs of the functions
 
             Matrix invpos = Matrix.CreateTranslation(new Vector3(-this.Position.X, -this.Position.Y, 0));
-            Matrix scale = Matrix.CreateScale(new Vector3(this.Zoom, this.Zoom, 0));
+            Matrix scale = Matrix.CreateScale(new Vector3(this.Zoom, this.Zoom, 1.0f));
             Matrix rot = Matrix.CreateRotationZ(this.Rotation);
             Matrix trans = Matrix.CreateTranslation(new Vector3(
                     graphicsDevice.Viewport.Width * 0.5f,
@@ -66,6 +69,26 @@ namespace TDJGame.Engine
 
             this.Transform = invpos * rot * scale * trans;
 
+        }
+
+        /// <summary>
+        /// Returns the given screen space position, transformed to world space position
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Vector2 GetScreenToWorldPosition(Vector2 v)
+        {            
+            return Vector2.Transform(v, Matrix.Invert(this.Transform));
+        }
+
+        /// <summary>
+        /// Returns the given world space position, transformed to screen space position
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public Vector2 GetWorldToScreenPosition(Vector2 v)
+        {
+            return Vector2.Transform(v, this.Transform);
         }
 
     }

@@ -57,6 +57,7 @@
     <Compile Include="Engine\Sprite.cs" />
     <Compile Include="Game\StartupState.cs" />
     <Compile Include="Engine\StateManager.cs" />
+    <Compile Include="Utils\FrameCounter.cs" />
     <Compile Include="Utils\XMLLevelLoader.cs" />
   </ItemGroup>
   <ItemGroup>

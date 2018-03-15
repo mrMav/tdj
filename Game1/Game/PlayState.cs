@@ -15,14 +15,14 @@ namespace TDJGame
     public class PlayState : GameState
     {
 
-        #region [Porperties]
+        #region [Properties]
 
         Camera2D camera;
-
+        FrameCounter frameCounter = new FrameCounter();
         SpriteFont font;
         Texture2D ball;
         Texture2D tilemapTexture;
-
+        Vector2 mouseWorldCoordinates;
         Level level;
 
         Player player;
@@ -48,14 +48,12 @@ namespace TDJGame
             
             font = this.content.Load<SpriteFont>("Font");
             ball = this.content.Load<Texture2D>("ball");
-            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
-            
+            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");            
 
             this.player = new Player(
                 ball,
                 Vector2.Zero
-                );
-            
+                );            
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
@@ -73,6 +71,7 @@ namespace TDJGame
         {
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
+
 
             //if (kState.IsKeyDown(Keys.Enter))
             //{
@@ -93,14 +92,19 @@ namespace TDJGame
 
             this.player.Update(gameTime, kState);
 
-            this.camera.Position = new Vector2(this.player.position.X, this.player.position.Y);
+            this.camera.Position = new Vector2(this.player.position.X, 0);
             
             this.camera.GetTransform(this.Game.GraphicsDevice);
 
+            this.mouseWorldCoordinates = this.camera.GetScreenToWorldPosition(mState.Position.ToVector2());
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            frameCounter.Update(deltaTime);
+
             graphicsDevice.Clear(Color.CornflowerBlue);
 
             //world render
@@ -109,14 +113,23 @@ namespace TDJGame
                 transformMatrix: this.camera.Transform
             );
             this.level.Draw(spriteBatch);
-            //this.player.Draw(gameTime, spriteBatch);
+            this.player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
 
             // GUI render
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-            spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
+
+            //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
+                        
+
             spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}", new Vector2(0, this.Game.graphics.PreferredBackBufferHeight - 16), Color.Red);
+        
+            spriteBatch.DrawString(font, $"{Math.Round(this.mouseWorldCoordinates.X)}, {Math.Round(this.mouseWorldCoordinates.Y)}", new Vector2(this.Game.graphics.PreferredBackBufferWidth / 2, 0), Color.Red);
+
+            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
+            
+
             spriteBatch.End();
 
         }
