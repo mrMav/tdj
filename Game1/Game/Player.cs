@@ -2,70 +2,62 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using TDJGame.Engine;
 
 namespace TDJGame
 {
     public class Player : Sprite
     {
-
-        public Player(Texture2D pTexture, Vector2 pPosition)
-            : base(pTexture, pPosition, true)
+        public Player(Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
+            : base(texture, position, width, height, true)
         {
 
         }
 
-        public override void Update(GameTime pGameTime, KeyboardState kState)
+        public override void Update(GameTime gameTime, KeyboardState keyboardState)
         {
-            // rotate over time
-            this.angle += 0.1f;
-
+            
             // controlling 
-            if (this.isControllable && kState != null)
+            if (this.IsControllable && keyboardState != null)
             {
 
                 float ellapsedTimeMultiplier = 100f;
 
                 // move left
-                if (kState.IsKeyDown(Keys.A))
-                {
-                    this.velocity.X -= this.acceleration.X * (float)pGameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                if (keyboardState.IsKeyDown(Keys.A))
+                {                
+                    this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
                 }
                 // move right
-                if (kState.IsKeyDown(Keys.D))
+                if (keyboardState.IsKeyDown(Keys.D))
                 {
-                    this.velocity.X += this.acceleration.X * (float)pGameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                    this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
                 }
                 // move up
-                if (kState.IsKeyDown(Keys.W))
+                if (keyboardState.IsKeyDown(Keys.W))
                 {
-                    this.velocity.Y -= this.acceleration.Y * (float)pGameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                    this.Body.Velocity.Y -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
                 }
                 // move down
-                if (kState.IsKeyDown(Keys.S))
+                if (keyboardState.IsKeyDown(Keys.S))
                 {
-                    this.velocity.Y += this.acceleration.Y * (float)pGameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                    this.Body.Velocity.Y += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
                 }
 
                 // apply velocity
-                this.position = this.position + this.velocity;
+                this.Body.Position += this.Body.Velocity;
+
                 // apply drag
-                this.velocity *= this.drag;
-                
+                this.Body.Velocity *= this.Body.Drag;
+
             }
 
         }
 
-        public override void Draw(GameTime pGameTime, SpriteBatch pSpriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            base.Draw(pGameTime, pSpriteBatch);
+            base.Draw(gameTime, spriteBatch);
         }
-
 
     }
 }

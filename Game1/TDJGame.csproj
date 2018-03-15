@@ -43,6 +43,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Camera2D.cs" />
+    <Compile Include="Engine\Physics\Body.cs" />
+    <Compile Include="Engine\Physics\Physics.cs" />
     <Compile Include="Engine\Tiled\Layer.cs" />
     <Compile Include="Engine\Tiled\Level.cs" />
     <Compile Include="Engine\Tiled\Tile.cs" />

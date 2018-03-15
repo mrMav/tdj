@@ -1,57 +1,41 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TDJGame.Engine.Physics;
 
 namespace TDJGame.Engine
 {
     public class Sprite
     {
         // display texture
-        public Texture2D texture;
-        public Rectangle textureBoundingRect;
+        public Texture2D Texture;
+        public Rectangle TextureBoundingRect;
 
-        // physics properties
-        public Vector2 position;
-        public Vector2 acceleration;
-        public Vector2 velocity;
-        public Vector2 origin;
-        public float angle = 0f;
-        public float drag = 0.95f;
+        public Body Body;
 
-        public bool isControllable;
+        public bool IsControllable;
 
         // constructor
-        public Sprite(Texture2D pTexture, Vector2 pPosition, bool pIsControllable = false)
+        public Sprite(Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
         {
-            this.texture = pTexture;
-            this.position = pPosition;
-            this.isControllable = pIsControllable;
+            this.Texture = texture;
+            this.IsControllable = isControllable;
 
-            this.textureBoundingRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
+            this.TextureBoundingRect = new Rectangle((int)position.X, (int)position.Y, width, height);
 
-            this.acceleration = new Vector2(0.5f);
-            this.velocity = new Vector2();
-            this.origin = new Vector2(this.texture.Width / 2, this.texture.Height / 2);
-
+            this.Body = new Body(position, width, height);                        
         }
 
         // logic update
-        public virtual void Update(GameTime pGameTime, KeyboardState kState)
+        public virtual void Update(GameTime gameTime, KeyboardState keyboardState)
         {
-            
+           
         }
 
         // render
-        public virtual void Draw(GameTime pGameTime, SpriteBatch pSpriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
-            pSpriteBatch.Draw(this.texture, this.position, this.textureBoundingRect, Color.White, this.angle, this.origin, 1.0f, SpriteEffects.None, 1);
-
+            spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, Color.White);
         }
     }
 }

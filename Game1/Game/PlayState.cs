@@ -50,10 +50,14 @@ namespace TDJGame
             ball = this.content.Load<Texture2D>("ball");
             tilemapTexture = this.content.Load<Texture2D>("test_tilemap");            
 
-            this.player = new Player(
-                ball,
-                Vector2.Zero
-                );            
+            // player
+            this.player = new Player(ball, Vector2.Zero, ball.Width, ball.Height, true);
+            
+            // specify acceleration
+            this.player.Body.Acceleration = new Vector2(1f);
+
+            // specify drag
+            this.player.Body.Drag = 0.8f;
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
@@ -71,8 +75,7 @@ namespace TDJGame
         {
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
-
-
+            
             //if (kState.IsKeyDown(Keys.Enter))
             //{
             //    StateManager.Instance.StartGameState("MenuState");
@@ -92,7 +95,7 @@ namespace TDJGame
 
             this.player.Update(gameTime, kState);
 
-            this.camera.Position = new Vector2(this.player.position.X, 0);
+            this.camera.Position = new Vector2(this.player.Body.Position.X, this.player.Body.Position.Y);
             
             this.camera.GetTransform(this.Game.GraphicsDevice);
 
