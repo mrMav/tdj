@@ -10,6 +10,7 @@ namespace TDJGame.Engine
         // display texture
         public Texture2D Texture;
         public Rectangle TextureBoundingRect;
+        public Color Tint;
 
         public Body Body;
 
@@ -23,7 +24,9 @@ namespace TDJGame.Engine
 
             this.TextureBoundingRect = new Rectangle((int)position.X, (int)position.Y, width, height);
 
-            this.Body = new Body(position, width, height);                        
+            this.Body = new Body(position, width, height);
+
+            this.Tint = Color.White;
         }
 
         // logic update
@@ -35,7 +38,7 @@ namespace TDJGame.Engine
         // render
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, Color.White);
+            spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
         }
     }
 }

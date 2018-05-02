@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TDJGame.Engine;
+using TDJGame.Engine.Physics;
 using TDJGame.Engine.Tiled;
 using TDJGame.Utils;
 
@@ -20,7 +21,6 @@ namespace TDJGame
         Camera2D camera;
         FrameCounter frameCounter = new FrameCounter();
         SpriteFont font;
-        Texture2D ball;
         Texture2D tilemapTexture;
         Vector2 mouseWorldCoordinates;
         Level level;
@@ -45,14 +45,16 @@ namespace TDJGame
             base.LoadContent();
 
             camera = new Camera2D(Vector2.Zero);
-            
+
             font = this.content.Load<SpriteFont>("Font");
-            ball = this.content.Load<Texture2D>("ball");
-            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");            
+            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
 
             // player
-            this.player = new Player(ball, Vector2.Zero, ball.Width, ball.Height, true);
-            
+            this.player = new Player(tilemapTexture, Vector2.Zero, 16, 32, true);
+            this.player.TextureBoundingRect = new Rectangle(176, 80, 16, 32);
+            this.player.Body.Enabled = true;
+            this.player.Body.Tag = "player";
+
             // specify acceleration
             this.player.Body.Acceleration = new Vector2(1f);
 
@@ -61,6 +63,13 @@ namespace TDJGame
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
+            this.level.SetCollisionTiles(new int[] {
+                52, 53, 54,
+                68, 69, 70,
+                84, 85, 86,
+                100, 101, 102,
+                120, 135, 151
+            });
             
             this.ContentLoaded = true;
 
@@ -100,6 +109,9 @@ namespace TDJGame
             this.camera.GetTransform(this.Game.GraphicsDevice);
 
             this.mouseWorldCoordinates = this.camera.GetScreenToWorldPosition(mState.Position.ToVector2());
+
+            Physics.CollideMovingSpriteWithListOfStaticObjects(this.player, this.level.CollidableTiles);
+            Console.WriteLine(this.player.Body.Velocity);
             
         }
 

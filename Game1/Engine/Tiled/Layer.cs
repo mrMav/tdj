@@ -93,8 +93,11 @@ namespace TDJGame.Engine.Tiled
                             this.Data[i] % this.Level.TileHeight - 1,
                             this.Data[i] / this.Level.TileHeight
                         ),
-                        new Vector2(x * this.Level.TileWidth, y * this.Level.TileHeight)
+                        new Vector2(x * this.Level.TileWidth, y * this.Level.TileHeight),
+                        this.Data[i]
                     );
+
+                    this.TileMap[y, x].Body.Tag = "tile";
 
                 }
 
