@@ -90,8 +90,8 @@ namespace TDJGame.Engine.Tiled
                         this,
                         this.Texture,
                         new Vector2(
-                            this.Data[i] % this.Level.TileHeight - 1,
-                            this.Data[i] / this.Level.TileHeight
+                            this.Data[i] % (this.Texture.Width / this.Level.TileWidth) - 1,
+                            this.Data[i] / (this.Texture.Width / this.Level.TileWidth)
                         ),
                         new Vector2(x * this.Level.TileWidth, y * this.Level.TileHeight),
                         this.Data[i]

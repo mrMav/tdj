@@ -38,6 +38,9 @@ namespace TDJGame
         public override void Initialize()
         {
             base.Initialize();
+
+
+
         }
 
         public override void LoadContent()
@@ -45,9 +48,11 @@ namespace TDJGame
             base.LoadContent();
 
             camera = new Camera2D(Vector2.Zero);
+            camera.Zoom = 3.0f;
 
             font = this.content.Load<SpriteFont>("Font");
-            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
+            //tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
+            tilemapTexture = this.content.Load<Texture2D>("WaterLvl1Test");
 
             // player
             this.player = new Player(tilemapTexture, Vector2.Zero, 16, 32, true);
@@ -62,14 +67,15 @@ namespace TDJGame
             this.player.Body.Drag = 0.8f;
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
-            this.level.SetCollisionTiles(new int[] {
-                52, 53, 54,
-                68, 69, 70,
-                84, 85, 86,
-                100, 101, 102,
-                120, 135, 151
-            });
+            //this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
+            this.level = XMLloader.LoadLevel(@"Content\WaterLvl1Test.tmx", tilemapTexture);
+            //this.level.SetCollisionTiles(new int[] {
+            //    52, 53, 54,
+            //    68, 69, 70,
+            //    84, 85, 86,
+            //    100, 101, 102,
+            //    120, 135, 151
+            //});
             
             this.ContentLoaded = true;
 
@@ -110,8 +116,8 @@ namespace TDJGame
 
             this.mouseWorldCoordinates = this.camera.GetScreenToWorldPosition(mState.Position.ToVector2());
 
-            Physics.CollideMovingSpriteWithListOfStaticObjects(this.player, this.level.CollidableTiles);
-            Console.WriteLine(this.player.Body.Velocity);
+            //Physics.CollideMovingSpriteWithListOfStaticObjects(this.player, this.level.CollidableTiles);
+            //Console.WriteLine(this.player.Body.Velocity);
             
         }
 
@@ -138,10 +144,8 @@ namespace TDJGame
             //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
                         
 
-            spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}", new Vector2(0, this.Game.graphics.PreferredBackBufferHeight - 16), Color.Red);
+            spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, this.Game.graphics.PreferredBackBufferHeight - 16), Color.Red);
         
-            spriteBatch.DrawString(font, $"{Math.Round(this.mouseWorldCoordinates.X)}, {Math.Round(this.mouseWorldCoordinates.Y)}", new Vector2(this.Game.graphics.PreferredBackBufferWidth / 2, 0), Color.Red);
-
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             
 

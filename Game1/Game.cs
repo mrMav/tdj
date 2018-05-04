@@ -27,6 +27,10 @@ namespace TDJGame
         protected override void Initialize()
         {
 
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+
             //StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
             //StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
             StateManager.Instance.AddGameState(new PlayState("PlayState", this));
