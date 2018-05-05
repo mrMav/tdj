@@ -52,6 +52,7 @@
     <Compile Include="Engine\Tiled\Tileset.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Engine\GameState.cs" />
+    <Compile Include="Game\EnergyBar.cs" />
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />

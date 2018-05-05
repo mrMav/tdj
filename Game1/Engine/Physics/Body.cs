@@ -162,8 +162,8 @@ namespace Engine.Physics
 
         public string GetDebugString()
         {
-            string debug = $"Moving Up: {MovingUp}, Moving Down: {MovingDown}, Moving Right: {MovingRight}, Moving Left: {MovingLeft}\n";
-            debug += $"Colliding Up: {CollidingUp}, Colliding Down: {CollidingBottom}, Colliding Right: {CollidingRight}, Colliding Left: {CollidingLeft}\n";
+            string debug = $"Moving:\n Up: {MovingUp}, Down: {MovingDown}, Right: {MovingRight}, Left: {MovingLeft}\n";
+            debug += $"Collisions:\n Top: {CollidingUp}, Bottom: {CollidingBottom}, Right: {CollidingRight}, Left: {CollidingLeft}\n";
             debug += $"Position: {Position}\n";
             debug += $"Prev Pos: {PreviousPosition}\n";
             debug += $"DeltaX: {DeltaX()}\n";

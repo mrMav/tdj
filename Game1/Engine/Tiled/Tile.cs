@@ -22,8 +22,8 @@ namespace Engine.Tiled
         //public Body Body;
         
         // constructor
-        public Tile(Layer layer, Texture2D pTexture, Vector2 positionInTexture, Vector2 pPosition, int ID)
-            : base(pTexture, pPosition, layer.Level.TileWidth, layer.Level.TileWidth, false)
+        public Tile(GraphicsDeviceManager graphics, Layer layer, Texture2D pTexture, Vector2 positionInTexture, Vector2 pPosition, int ID)
+            : base(graphics, pTexture, pPosition, layer.Level.TileWidth, layer.Level.TileWidth, false)
         {
             this.Layer = layer;
 

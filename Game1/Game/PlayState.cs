@@ -21,15 +21,16 @@ namespace TDJGame
         Vector2 mouseWorldCoordinates;
         Level level;
         Texture2D pixel;
+        EnergyBar bar;
 
         Player player;
 
         #endregion
 
-        public PlayState(string key, Game game)
+        public PlayState(string key, GraphicsDeviceManager graphics)
         {
             this.Key = key;
-            this.Game = game;
+            this.Graphics = graphics;
         }
 
         public override void Initialize()
@@ -51,17 +52,15 @@ namespace TDJGame
             /*
              * A single pixel to draw lines and stuff
              */
-            pixel = new Texture2D(Game.GraphicsDevice, 1, 1);
+            pixel = new Texture2D(Graphics.GraphicsDevice, 1, 1);
             DrawMe.Fill(pixel, Color.White);
 
             // player
-            this.player = new Player(tilemapTexture, Vector2.Zero, 16, 32, true);
+            this.player = new Player(Graphics, tilemapTexture, Vector2.Zero, 16, 32, true);
             this.player.TextureBoundingRect = new Rectangle(176, 80, 16, 32);
             this.player.Body.X = 16 * 3;
             this.player.Body.Y = 16 * 3;
             this.player.Body.MaxVelocity = 3f;
-            this.player.Body.Acceleration = new Vector2(0.5f);
-            this.player.Body.Drag = 0.8f;
             this.player.Body.Enabled = true;
             this.player.Body.Tag = "player";
 
@@ -78,6 +77,8 @@ namespace TDJGame
 
             this.level.SetCollisionTiles(new int[] { 21 });
 
+            this.bar = new EnergyBar(Graphics, new Vector2(16, 16), Graphics.PreferredBackBufferWidth - 32, 16, Color.MonoGameOrange);
+
             this.ContentLoaded = true;
 
         }
@@ -89,6 +90,7 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
+            
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
@@ -110,9 +112,10 @@ namespace TDJGame
             }
 
             this.player.UpdateMotion(gameTime, kState, this.level);
-
+            this.bar.SetPercent((int)(this.player.Energy * 100f / this.player.MaxEnergy));
+            
             this.camera.Position = new Vector2(this.player.Body.Position.X, this.player.Body.Position.Y);
-            this.camera.GetTransform(this.Game.GraphicsDevice);
+            this.camera.GetTransform(Graphics.GraphicsDevice);
             this.mouseWorldCoordinates = this.camera.GetScreenToWorldPosition(mState.Position.ToVector2());
                         
         }
@@ -140,9 +143,12 @@ namespace TDJGame
             // GUI render
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
+            bar.Draw(spriteBatch, gameTime);
+
             //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
             
-            spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            //spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 32), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
 
 

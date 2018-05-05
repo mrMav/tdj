@@ -7,6 +7,9 @@ namespace Engine
 {
     public class Sprite
     {
+        // game reference
+        public GraphicsDeviceManager Graphics;
+
         // display texture
         public Texture2D Texture;
         public Rectangle TextureBoundingRect;
@@ -17,8 +20,10 @@ namespace Engine
         public bool IsControllable;
 
         // constructor
-        public Sprite(Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
+        public Sprite(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
         {
+            this.Graphics = graphics;
+
             this.Texture = texture;
             this.IsControllable = isControllable;
 

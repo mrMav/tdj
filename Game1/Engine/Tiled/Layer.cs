@@ -82,6 +82,7 @@ namespace Engine.Tiled
                     int y = i / this.Width;
 
                     this.TileMap[y, x] = new Tile(
+                        null,
                         this,
                         this.Texture,
                         new Vector2(

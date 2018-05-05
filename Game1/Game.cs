@@ -32,7 +32,7 @@ namespace TDJGame
 
             //StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
             //StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
-            StateManager.Instance.AddGameState(new PlayState("PlayState", this));
+            StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
 
             base.Initialize();
         }
@@ -58,7 +58,8 @@ namespace TDJGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            StateManager.Instance.Update(gameTime);
+            if(this.IsActive)
+                StateManager.Instance.Update(gameTime);
 
             base.Update(gameTime);
         }
