@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
-namespace TDJGame.Engine.Physics
+namespace Engine.Physics
 {
     /// <summary>
     /// Represents a Physics body
@@ -10,22 +9,27 @@ namespace TDJGame.Engine.Physics
     {
         public string Tag;
 
-        public Vector2 Position;
         public Vector2 Acceleration;
         public Vector2 Velocity;
         public Vector2 Origin;
 
-        public Rectangle BoundingRect;
+        public Vector2 PreviousPosition;
+
+        public Vector2 Delta;
+
+        public Vector2 Intersection;
+
+        public AABB Bounds;
 
         public float X
         {
             get
             {
-                return this.Position.X;
+                return Bounds.X;
             }
             set
             {
-                this.Position.X = value;
+                Bounds.X = value;
             }
         }
 
@@ -33,49 +37,22 @@ namespace TDJGame.Engine.Physics
         {
             get
             {
-                return this.Position.Y;
+                return Bounds.Y;
             }
             set
             {
-                this.Position.Y = value;
+                Bounds.Y = value;
             }
         }
 
-        public float Width
+        public Vector2 Position
         {
             get
             {
-                return this.BoundingRect.Width;
+                return Bounds.Position;
             }
         }
 
-        public float Height
-        {
-            get
-            {
-                return this.BoundingRect.Height;
-            }
-        }
-
-        // TODO: min and max should be revisited for performance improvment
-        public Vector2 Min
-        {
-            get
-            {
-                return new Vector2(X, Y);
-            }
-        }
-        public Vector2 Max
-        {
-            get
-            {
-                return new Vector2(X + Width, Y + Height);
-            }
-        }
-
-        public float HalfWidth { get; set; }
-        public float HalfHeight { get; set; }
-        
         public float Angle { get; set; }
         public float Drag { get; set; }
 
@@ -88,26 +65,22 @@ namespace TDJGame.Engine.Physics
 
         public bool MovingUp { get; set; }
         public bool MovingRight { get; set; }
-        public bool MovingBottom { get; set; }
+        public bool MovingDown { get; set; }
         public bool MovingLeft { get; set; }
 
-
+        public bool IsOnFloor { get; set; }
 
         /// <summary>
         /// Creates a body at the position
         /// </summary>
         /// <param name="position">The body position</param>
-        public Body(Vector2 position, int width, int height)
+        public Body(float x, float y, int width, int height)
         {
-            Position = position;
             Acceleration = Vector2.Zero;
             Velocity = Vector2.Zero;
             Origin = new Vector2(0.5f, 0.5f);
 
-            BoundingRect = new Rectangle((int)position.X, (int)position.Y, width, height);
-
-            this.HalfWidth = width / 2;
-            this.HalfHeight = height / 2;
+            Bounds = new AABB(x, y, width, height);
 
             Angle = 0.0f;
             Drag = 1.0f;
@@ -121,22 +94,41 @@ namespace TDJGame.Engine.Physics
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-            this.BoundingRect.X = (int)this.X;
-            this.BoundingRect.Y = (int)this.Y;
-        }
 
-        /// <summary>
-        /// Resize this body size.
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public void ResizeBody(int width, int height)
-        {
-            BoundingRect.Width = width;
-            BoundingRect.Height = height;
+            ResetMovingDirections();
 
-            this.HalfWidth = width / 2;
-            this.HalfHeight = height / 2;
+            // determing which side the body is moving
+            if (DeltaY() > 0)
+            {
+                MovingDown = true;
+                MovingUp = false;
+            }
+            else if (DeltaY() < 0)
+            {
+                MovingUp = true;
+                MovingDown = false;
+            }
+            else
+            {
+                MovingUp = false;
+                MovingDown = false;
+            }
+
+            if (DeltaX() > 0)
+            {
+                MovingRight = true;
+                MovingLeft = false;
+            }
+            else if (DeltaX() < 0)
+            {
+                MovingLeft = true;
+                MovingRight = false;
+            }
+            else
+            {
+                MovingRight = false;
+                MovingLeft = false;
+            }
 
         }
 
@@ -152,8 +144,32 @@ namespace TDJGame.Engine.Physics
         {
             MovingUp = false;
             MovingRight = false;
-            MovingBottom = false;
+            MovingDown = false;
             MovingLeft = false;
+        }
+
+        public float DeltaX()
+        {
+            return PreviousPosition.X - Position.X;
+        }
+
+        public float DeltaY()
+        {
+            return PreviousPosition.Y - Position.Y;
+        }
+
+        public string GetDebugString()
+        {
+            string debug = $"Moving Up: {MovingUp}, Moving Down: {MovingDown}, Moving Right: {MovingRight}, Moving Left: {MovingLeft}\n";
+            debug += $"Colliding Up: {CollidingUp}, Colliding Down: {CollidingBottom}, Colliding Right: {CollidingRight}, Colliding Left: {CollidingLeft}\n";
+            debug += $"Position: {Position}\n";
+            debug += $"Prev Pos: {PreviousPosition}\n";
+            debug += $"DeltaX: {DeltaX()}\n";
+            debug += $"DeltaY: {DeltaY()}\n";
+            debug += $"Velocity: {Velocity}\n";
+
+            return debug;
+
         }
 
     }

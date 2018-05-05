@@ -1,8 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using TDJGame.Engine;
+using Engine;
 
 namespace TDJGame
 {
@@ -29,29 +28,26 @@ namespace TDJGame
                 if (keyboardState.IsKeyDown(Keys.A))
                 {                
                     this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.Body.MovingLeft = true;
                 }
                 // move right
                 if (keyboardState.IsKeyDown(Keys.D))
                 {
                     this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.Body.MovingRight = true;
                 }
                 // move up
                 if (keyboardState.IsKeyDown(Keys.W))
                 {
                     this.Body.Velocity.Y -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.Body.MovingUp = true;
                 }
                 // move down
                 if (keyboardState.IsKeyDown(Keys.S))
                 {
                     this.Body.Velocity.Y += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.Body.MovingBottom = true;
                 }
 
                 // apply velocity
-                this.Body.Position += this.Body.Velocity;
+                this.Body.X += this.Body.Velocity.X;
+                this.Body.Y += this.Body.Velocity.Y;
 
                 // apply drag
                 this.Body.Velocity *= this.Body.Drag;

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
-using TDJGame.Engine.Tiled;
+using Engine.Tiled;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 

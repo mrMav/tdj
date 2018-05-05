@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Camera2D.cs" />
+    <Compile Include="Engine\Physics\AABB.cs" />
     <Compile Include="Engine\Physics\Body.cs" />
     <Compile Include="Engine\Physics\Physics.cs" />
     <Compile Include="Engine\Tiled\Layer.cs" />
@@ -123,8 +124,8 @@
     <None Include="Content\test_map.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\WaterLvl1Test.tmx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="Content\test_map_2.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

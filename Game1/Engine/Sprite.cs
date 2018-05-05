@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TDJGame.Engine.Physics;
+using Engine.Physics;
 
-namespace TDJGame.Engine
+namespace Engine
 {
     public class Sprite
     {
@@ -24,7 +24,7 @@ namespace TDJGame.Engine
 
             this.TextureBoundingRect = new Rectangle((int)position.X, (int)position.Y, width, height);
 
-            this.Body = new Body(position, width, height);
+            this.Body = new Body(position.X, position.Y, width, height);
 
             this.Tint = Color.White;
         }
