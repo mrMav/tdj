@@ -26,19 +26,17 @@ namespace Engine.Physics
 
         }
 
-        //public static void Collide(Sprite a, Sprite[] list)
-        //{
-        //    // TODO: sorted list from player distance to block
+        public static void Collide(Sprite a, Sprite[] list, int side)
+        {
+            for (int i = 0; i < list.GetLength(0); i++)
+            {
+                if (list[i] != null)
+                {
+                    Collide(a, list[i], side);
+                }
+            }
 
-        //    for(int i = 0; i < list.GetLength(0); i++)
-        //    {
-        //        if(list[i] != null)
-        //        {
-        //            Collide(a, list[i]);
-        //        }
-        //    }
-
-        //}
+        }
 
         public static void AABBPenetrationCollisionResponse(AABB intersection, Body body, int side)
         {
@@ -50,25 +48,11 @@ namespace Engine.Physics
             // solve
             if (side == 0)
             {
-                // solve in X Axis
-
-                body.X -= penetration.X;
-
-                if (penetration.X > 0)
-                {
-                    body.Velocity.X = 0;
-                }
-
+                body.X -= penetration.X;                
             }
             else
             {
-                body.Y -= penetration.Y;
-
-                if (penetration.Y > 0)
-                {
-                    body.Velocity.Y = 0;
-                }
-
+                body.Y -= penetration.Y;                
             }
 
         }

@@ -57,26 +57,26 @@ namespace TDJGame
             // player
             this.player = new Player(tilemapTexture, Vector2.Zero, 16, 32, true);
             this.player.TextureBoundingRect = new Rectangle(176, 80, 16, 32);
+            this.player.Body.X = 16 * 3;
+            this.player.Body.Y = 16 * 3;
+            this.player.Body.MaxVelocity = 3f;
+            this.player.Body.Acceleration = new Vector2(0.5f);
+            this.player.Body.Drag = 0.8f;
             this.player.Body.Enabled = true;
             this.player.Body.Tag = "player";
 
-            // specify acceleration
-            this.player.Body.Acceleration = new Vector2(0.5f);
-
-            // specify drag
-            this.player.Body.Drag = 0.8f;
-
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            //this.level = XMLloader.LoadLevel(@"Content\test_map.tmx", tilemapTexture);
-            this.level = XMLloader.LoadLevel(@"Content\test_map_2.tmx", tilemapTexture);
+            this.level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
 
-            this.level.SetCollisionTiles(new int[] {
-                52, 53, 54,
-                68, 69, 70,
-                84, 85, 86,
-                100, 101, 102,
-                120, 135, 151, 10
-            });
+            //this.level.SetCollisionTiles(new int[] {
+            //    52, 53, 54,
+            //    68, 69, 70,
+            //    84, 85, 86,
+            //    100, 101, 102,
+            //    120, 135, 151, 10
+            //});
+
+            this.level.SetCollisionTiles(new int[] { 21 });
 
             this.ContentLoaded = true;
 
@@ -91,23 +91,23 @@ namespace TDJGame
         {
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
-            
+
             //if (kState.IsKeyDown(Keys.Enter))
             //{
             //    StateManager.Instance.StartGameState("MenuState");
             //}
 
-            //float inc = 0.1f;
+            float inc = 0.1f;
 
-            //if (kState.IsKeyDown(Keys.Q))
-            //{
-            //    this.camera.Zoom += inc;
-            //}
+            if (kState.IsKeyDown(Keys.Q))
+            {
+                this.camera.Zoom += inc;
+            }
 
-            //if (kState.IsKeyDown(Keys.E))
-            //{
-            //    this.camera.Zoom -= inc;
-            //}
+            if (kState.IsKeyDown(Keys.E))
+            {
+                this.camera.Zoom -= inc;
+            }
 
             this.player.UpdateMotion(gameTime, kState, this.level);
 
@@ -133,6 +133,7 @@ namespace TDJGame
             this.player.Draw(gameTime, spriteBatch);
 
             DrawLine(spriteBatch, player.Body.Position, (player.Body.Position + player.Body.Velocity), Color.Blue);
+            DrawLine(spriteBatch, player.Body.Position, (player.Body.Position + player.Body.Intersection), Color.HotPink);
 
             spriteBatch.End();
 

@@ -24,7 +24,7 @@ namespace TDJGame
             if (this.IsControllable && keyboardState != null)
             {
 
-                float ellapsedTimeMultiplier = 100f;
+                float ellapsedTimeMultiplier = 1000f;
 
                 // move left
                 if (keyboardState.IsKeyDown(Keys.A))
@@ -45,6 +45,13 @@ namespace TDJGame
                 if (keyboardState.IsKeyDown(Keys.S))
                 {
                     this.Body.Velocity.Y += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                }
+
+                // cap velocity
+                if (Body.Velocity.Length() > Body.MaxVelocity)
+                {
+                    Body.Velocity.Normalize();
+                    Body.Velocity *= Body.MaxVelocity;
                 }
 
                 /*
@@ -80,7 +87,7 @@ namespace TDJGame
                 // solve y collisions
                 for (int i = 0; i < level.CollidableTiles.Count; i++)
                 {
-                    Physics.Collide(this, level.CollidableTiles[i], 1); // collide in x
+                    Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
                 }
 
                 // apply drag

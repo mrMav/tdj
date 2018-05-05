@@ -12,6 +12,7 @@ namespace Engine.Physics
         public Vector2 Acceleration;
         public Vector2 Velocity;
         public Vector2 Origin;
+        public float MaxVelocity;
 
         public Vector2 PreviousPosition;
 
@@ -84,10 +85,11 @@ namespace Engine.Physics
 
             Angle = 0.0f;
             Drag = 1.0f;
+            MaxVelocity = 1000f;
 
             Enabled = false;
         }
-
+        
         /// <summary>
         /// Updates this body logic.
         /// </summary>
