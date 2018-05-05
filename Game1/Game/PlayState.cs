@@ -20,6 +20,7 @@ namespace TDJGame
         Texture2D tilemapTexture;
         Vector2 mouseWorldCoordinates;
         Level level;
+        Texture2D pixel;
 
         Player player;
 
@@ -45,8 +46,13 @@ namespace TDJGame
             camera.Zoom = 3.0f;
 
             font = this.content.Load<SpriteFont>("Font");
-            tilemapTexture = this.content.Load<Texture2D>("test_tilemap");
-            
+            tilemapTexture = this.content.Load<Texture2D>("tilemap");
+
+            /*
+             * A single pixel to draw lines and stuff
+             */
+            pixel = new Texture2D(Game.GraphicsDevice, 1, 1);
+            DrawMe.Fill(pixel, Color.White);
 
             // player
             this.player = new Player(tilemapTexture, Vector2.Zero, 16, 32, true);
@@ -55,7 +61,7 @@ namespace TDJGame
             this.player.Body.Tag = "player";
 
             // specify acceleration
-            this.player.Body.Acceleration = new Vector2(1f);
+            this.player.Body.Acceleration = new Vector2(0.5f);
 
             // specify drag
             this.player.Body.Drag = 0.8f;
@@ -69,7 +75,7 @@ namespace TDJGame
                 68, 69, 70,
                 84, 85, 86,
                 100, 101, 102,
-                120, 135, 151
+                120, 135, 151, 10
             });
 
             this.ContentLoaded = true;
@@ -103,31 +109,7 @@ namespace TDJGame
             //    this.camera.Zoom -= inc;
             //}
 
-            this.player.Update(gameTime, kState);
-
-            /*
-             * Collisions
-             * 
-             * In order to solve the 'sticking' issue with tilemaps,
-             * first move in x axis and solve possible collisions
-             * second move in y and solve possible collisions.
-             * 
-             * A broadphase should be implemented for performance.
-             * (in case of a tilemap, a broadphase is plain simple,
-             * implement when performance drops only. Prototype phase
-             * should not really need it)
-             * 
-             * Maybe use a layer for collisions only?
-             * 
-             */
-
-            player.Body.ResetCollisions();
-            
-            for (int i = 0; i < this.level.CollidableTiles.Count; i++)
-            {
-                Physics.Collide(player, this.level.CollidableTiles[i], 0); // collide in x
-                Physics.Collide(player, this.level.CollidableTiles[i], 1); // collide in y
-            }
+            this.player.UpdateMotion(gameTime, kState, this.level);
 
             this.camera.Position = new Vector2(this.player.Body.Position.X, this.player.Body.Position.Y);
             this.camera.GetTransform(this.Game.GraphicsDevice);
@@ -149,6 +131,9 @@ namespace TDJGame
             );
             this.level.Draw(spriteBatch);
             this.player.Draw(gameTime, spriteBatch);
+
+            DrawLine(spriteBatch, player.Body.Position, (player.Body.Position + player.Body.Velocity), Color.Blue);
+
             spriteBatch.End();
 
             // GUI render
@@ -158,8 +143,30 @@ namespace TDJGame
             
             spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
-            
+
+
             spriteBatch.End();
+
+        }
+
+        void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color)
+        {
+            Vector2 edge = end - start;
+
+            float angle = (float)Math.Atan2(edge.Y, edge.X);
+
+            spriteBatch.Draw(pixel,
+                new Rectangle(
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(),
+                    1),
+                null,
+                color,
+                angle,
+                new Vector2(0, 0),
+                SpriteEffects.None,
+                0);
 
         }
     }

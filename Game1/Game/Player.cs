@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine;
+using Engine.Tiled;
+using Engine.Physics;
 
 namespace TDJGame
 {
@@ -13,7 +15,7 @@ namespace TDJGame
             
         }
 
-        public override void Update(GameTime gameTime, KeyboardState keyboardState)
+        public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState, Level level)
         {
 
             this.Body.ResetMovingDirections();
@@ -45,9 +47,41 @@ namespace TDJGame
                     this.Body.Velocity.Y += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
                 }
 
-                // apply velocity
+                /*
+                 * Collisions
+                 * 
+                 * In order to solve the 'sticking' issue with tilemaps,
+                 * first move in x axis and solve possible collisions
+                 * second move in y and solve possible collisions.
+                 * 
+                 * A broadphase should be implemented for performance.
+                 * (in case of a tilemap, a broadphase is plain simple,
+                 * implement when performance drops only. Prototype phase
+                 * should not really need it)
+                 * 
+                 * Maybe use a layer for collisions only?
+                 * 
+                 */
+
+                this.Body.ResetCollisions();
+
+                // apply x velocity
                 this.Body.X += this.Body.Velocity.X;
+
+                // solve x collisions
+                for (int i = 0; i < level.CollidableTiles.Count; i++)
+                {
+                    Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
+                }
+
+                // apply y velocity
                 this.Body.Y += this.Body.Velocity.Y;
+
+                // solve y collisions
+                for (int i = 0; i < level.CollidableTiles.Count; i++)
+                {
+                    Physics.Collide(this, level.CollidableTiles[i], 1); // collide in x
+                }
 
                 // apply drag
                 this.Body.Velocity *= this.Body.Drag;
