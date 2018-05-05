@@ -44,7 +44,7 @@ namespace TDJGame
             base.LoadContent();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 3.0f;
+            camera.Zoom = 2.45f;
 
             font = this.content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("tilemap");
@@ -99,7 +99,7 @@ namespace TDJGame
             //    StateManager.Instance.StartGameState("MenuState");
             //}
 
-            float inc = 0.1f;
+            float inc = 0.05f;
 
             if (kState.IsKeyDown(Keys.Q))
             {
@@ -114,7 +114,7 @@ namespace TDJGame
             this.player.UpdateMotion(gameTime, kState, this.level);
             this.bar.SetPercent((int)(this.player.Energy * 100f / this.player.MaxEnergy));
             
-            this.camera.Position = new Vector2(this.player.Body.Position.X, this.player.Body.Position.Y);
+            this.camera.Position = new Vector2(this.player.Body.Position.X, 8 * 16 );
             this.camera.GetTransform(Graphics.GraphicsDevice);
             this.mouseWorldCoordinates = this.camera.GetScreenToWorldPosition(mState.Position.ToVector2());
                         
@@ -147,7 +147,7 @@ namespace TDJGame
 
             //spriteBatch.DrawString(font, $"This state key is {this.Key}! Play with WASD!\nIf you wnat to go back to the menu, press Enter. (disabled in source code)\nQ & E to zoom in and out!", Vector2.Zero, Color.LightGreen);
             
-            //spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            spriteBatch.DrawString(font, $"{(int)this.camera.Position.X}, {(int)this.camera.Position.Y}, {this.camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 32), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
 
