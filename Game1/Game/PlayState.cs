@@ -36,6 +36,10 @@ namespace TDJGame
         public override void Initialize()
         {
             base.Initialize();
+
+
+            float a = Math2.Map(490f, 500f, 1000f, 0f, 254f);
+            Console.WriteLine(a >= 0f && a <= 254f ? a : 254f);
             
         }
 

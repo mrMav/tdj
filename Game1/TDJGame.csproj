@@ -64,6 +64,7 @@
     <Compile Include="Engine\StateManager.cs" />
     <Compile Include="Utils\DrawMe.cs" />
     <Compile Include="Utils\FrameCounter.cs" />
+    <Compile Include="Utils\Math2.cs" />
     <Compile Include="Utils\XMLLevelLoader.cs" />
   </ItemGroup>
   <ItemGroup>

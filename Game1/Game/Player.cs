@@ -20,7 +20,7 @@ namespace TDJGame
         
         public float LastShot = 0f;
         public float ShootingVelocity = 1.5f;
-        public float ShootRate = 250f;
+        public float ShootRate = 50f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -47,7 +47,7 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(13 * 16, 8 * 16, 16, 16);
+                b.TextureBoundingRect = new Rectangle(13 * 16, 7 * 16, 16, 16);
 
                 Bullets.Add(b);
             }
@@ -153,7 +153,7 @@ namespace TDJGame
                     if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
                     {
 
-                        Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
+                        //Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
                         this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
 
                         // get the first dead bullet
@@ -182,7 +182,7 @@ namespace TDJGame
                             b.Body.X = Body.X;
                             b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation);
 
-                            b.Body.Velocity.X = ShootingVelocity * FacingDirection;
+                            b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
                                                         
                         }
 
