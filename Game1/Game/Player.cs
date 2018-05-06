@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Engine;
 using Engine.Tiled;
 using Engine.Physics;
+using System.Collections.Generic;
+using System;
 
 namespace TDJGame
 {
@@ -15,8 +17,16 @@ namespace TDJGame
         public float Energy;
         public float FloatingUpSpeed = 2f;
         public float MaxEnergy = 200f;
+        
+        public float LastShot = 0f;
+        public float ShootingVelocity = 1.5f;
+        public float ShootRate = 250f;
 
+        public List<Bullet> Bullets;
         public Vector2 Size;
+
+        // 1 right -1 left
+        public int FacingDirection = 1;
 
         public Player(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
             : base(graphics, texture, position, width, height, true)
@@ -32,6 +42,16 @@ namespace TDJGame
             Body.MaxVelocity = 3f;
             Body.Drag = 0.9f;
 
+            /* Create a few bullets */
+            Bullets = new List<Bullet>();
+            for(int i = 0; i < 50; i++)
+            {
+                Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
+                b.TextureBoundingRect = new Rectangle(13 * 16, 8 * 16, 16, 16);
+
+                Bullets.Add(b);
+            }
+
         }
 
         public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState, Level level)
@@ -45,11 +65,13 @@ namespace TDJGame
                 if (keyboardState.IsKeyDown(Keys.A))
                 {
                     this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                    this.FacingDirection = -1;
                 }
                 // move right
                 if (keyboardState.IsKeyDown(Keys.D))
                 {
                     this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                    this.FacingDirection = 1;
                 }
 
                 if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
@@ -122,6 +144,56 @@ namespace TDJGame
                 Body.Velocity.Y = 0;
 
                 this.Body.Update(gameTime);
+
+                /* Shooting */
+
+                if (keyboardState.IsKeyDown(Keys.F))
+                {
+
+                    if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
+                    {
+
+                        Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
+                        this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
+
+                        // get the first dead bullet
+                        Bullet b = null;
+                        for (int i = 0; i < Bullets.Count; i++)
+                        {
+                            if(!Bullets[i].Alive)
+                            {
+                                b = Bullets[i];
+                                break;
+                            }
+                                
+                        }
+
+                        if (b != null)
+                        {
+
+                            Random rnd = new Random();
+                            int YVariation = 4;
+
+                            b.Reset();
+                            b.Revive();
+
+                            b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+
+                            b.Body.X = Body.X;
+                            b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation);
+
+                            b.Body.Velocity.X = ShootingVelocity * FacingDirection;
+                                                        
+                        }
+
+                    }
+
+                }
+
+                foreach (Bullet b in Bullets)
+                    b.Update(gameTime, keyboardState);
+
+                /* ***** */
 
 
             }
@@ -216,7 +288,17 @@ namespace TDJGame
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+
             base.Draw(gameTime, spriteBatch);
+
+            foreach (Bullet b in Bullets)
+            {
+                if(b.Visible && b.Alive)
+                {
+                    b.Draw(gameTime, spriteBatch);
+                }
+            }
+
         }
 
     }

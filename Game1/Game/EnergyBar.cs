@@ -4,7 +4,7 @@ using Engine;
 
 namespace TDJGame
 {
-    class EnergyBar
+    public class EnergyBar
     {
 
         public GraphicsDeviceManager Graphics;
