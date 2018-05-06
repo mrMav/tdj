@@ -67,6 +67,7 @@ namespace TDJGame
             this.player.Body.MaxVelocity = 3f;
             this.player.Body.Enabled = true;
             this.player.Body.Tag = "player";
+            
 
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             this.level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
@@ -102,7 +103,7 @@ namespace TDJGame
             //{
             //    StateManager.Instance.StartGameState("MenuState");
             //}
-
+            
             float inc = 0.05f;
 
             if (kState.IsKeyDown(Keys.Q))

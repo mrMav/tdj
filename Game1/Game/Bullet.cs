@@ -17,8 +17,10 @@ namespace TDJGame
         public float MaxDistanceFromSpawner = 100f;  // using kill based on this makes it possible to keep a bullet alive by moving along with it
         public double ShotAtMilliseconds = 0f;
         public double TimeAfterShot = 0f;
-        public double StartingFadeAnimAt = 0f;
+        public double StartingFadeAnimAt = 750f;
         public double MaxAliveMilliseconds = 1000f;
+
+        public float alpha;
 
         public Bullet(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, Sprite spawner)
             : base(graphics, texture, position, 16, 16, false)
@@ -42,6 +44,8 @@ namespace TDJGame
                 Body.X += Body.Velocity.X;
                 Body.Y += Body.Velocity.Y;
 
+                Body.Velocity.Y *= 1.1f;
+
                 //if(Vector2.Distance(Spawner.Body.Position, Body.Position) >= MaxDistanceFromSpawner)
                 //{
                 //    Kill();
@@ -53,8 +57,11 @@ namespace TDJGame
                 }
 
                 // fade anim
-                float alpha = (byte)Math2.Map((float)TimeAfterShot, (float)StartingFadeAnimAt + (float)rnd.Next(-100, 100), (float)MaxAliveMilliseconds, 254f, 0f);
-                this.Tint.A = (byte)(alpha >= 0f && alpha <= 254f ? alpha : 254f); 
+                if(TimeAfterShot >= StartingFadeAnimAt)
+                {
+                    float alpha = Math2.Map((float)TimeAfterShot, (float)StartingFadeAnimAt, (float)MaxAliveMilliseconds, 255f, 0f);
+                    Tint = Utility.FadeColor(Tint, (byte)(255 - (byte)(alpha >= 0f && alpha <= 255f ? alpha : 255f))); 
+                }
                 
             }
         }
@@ -75,6 +82,9 @@ namespace TDJGame
 
             Body.Acceleration.X = 0f;
             Body.Acceleration.Y = 0f;
+
+            Tint = Color.White;
+
         }
 
         public void Revive()

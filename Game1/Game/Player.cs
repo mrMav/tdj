@@ -183,7 +183,8 @@ namespace TDJGame
                             b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation);
 
                             b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
-                                                        
+                            b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
+
                         }
 
                     }

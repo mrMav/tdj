@@ -65,7 +65,7 @@ namespace Engine.Tiled
 
                                 this.CollidableTiles.Add(t);
 
-                                t.Tint = Color.Red;
+                                //t.Tint = Color.Red;
                             }
                         }
                     }
