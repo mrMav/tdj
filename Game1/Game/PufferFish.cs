@@ -20,10 +20,13 @@ namespace TDJGame
             TravelSpeed = travelSpeed;
 
             Body.Velocity.X = TravelSpeed;
+            Body.Tag = "pufferfish";
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState)
         {
+            base.Update(gameTime, keyboardState);
+
             Body.X += Body.Velocity.X;
             Body.Y += Body.Velocity.Y;
 

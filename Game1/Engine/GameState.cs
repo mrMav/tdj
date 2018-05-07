@@ -44,6 +44,7 @@ namespace Engine
         public virtual void UnloadContent()
         {
             this.content.Unload();
+            this.ContentLoaded = false;
         }
 
         public virtual void Update(GameTime gameTime)

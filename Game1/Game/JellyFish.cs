@@ -19,12 +19,15 @@ namespace TDJGame
             TravelSpeed = travelSpeed;
 
             CenterPoint = centerPoint;
-            Radius = radius;            
+            Radius = radius;
+
+            Body.Tag = "jellyfish";
         }
 
         public override void Update(GameTime gameTime, KeyboardState keyboardState)
         {
-            
+            base.Update(gameTime, keyboardState);
+
             float threshold = 0.002f;
 
             Body.X = CenterPoint.X + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * threshold) * Radius.X;

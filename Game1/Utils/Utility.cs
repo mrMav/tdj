@@ -13,7 +13,11 @@ namespace TDJGame.Utils
         public static Color FadeColor(Color color, byte amount)
         {
 
-            return new Color(color.R - amount, color.G - amount, color.B - amount, color.A - amount);
+            return new Color(
+                (color.R - amount >= 0 ? color.R - amount : 0),
+                (color.G - amount >= 0 ? color.G - amount : 0),
+                (color.B - amount >= 0 ? color.B - amount : 0),
+                (color.A - amount >= 0 ? color.A - amount : 0));
 
         }
 

@@ -57,240 +57,159 @@ namespace TDJGame
 
         public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState, Level level)
         {
-            if (this.IsControllable && keyboardState != null)
+
+            if (Alive)
             {
 
-                float ellapsedTimeMultiplier = 1000f;
+                base.Update(gameTime, keyboardState);
 
-                // move left
-                if (keyboardState.IsKeyDown(Keys.A))
+                if (this.IsControllable && keyboardState != null)
                 {
-                    this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.FacingDirection = -1;
-                }
-                // move right
-                if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                    this.FacingDirection = 1;
-                }
 
-                if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
-                {
-                    Press = true;
-                }
+                    float ellapsedTimeMultiplier = 1000f;
 
-                if (Press && keyboardState.IsKeyUp(Keys.Space)) //Switch entre estados
-                {
-                    Floating = !Floating;
-                    Press = false;
-                }
-                
-                /* Floating */
-
-                if (Floating)
-                {
-                    if (Body.Position.Y >= Size.Y / 2)
+                    // move left
+                    if (keyboardState.IsKeyDown(Keys.A))
                     {
-                        Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
+                        this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                        this.FacingDirection = -1;
                     }
-                    if (Energy < MaxEnergy)
-                        Energy += 1;
-                }
-
-                if (!Floating && Body.Position.Y <= Graphics.PreferredBackBufferHeight - Size.Y)
-                {
-                    if (Energy > 0f)
+                    // move right
+                    if (keyboardState.IsKeyDown(Keys.D))
                     {
-                        Body.Velocity.Y = 4f; //Floating Down
-                        Energy -= 1f;
+                        this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                        this.FacingDirection = 1;
                     }
-                    else
-                        Floating = true;
-                }
 
-                /* ---- */
-
-                // cap velocity
-                if (Body.Velocity.Length() > Body.MaxVelocity)
-                {
-                    Body.Velocity.Normalize();
-                    Body.Velocity *= Body.MaxVelocity;
-                }
-
-                this.Body.ResetCollisions();
-  
-                // apply x velocity
-                this.Body.X += this.Body.Velocity.X;
-
-                // solve x collisions
-                for (int i = 0; i < level.CollidableTiles.Count; i++)
-                {
-                    Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
-                }
-
-                // apply y velocity
-                this.Body.Y += this.Body.Velocity.Y;
-
-                // solve y collisions
-                for (int i = 0; i < level.CollidableTiles.Count; i++)
-                {
-                    Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
-                }
-
-                // apply drag
-                //this.Body.Velocity *= this.Body.Drag;
-
-                Body.Velocity.X *= Body.Drag;
-                Body.Velocity.Y = 0;
-
-                this.Body.Update(gameTime);
-
-                /* Shooting */
-
-                if (keyboardState.IsKeyDown(Keys.F) && Energy >= BulletCost)
-                {
-
-                    if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
+                    if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
                     {
+                        Press = true;
+                    }
 
-                        //Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
-                        this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
+                    if (Press && keyboardState.IsKeyUp(Keys.Space)) //Switch entre estados
+                    {
+                        Floating = !Floating;
+                        Press = false;
+                    }
 
-                        // get the first dead bullet
-                        Bullet b = null;
-                        for (int i = 0; i < Bullets.Count; i++)
+                    /* Floating */
+
+                    if (Floating)
+                    {
+                        if (Body.Position.Y >= Size.Y / 2)
                         {
-                            if(!Bullets[i].Alive)
+                            Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
+                        }
+                        if (Energy < MaxEnergy)
+                            Energy += 1;
+                    }
+
+                    if (!Floating && Body.Position.Y <= Graphics.PreferredBackBufferHeight - Size.Y)
+                    {
+                        if (Energy > 0f)
+                        {
+                            Body.Velocity.Y = 4f; //Floating Down
+                            Energy -= 1f;
+                        }
+                        else
+                            Floating = true;
+                    }
+
+                    /* ---- */
+
+                    // cap velocity
+                    if (Body.Velocity.Length() > Body.MaxVelocity)
+                    {
+                        Body.Velocity.Normalize();
+                        Body.Velocity *= Body.MaxVelocity;
+                    }
+
+                    this.Body.ResetCollisions();
+
+                    // apply x velocity
+                    this.Body.X += this.Body.Velocity.X;
+
+                    // solve x collisions
+                    for (int i = 0; i < level.CollidableTiles.Count; i++)
+                    {
+                        Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
+                    }
+
+                    // apply y velocity
+                    this.Body.Y += this.Body.Velocity.Y;
+
+                    // solve y collisions
+                    for (int i = 0; i < level.CollidableTiles.Count; i++)
+                    {
+                        Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
+                    }
+
+                    // apply drag
+                    Body.Velocity.X *= Body.Drag;
+                    Body.Velocity.Y = 0;
+
+                    this.Body.Update(gameTime);
+
+                    /* Shooting */
+
+                    if (keyboardState.IsKeyDown(Keys.F) && Energy >= BulletCost)
+                    {
+
+                        if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
+                        {
+
+                            //Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
+                            this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
+
+                            // get the first dead bullet
+                            Bullet b = null;
+                            for (int i = 0; i < Bullets.Count; i++)
                             {
-                                b = Bullets[i];
-                                break;
+                                if (!Bullets[i].Alive)
+                                {
+                                    b = Bullets[i];
+                                    break;
+                                }
+
                             }
-                                
+
+                            if (b != null)
+                            {
+
+                                Random rnd = new Random();
+                                int YVariation = 4;
+
+                                b.Reset();
+                                b.Revive();
+
+                                b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+
+                                b.Body.X = Body.X;
+                                b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 8;  //TODO: fix 16 offset with final sprites
+
+                                b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
+                                b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
+
+                                // subtract bullet cost to energy
+                                Energy -= BulletCost;
+
+                            }
+
+
+
                         }
-
-                        if (b != null)
-                        {
-
-                            Random rnd = new Random();
-                            int YVariation = 4;
-
-                            b.Reset();
-                            b.Revive();
-
-                            b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
-
-                            b.Body.X = Body.X;
-                            b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 16;  //TODO: fix 16 offset with final sprites
-
-                            b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
-                            b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
-
-                            // subtract bullet cost to energy
-                            Energy -= BulletCost;
-
-                        }
-
-                        
 
                     }
 
+                    foreach (Bullet b in Bullets)
+                    {
+                        b.Update(gameTime, keyboardState);
+                    }
+                    
                 }
-
-                foreach (Bullet b in Bullets)
-                    b.Update(gameTime, keyboardState);
-
-                /* ***** */
-
 
             }
-
-
-            #region [Testing]
-
-            /*
-            this.Body.ResetMovingDirections();
-
-            // controlling 
-            if (this.IsControllable && keyboardState != null)
-            {
-
-                float ellapsedTimeMultiplier = 1000f;
-
-                // move left
-                if (keyboardState.IsKeyDown(Keys.A))
-                {                
-                    this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                }
-                // move right
-                if (keyboardState.IsKeyDown(Keys.D))
-                {
-                    this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                }
-                // move up
-                if (keyboardState.IsKeyDown(Keys.W))
-                {
-                    this.Body.Velocity.Y -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                }
-                // move down
-                if (keyboardState.IsKeyDown(Keys.S))
-                {
-                    this.Body.Velocity.Y += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
-                }
-
-                // cap velocity
-                if (Body.Velocity.Length() > Body.MaxVelocity)
-                {
-                    Body.Velocity.Normalize();
-                    Body.Velocity *= Body.MaxVelocity;
-                }
-
-                /*
-                 * Collisions
-                 * 
-                 * In order to solve the 'sticking' issue with tilemaps,
-                 * first move in x axis and solve possible collisions
-                 * second move in y and solve possible collisions.
-                 * 
-                 * A broadphase should be implemented for performance.
-                 * (in case of a tilemap, a broadphase is plain simple,
-                 * implement when performance drops only. Prototype phase
-                 * should not really need it)
-                 * 
-                 * Maybe use a layer for collisions only?
-                 * 
-                 *//*
-
-                this.Body.ResetCollisions();
-
-                // apply x velocity
-                this.Body.X += this.Body.Velocity.X;
-
-                // solve x collisions
-                for (int i = 0; i < level.CollidableTiles.Count; i++)
-                {
-                    Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
-                }
-
-                // apply y velocity
-                this.Body.Y += this.Body.Velocity.Y;
-
-                // solve y collisions
-                for (int i = 0; i < level.CollidableTiles.Count; i++)
-                {
-                    Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
-                }
-
-                // apply drag
-                this.Body.Velocity *= this.Body.Drag;
-
-            }
-
-            this.Body.Update(gameTime);
-            */
-
-            #endregion
-
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

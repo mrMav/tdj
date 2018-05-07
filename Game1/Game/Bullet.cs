@@ -9,19 +9,14 @@ namespace TDJGame
 {
     public class Bullet : Sprite
     {
-
-        public bool Alive;
-        public bool Visible;
-
+        
         public Sprite Spawner;
         public float MaxDistanceFromSpawner = 100f;  // using kill based on this makes it possible to keep a bullet alive by moving along with it
         public double ShotAtMilliseconds = 0f;
         public double TimeAfterShot = 0f;
         public double StartingFadeAnimAt = 750f;
         public double MaxAliveMilliseconds = 1000f;
-
-        public float alpha;
-
+        
         public Bullet(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, Sprite spawner)
             : base(graphics, texture, position, 16, 16, false)
         {
@@ -85,18 +80,6 @@ namespace TDJGame
 
             Tint = Color.White;
 
-        }
-
-        public void Revive()
-        {
-            Alive = true;
-            Visible = true;
-        }
-
-        public void Kill()
-        {
-            Alive = false;
-            Visible = false;
         }
 
     }

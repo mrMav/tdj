@@ -6,6 +6,7 @@ using Engine;
 using Engine.Physics;
 using Engine.Tiled;
 using TDJGame.Utils;
+using System.Collections.Generic;
 
 namespace TDJGame
 {
@@ -15,18 +16,22 @@ namespace TDJGame
         #region [Properties]
 
         Camera2D camera;
-        FrameCounter frameCounter = new FrameCounter();
+        FrameCounter frameCounter;
         SpriteFont font;
         Texture2D tilemapTexture;
-        Vector2 mouseWorldCoordinates;
         Level level;
         Texture2D pixel;
         Texture2D backgroundGradientStrip;
-        EnergyBar bar;
+        EnergyBar energyBar;
+        EnergyBar healthBar;
 
         Player player;
         PufferFish puffer;
+        PufferFish puffer2;
         JellyFish jelly;
+        JellyFish jelly2;
+
+        List<Sprite> enemies;
 
         #endregion
 
@@ -39,7 +44,10 @@ namespace TDJGame
         public override void Initialize()
         {
             base.Initialize();
-            
+
+            frameCounter = new FrameCounter();
+            enemies = new List<Sprite>();
+
         }
 
         public override void LoadContent()
@@ -67,23 +75,35 @@ namespace TDJGame
             player.Body.X = 16 * 3;
             player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
+            player.Body.Drag = 0.6f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
-
+            
             /*
              * Enemies
              */
-
             puffer = new PufferFish(Graphics, tilemapTexture, new Vector2(16 * 5, 16 * 5), 16, 32, 64f);
             puffer.TextureBoundingRect = new Rectangle(9 * 16, 5 * 16, 16, 32);
             puffer.Body.Enabled = true;
-            puffer.Body.Tag = "pufferfish";
-
-            jelly = new JellyFish(Graphics, tilemapTexture, new Vector2(16 * 5, 16 * 5), 16, 32, new Vector2(22 * 16, 7 * 16), new Vector2(32, 32), 0.5f);
+            
+            puffer2 = new PufferFish(Graphics, tilemapTexture, new Vector2(16 * 31, 16 * 13), 16, 32, 7f * 16f, 4f);
+            puffer2.TextureBoundingRect = new Rectangle(9 * 16, 5 * 16, 16, 32);
+            puffer2.Body.Enabled = true;
+            
+            jelly = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(22 * 16, 7 * 16), new Vector2(32, 32), 0.5f);
             jelly.TextureBoundingRect = new Rectangle(10 * 16, 5 * 16, 16, 32);
             jelly.Body.Enabled = true;
-            jelly.Body.Tag = "jellyfish";
+            
 
+            jelly2 = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(51 * 16, 8 * 16), new Vector2(2 * 16, 4 * 16), 1.5f);
+            jelly2.TextureBoundingRect = new Rectangle(10 * 16, 5 * 16, 16, 32);
+            jelly2.Body.Enabled = true;
+
+            enemies.Add(puffer);
+            enemies.Add(puffer2);
+            enemies.Add(jelly);
+            enemies.Add(jelly2);
+            
             /*
              * Level init
              */
@@ -96,7 +116,8 @@ namespace TDJGame
             /*
              * UI Elements init
              */ 
-            bar = new EnergyBar(Graphics, new Vector2(16, 16), Graphics.PreferredBackBufferWidth - 32, 16, Color.MonoGameOrange);
+            healthBar = new EnergyBar(Graphics, new Vector2(16, 16), Graphics.PreferredBackBufferWidth - 32, 16, Color.ForestGreen);
+            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), Graphics.PreferredBackBufferWidth - 32, 16, Color.MonoGameOrange);
 
             /*
              * Build Background Gradient
@@ -112,9 +133,7 @@ namespace TDJGame
 
                 currentColor = Color.Lerp(startColor, finishColor, ratio);
                 DrawMe.Pixel(backgroundGradientStrip, 0, i, currentColor);
-
             }
-
 
             ContentLoaded = true;
         }
@@ -122,6 +141,25 @@ namespace TDJGame
         public override void UnloadContent()
         {
             base.UnloadContent();
+
+            camera = null;
+            frameCounter = null;
+            font = null;
+            tilemapTexture = null;
+            level = null;
+            pixel = null;
+            backgroundGradientStrip = null;
+            energyBar = null;
+            healthBar = null;
+
+            player = null;
+            puffer = null;
+            puffer2 = null;
+            jelly = null;
+            jelly2 = null;
+
+            enemies = null;
+
         }
 
         public override void Update(GameTime gameTime)
@@ -132,35 +170,85 @@ namespace TDJGame
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
             
+            if(kState.IsKeyDown(Keys.Q))
+            {
+                player.StartBlinking(gameTime);
+            }
+
             /*
              * Player Update
              */ 
             player.UpdateMotion(gameTime, kState, level);
 
-            foreach (Bullet b in player.Bullets)
+            /*
+             * AI (lol) Update
+             */
+            foreach (Sprite s in enemies)
             {
-                foreach(Tile t in level.CollidableTiles)
+                if(s.Alive)
                 {
-                    if(Physics.Overlap(b, t))
+                    s.Update(gameTime, kState);
+
+                    if(Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
                     {
-                        b.Kill();
+                        player.ReceiveDamage(s.Damage);
+                        player.StartBlinking(gameTime);
                     }
                 }
             }
 
             /*
-             * AI (lol) Update
-             */
-            puffer.Update(gameTime, kState);
-            jelly.Update(gameTime, kState);
+             * Projectiles
+             */ 
+            foreach (Bullet b in player.Bullets)
+            {
+                if(b.Alive)
+                {
+                    foreach (Tile t in level.CollidableTiles)
+                    {
+                        if (Physics.Overlap(b, t))
+                        {
+                            b.Kill();
+                        }
+                    }
+
+                    foreach (Sprite s in enemies)
+                    {
+                        if (s.Alive)
+                        {
+                            if (Physics.Overlap(b, s))
+                            {
+                                b.Kill();
+                                s.ReceiveDamage(b.Damage);
+                                s.StartBlinking(gameTime);
+                                
+                                // we should remove dead actors from the list
+
+                            }
+                        }
+                    }
+                }                
+            }
 
             /*
              * UI Update
              */
-            bar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
-            
+            energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
+            healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
+
             camera.Position = new Vector2(player.Body.Position.X, 8 * 16 );
-            camera.GetTransform(Graphics.GraphicsDevice);                        
+            camera.GetTransform(Graphics.GraphicsDevice);
+
+            /*
+             * End Condition
+             */
+            if(!player.Alive)
+            {
+                // show end game screen
+                // now we will just restart this state
+                StateManager.Instance.StartGameState("PlayState");
+            }
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
@@ -183,9 +271,11 @@ namespace TDJGame
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
             level.Draw(spriteBatch);
+            foreach (Sprite s in enemies)
+            {
+                s.Draw(gameTime, spriteBatch);
+            }
             player.Draw(gameTime, spriteBatch);
-            puffer.Draw(gameTime, spriteBatch);
-            jelly.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
@@ -194,14 +284,15 @@ namespace TDJGame
              */ 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
             
-            bar.Draw(spriteBatch, gameTime);
+            energyBar.Draw(spriteBatch, gameTime);
+            healthBar.Draw(spriteBatch, gameTime);
             spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             
             spriteBatch.End();
 
         }
-
+        
         void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color)
         {
             Vector2 edge = end - start;
@@ -222,6 +313,9 @@ namespace TDJGame
                 0);
 
         }
+
+
+
     }
 }
  
