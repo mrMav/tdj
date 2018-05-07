@@ -54,7 +54,7 @@ namespace TDJGame
             MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 2.45f;
+            camera.Zoom = 4.84f;
 
             font = content.Load<SpriteFont>("Font");
             //tilemapTexture = content.Load<Texture2D>("tilemap");
@@ -231,7 +231,7 @@ namespace TDJGame
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
-            camera.Position = new Vector2(player.Body.Position.X, 8 * 16 );
+            camera.Position = new Vector2(player.Body.Position.X, 7 * 16 );
             camera.GetTransform(Graphics.GraphicsDevice);
 
             /*
