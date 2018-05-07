@@ -21,6 +21,7 @@ namespace TDJGame
         Vector2 mouseWorldCoordinates;
         Level level;
         Texture2D pixel;
+        Texture2D backgroundGradientStrip;
         EnergyBar bar;
 
         Player player;
@@ -97,6 +98,22 @@ namespace TDJGame
              */ 
             bar = new EnergyBar(Graphics, new Vector2(16, 16), Graphics.PreferredBackBufferWidth - 32, 16, Color.MonoGameOrange);
 
+            /*
+             * Build Background Gradient
+             */
+            backgroundGradientStrip = new Texture2D(Graphics.GraphicsDevice, 1, level.Height * level.TileHeight);
+
+            Color startColor = new Color(57, 92, 181);
+            Color finishColor = new Color(17, 43, 104);
+            Color currentColor;
+            for(int i = 0; i < backgroundGradientStrip.Height; i++)
+            {
+                float ratio = Math2.Map(i, 0f, backgroundGradientStrip.Height, 0f, 1.0f);
+
+                currentColor = Color.Lerp(startColor, finishColor, ratio);
+                DrawMe.Pixel(backgroundGradientStrip, 0, i, currentColor);
+
+            }
 
 
             ContentLoaded = true;
@@ -154,8 +171,15 @@ namespace TDJGame
             graphicsDevice.Clear(Color.CornflowerBlue);
 
             /*
-             * World Render
+             * Background
              */ 
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            spriteBatch.Draw(backgroundGradientStrip, new Rectangle(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), Color.White);
+            spriteBatch.End();
+
+            /*
+             * World Render
+             */
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
             level.Draw(spriteBatch);
@@ -169,7 +193,7 @@ namespace TDJGame
              * GUI render
              */ 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-
+            
             bar.Draw(spriteBatch, gameTime);
             spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
