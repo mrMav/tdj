@@ -21,6 +21,9 @@ namespace TDJGame
             CenterPoint = centerPoint;
             Radius = radius;
 
+            TextureBoundingRect = new Rectangle(12 * 16, 0 * 16, 16, 32);
+            
+            Body.Enabled = true;
             Body.Tag = "jellyfish";
         }
 
@@ -30,8 +33,8 @@ namespace TDJGame
 
             float threshold = 0.002f;
 
-            Body.X = CenterPoint.X + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * threshold) * Radius.X;
-            Body.Y = CenterPoint.Y + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds * threshold) * Radius.Y;
+            Body.X = CenterPoint.X + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.X;
+            Body.Y = CenterPoint.Y + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.Y;
             
         }
     }

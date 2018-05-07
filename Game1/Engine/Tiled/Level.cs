@@ -73,7 +73,39 @@ namespace Engine.Tiled
             }
         }
 
-        
+        /// <summary>
+        /// Returns a list of the tiles with the given ID
+        /// </summary>
+        /// <param name="id" type="int[]"></param>
+        public List<Tile> GetTilesListByID(int[] id)
+        {
+
+            List<Tile> list = new List<Tile>();
+
+            foreach (Layer layer in Layers)
+            {
+                for (int y = 0; y < layer.TileMap.GetLength(0); y++)
+                {
+                    for (int x = 0; x < layer.TileMap.GetLength(1); x++)
+                    {
+                        for (int i = 0; i < id.Length; i++)
+                        {
+                            Tile t = layer.TileMap[y, x];
+
+                            if (t != null && t.ID == id[i])
+                            {                                
+                                list.Add(t);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+
         /// <returns>Returns a List of Collide Enabled tiles</returns>
         public List<Tile> GetCollideEnabledTiles()
         {

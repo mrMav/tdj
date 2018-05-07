@@ -27,12 +27,9 @@ namespace TDJGame
         EnergyBar healthBar;
 
         Player player;
-        PufferFish puffer;
-        PufferFish puffer2;
-        JellyFish jelly;
-        JellyFish jelly2;
 
         List<Sprite> enemies;
+        List<Tile> spikes;
 
         #endregion
 
@@ -60,8 +57,8 @@ namespace TDJGame
             camera.Zoom = 2.45f;
 
             font = content.Load<SpriteFont>("Font");
-            tilemapTexture = content.Load<Texture2D>("tilemap");
-            //tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
+            //tilemapTexture = content.Load<Texture2D>("tilemap");
+            tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
 
             /*
              * A single pixel to draw lines and stuff
@@ -72,48 +69,41 @@ namespace TDJGame
             /*
              * Player init
              */ 
-            player = new Player(Graphics, tilemapTexture, Vector2.Zero, 16, 32, true);
-            player.TextureBoundingRect = new Rectangle(176, 80, 16, 32);
-            player.Body.X = 16 * 3;
-            player.Body.Y = 16 * 3;
+            player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
+            player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
+            //player.Body.X = 16 * 3;
+            //player.Body.Y = 16 * 3;
+            player.Body.X = 16 * 149;
+            player.Body.Y = 16 * 6;
             player.Body.MaxVelocity = 3f;
             player.Body.Drag = 0.6f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
-            
+
             /*
              * Enemies
              */
-            puffer = new PufferFish(Graphics, tilemapTexture, new Vector2(16 * 5, 16 * 5), 16, 32, 64f);
-            puffer.TextureBoundingRect = new Rectangle(9 * 16, 5 * 16, 16, 32);
-            puffer.Body.Enabled = true;
-            
-            puffer2 = new PufferFish(Graphics, tilemapTexture, new Vector2(16 * 31, 16 * 13), 16, 32, 7f * 16f, 4f);
-            puffer2.TextureBoundingRect = new Rectangle(9 * 16, 5 * 16, 16, 32);
-            puffer2.Body.Enabled = true;
-            
-            jelly = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(22 * 16, 7 * 16), new Vector2(32, 32), 0.5f);
-            jelly.TextureBoundingRect = new Rectangle(10 * 16, 5 * 16, 16, 32);
-            jelly.Body.Enabled = true;
-            
 
-            jelly2 = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(51 * 16, 8 * 16), new Vector2(2 * 16, 4 * 16), 1.5f);
-            jelly2.TextureBoundingRect = new Rectangle(10 * 16, 5 * 16, 16, 32);
-            jelly2.Body.Enabled = true;
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
 
-            enemies.Add(puffer);
-            enemies.Add(puffer2);
-            enemies.Add(jelly);
-            enemies.Add(jelly2);
-            
+            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
+            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
+
+
+
             /*
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
-            //this.level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);            
-            //this.level.SetCollisionTiles(new int[] { 1, 2, 4, 5 });
-            level.SetCollisionTiles(new int[] { 21 });
+            //level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
+            this.level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
+            this.level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });            
+            // build spikes tiles list
+            spikes = level.GetTilesListByID(new int[] { 5 });
 
             /*
              * UI Elements init
@@ -155,11 +145,8 @@ namespace TDJGame
             healthBar = null;
 
             player = null;
-            puffer = null;
-            puffer2 = null;
-            jelly = null;
-            jelly2 = null;
 
+            spikes = null;
             enemies = null;
 
         }
@@ -198,6 +185,16 @@ namespace TDJGame
                     }
                 }
             }
+
+            foreach(Tile spike in spikes)
+            {
+                if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
+                {
+                    player.ReceiveDamage(10);
+                    player.StartBlinking(gameTime);
+                }
+            }
+
 
             /*
              * Projectiles
