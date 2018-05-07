@@ -19,8 +19,8 @@ namespace TDJGame
         public float MaxEnergy = 200f;
         
         public float LastShot = 0f;
-        public float ShootingVelocity = 1.5f;
-        public float ShootRate = 50f;
+        public float ShootingVelocity = 3f;
+        public float ShootRate = 10f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
