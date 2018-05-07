@@ -96,7 +96,7 @@ namespace TDJGame
 
                     if (Floating)
                     {
-                        if (Body.Position.Y >= Size.Y / 2)
+                        if (Body.Position.Y >= 0)
                         {
                             Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
                         }
