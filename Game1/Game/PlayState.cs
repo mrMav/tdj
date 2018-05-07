@@ -7,6 +7,7 @@ using Engine.Physics;
 using Engine.Tiled;
 using TDJGame.Utils;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Media;
 
 namespace TDJGame
 {
@@ -53,6 +54,7 @@ namespace TDJGame
         public override void LoadContent()
         {
             base.LoadContent();
+            MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
             camera.Zoom = 2.45f;

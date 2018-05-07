@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine;
+using Microsoft.Xna.Framework.Media;
 
 namespace TDJGame
 {
@@ -13,6 +14,7 @@ namespace TDJGame
 
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Song menuSong;
 
         public Game()
         {
@@ -26,13 +28,14 @@ namespace TDJGame
         protected override void Initialize()
         {
 
-            graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
             graphics.ApplyChanges();
 
-            //StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
-            //StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
+            StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
+            StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
             StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
+            StateManager.Instance.AddGameState(new CreditsState("CreditsState", graphics));
 
             base.Initialize();
         }
@@ -42,10 +45,12 @@ namespace TDJGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            menuSong = Content.Load<Song>("menuSong");
+            MediaPlayer.Play(menuSong);
+
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("PlayState");
-
+            StateManager.Instance.StartGameState("MenuState");
         }
 
         protected override void UnloadContent()

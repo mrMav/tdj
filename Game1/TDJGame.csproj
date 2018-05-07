@@ -53,6 +53,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Engine\GameState.cs" />
     <Compile Include="Game\Bullet.cs" />
+    <Compile Include="Game\CreditsState.cs" />
     <Compile Include="Game\EnergyBar.cs" />
     <Compile Include="Game\JellyFish.cs" />
     <Compile Include="Game\MenuState.cs" />
