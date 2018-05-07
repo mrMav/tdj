@@ -20,7 +20,8 @@ namespace TDJGame
         
         public float LastShot = 0f;
         public float ShootingVelocity = 3f;
-        public float ShootRate = 10f;
+        public float ShootRate = 80f;
+        public float BulletCost = 10f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -147,7 +148,7 @@ namespace TDJGame
 
                 /* Shooting */
 
-                if (keyboardState.IsKeyDown(Keys.F))
+                if (keyboardState.IsKeyDown(Keys.F) && Energy >= BulletCost)
                 {
 
                     if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
@@ -180,12 +181,17 @@ namespace TDJGame
                             b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
 
                             b.Body.X = Body.X;
-                            b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation);
+                            b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 16;  //TODO: fix 16 offset with final sprites
 
                             b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
                             b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
 
+                            // subtract bullet cost to energy
+                            Energy -= BulletCost;
+
                         }
+
+                        
 
                     }
 

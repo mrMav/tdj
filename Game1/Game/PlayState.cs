@@ -24,6 +24,8 @@ namespace TDJGame
         EnergyBar bar;
 
         Player player;
+        PufferFish puffer;
+        JellyFish jelly;
 
         #endregion
 
@@ -36,7 +38,7 @@ namespace TDJGame
         public override void Initialize()
         {
             base.Initialize();
-                        
+            
         }
 
         public override void LoadContent()
@@ -66,6 +68,20 @@ namespace TDJGame
             player.Body.MaxVelocity = 3f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
+
+            /*
+             * Enemies
+             */
+
+            puffer = new PufferFish(Graphics, tilemapTexture, new Vector2(16 * 5, 16 * 5), 16, 32, 64f);
+            puffer.TextureBoundingRect = new Rectangle(9 * 16, 5 * 16, 16, 32);
+            puffer.Body.Enabled = true;
+            puffer.Body.Tag = "pufferfish";
+
+            jelly = new JellyFish(Graphics, tilemapTexture, new Vector2(16 * 5, 16 * 5), 16, 32, new Vector2(22 * 16, 7 * 16), new Vector2(32, 32), 0.5f);
+            jelly.TextureBoundingRect = new Rectangle(10 * 16, 5 * 16, 16, 32);
+            jelly.Body.Enabled = true;
+            jelly.Body.Tag = "jellyfish";
 
             /*
              * Level init
@@ -116,8 +132,14 @@ namespace TDJGame
             }
 
             /*
+             * AI (lol) Update
+             */
+            puffer.Update(gameTime, kState);
+            jelly.Update(gameTime, kState);
+
+            /*
              * UI Update
-             */ 
+             */
             bar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             
             camera.Position = new Vector2(player.Body.Position.X, 8 * 16 );
@@ -138,6 +160,8 @@ namespace TDJGame
 
             level.Draw(spriteBatch);
             player.Draw(gameTime, spriteBatch);
+            puffer.Draw(gameTime, spriteBatch);
+            jelly.Draw(gameTime, spriteBatch);
 
             spriteBatch.End();
 
