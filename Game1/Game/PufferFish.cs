@@ -47,5 +47,42 @@ namespace TDJGame
             }
             
         }
+
+        // render
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            if (Visible)
+            {
+
+                if(FacingDirection > 0)
+                {
+
+                    //spriteBatch.Draw(
+                    //     Texture2D texture,
+                    //     Rectangle destinationRectangle,
+                    //     Nullable<Rectangle> sourceRectangle,
+                    //     Color color,
+                    //     float rotation,
+                    //     Vector2 origin,
+                    //     SpriteEffects effects,
+                    //     float layerDepth
+                    //);
+
+                    spriteBatch.Draw(
+                             Texture,
+                             position: Body.Position,
+                             sourceRectangle: TextureBoundingRect,
+                             effects: SpriteEffects.FlipHorizontally,
+                             color: Tint
+                        );
+
+                } else
+                {
+                    spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                }
+
+            }
+        }
+
     }
 }

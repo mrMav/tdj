@@ -71,10 +71,8 @@ namespace TDJGame
              */ 
             player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
-            //player.Body.X = 16 * 3;
-            //player.Body.Y = 16 * 3;
-            player.Body.X = 16 * 149;
-            player.Body.Y = 16 * 6;
+            player.Body.X = 16 * 3;
+            player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
             player.Body.Drag = 0.6f;
             player.Body.Enabled = true;
@@ -93,8 +91,6 @@ namespace TDJGame
             enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
             enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
 
-
-
             /*
              * Level init
              */
@@ -103,13 +99,13 @@ namespace TDJGame
             this.level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
             this.level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });            
             // build spikes tiles list
-            spikes = level.GetTilesListByID(new int[] { 5 });
+            spikes = level.GetTilesListByID(new int[] { 3, 5 });
 
             /*
              * UI Elements init
              */ 
-            healthBar = new EnergyBar(Graphics, new Vector2(16, 16), Graphics.PreferredBackBufferWidth - 32, 16, Color.ForestGreen);
-            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), Graphics.PreferredBackBufferWidth - 32, 16, Color.MonoGameOrange);
+            healthBar = new EnergyBar(Graphics, new Vector2(16, 16), 256, 16, new Color(0, 255, 0));
+            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 256, 16, new Color(255, 0, 0));
 
             /*
              * Build Background Gradient

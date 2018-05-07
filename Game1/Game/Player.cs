@@ -48,7 +48,7 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(13 * 16, 7 * 16, 16, 16);
+                b.TextureBoundingRect = new Rectangle(0 * 16, 2 * 16, 16, 16);
 
                 Bullets.Add(b);
             }
@@ -184,8 +184,8 @@ namespace TDJGame
 
                                 b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
 
-                                b.Body.X = Body.X;
-                                b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 8;  //TODO: fix 16 offset with final sprites
+                                b.Body.X = Body.X + (FacingDirection > 0 ? 24 : -2);
+                                b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 10;  //TODO: fix 16 offset with final sprites
 
                                 b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
                                 b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
@@ -215,7 +215,33 @@ namespace TDJGame
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            base.Draw(gameTime, spriteBatch);
+            if (FacingDirection < 0)
+            {
+
+                //spriteBatch.Draw(
+                //     Texture2D texture,
+                //     Rectangle destinationRectangle,
+                //     Nullable<Rectangle> sourceRectangle,
+                //     Color color,
+                //     float rotation,
+                //     Vector2 origin,
+                //     SpriteEffects effects,
+                //     float layerDepth
+                //);
+
+                spriteBatch.Draw(
+                         Texture,
+                         position: Body.Position,
+                         sourceRectangle: TextureBoundingRect,
+                         effects: SpriteEffects.FlipHorizontally,
+                         color: Tint
+                    );
+
+            }
+            else
+            {
+                spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+            }
 
             foreach (Bullet b in Bullets)
             {
