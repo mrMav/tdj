@@ -152,7 +152,7 @@ namespace TDJGame
 
                     /* Shooting */
 
-                    if (keyboardState.IsKeyDown(Keys.F) && Energy >= BulletCost)
+                    if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
                     {
 
                         if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
