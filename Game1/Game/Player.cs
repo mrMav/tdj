@@ -53,6 +53,8 @@ namespace TDJGame
                 Bullets.Add(b);
             }
 
+            Floating = true;
+
         }
 
         public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState, Level level)
