@@ -22,6 +22,12 @@ namespace Engine.Physics
 
         public AABB Bounds;
 
+        // the x and y offset from the top left of the texture
+        public Vector2 Offset;
+
+        // the collision rect shape to be used on collisions
+        public AABB CollisionRect;
+
         public float X
         {
             get
@@ -82,6 +88,8 @@ namespace Engine.Physics
             Origin = new Vector2(0.5f, 0.5f);
 
             Bounds = new AABB(x, y, width, height);
+            CollisionRect = new AABB(0, 0, 0, 0);
+            SetSize(width, height, 0, 0);
 
             Angle = 0.0f;
             Drag = 1.0f;
@@ -89,23 +97,52 @@ namespace Engine.Physics
 
             Enabled = false;
         }
+
+        /// <summary>
+        /// Call before moving the body.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void PreMovementUpdate(GameTime gameTime)
+        {
+            PreviousPosition = Position;
+        }
+
+        /// <summary>
+        /// Prepares this body to be tested for collisions.
+        /// Call this after moving the body.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void PreCollisionUpdate(GameTime gameTime)
+        {
+            // update collision shape
+            //UpdateCollisionRect();
+
+            ResetCollisions();            
+        }
         
+        public void UpdateCollisionRect()
+        {
+            // update collision shape
+            CollisionRect.X = X + Offset.X;
+            CollisionRect.Y = Y + Offset.Y;
+        }
+
         /// <summary>
         /// Updates this body logic.
         /// </summary>
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-
+            
             ResetMovingDirections();
 
             // determing which side the body is moving
-            if (DeltaY() > 0)
+            if (DeltaY() < 0)
             {
                 MovingDown = true;
                 MovingUp = false;
             }
-            else if (DeltaY() < 0)
+            else if (DeltaY() > 0)
             {
                 MovingUp = true;
                 MovingDown = false;
@@ -158,6 +195,19 @@ namespace Engine.Physics
         public float DeltaY()
         {
             return PreviousPosition.Y - Position.Y;
+        }
+
+        public void SetSize(float width, float height, float offsetX, float offsetY)
+        {
+
+            CollisionRect.X = X + offsetX;
+            CollisionRect.Y = Y + offsetY;
+
+            CollisionRect.Resize(width, height);
+
+            Offset.X = offsetX;
+            Offset.Y = offsetY;
+
         }
 
         public string GetDebugString()

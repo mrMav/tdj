@@ -29,7 +29,8 @@ namespace TDJGame
         Player player;
 
         List<Sprite> enemies;
-        List<Tile> spikes;
+        List<Tile> spikesPointingDown;
+        List<Tile> spikesPointingUp;
 
         #endregion
 
@@ -54,7 +55,7 @@ namespace TDJGame
             MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 4.84f;
+            camera.Zoom = 2.45f;
 
             font = content.Load<SpriteFont>("Font");
             //tilemapTexture = content.Load<Texture2D>("tilemap");
@@ -77,6 +78,7 @@ namespace TDJGame
             player.Body.Drag = 0.6f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
+            player.Body.SetSize(16, 29, 9, 2);
 
             /*
              * Enemies
@@ -97,13 +99,24 @@ namespace TDJGame
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             //level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
             this.level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
-            this.level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });            
+            this.level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
+
             // build spikes tiles list
-            spikes = level.GetTilesListByID(new int[] { 3, 5 });
+            spikesPointingDown = level.GetTilesListByID(new int[] { 3 });
+            spikesPointingUp   = level.GetTilesListByID(new int[] { 5 });
+
+            foreach (Tile spike in spikesPointingDown)
+            {
+                spike.Body.SetSize(12, 6, 2, 0);
+            }
+            foreach (Tile spike in spikesPointingUp)
+            {
+                spike.Body.SetSize(12, 6, 2, 10);
+            }
 
             /*
              * UI Elements init
-             */ 
+             */
             healthBar = new EnergyBar(Graphics, new Vector2(16, 16), 256, 16, new Color(0, 255, 0));
             energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 256, 16, new Color(255, 0, 0));
 
@@ -142,7 +155,8 @@ namespace TDJGame
 
             player = null;
 
-            spikes = null;
+            spikesPointingDown = null;
+            spikesPointingUp = null;
             enemies = null;
 
         }
@@ -182,7 +196,15 @@ namespace TDJGame
                 }
             }
 
-            foreach(Tile spike in spikes)
+            foreach(Tile spike in spikesPointingDown)
+            {
+                if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
+                {
+                    player.ReceiveDamage(10);
+                    player.StartBlinking(gameTime);
+                }
+            }
+            foreach (Tile spike in spikesPointingUp)
             {
                 if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
                 {
@@ -194,7 +216,7 @@ namespace TDJGame
 
             /*
              * Projectiles
-             */ 
+             */
             foreach (Bullet b in player.Bullets)
             {
                 if(b.Alive)
@@ -272,6 +294,10 @@ namespace TDJGame
             }
             player.Draw(gameTime, spriteBatch);
 
+            //DrawBodyShape(player, spriteBatch, new Color(0, 160, 0, 170));
+            //DrawBodyShape(spikesPointingDown[0], spriteBatch, new Color(160, 0, 0, 170));
+            //DrawBodyShape(spikesPointingUp[0], spriteBatch, new Color(160, 0, 0, 170));
+
             spriteBatch.End();
 
             /* 
@@ -281,11 +307,23 @@ namespace TDJGame
             
             energyBar.Draw(spriteBatch, gameTime);
             healthBar.Draw(spriteBatch, gameTime);
-            spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             
             spriteBatch.End();
 
+        }
+
+        /*
+         * SERIOUS MEMORY LEAK HERE!
+         */ 
+        void DrawBodyShape(Sprite sprite, SpriteBatch spriteBatch, Color color)
+        {
+            Texture2D texture = new Texture2D(Graphics.GraphicsDevice, (int)sprite.Body.CollisionRect.Width, (int)sprite.Body.CollisionRect.Height);
+            DrawMe.Fill(texture, color);
+
+            spriteBatch.Draw(texture, sprite.Body.CollisionRect.Position, Color.White);
         }
         
         void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color)
