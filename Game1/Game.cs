@@ -50,7 +50,7 @@ namespace TDJGame
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("MenuState");
+            StateManager.Instance.StartGameState("PlayState");
         }
 
         protected override void UnloadContent()

@@ -16,8 +16,12 @@ namespace TDJGame
 
         public float Energy;
         public float FloatingUpSpeed = 2f;
+        public float AnchorDownSpeed = 4f;
         public float MaxEnergy = 200f;
-        
+        public float EnergyGainRate = 1f;
+        public float EnergyDrainRate = 3f;
+        public bool EnergyRecharging = false;
+
         public float LastShot = 0f;
         public float ShootingVelocity = 3f;
         public float ShootRate = 80f;
@@ -83,16 +87,20 @@ namespace TDJGame
                         this.FacingDirection = 1;
                     }
 
-                    if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
+                    if (keyboardState.IsKeyDown(Keys.Space) && !EnergyRecharging) // Basicly trigger
                     {
-                        Press = true;
+                        Floating = false;
+
+                    } else
+                    {
+                        Floating = true;
                     }
 
-                    if (Press && keyboardState.IsKeyUp(Keys.Space)) //Switch entre estados
-                    {
-                        Floating = !Floating;
-                        Press = false;
-                    }
+                    //if (Press && keyboardState.IsKeyUp(Keys.Space)) //Switch entre estados
+                    //{
+                    //    Floating = !Floating;
+                    //    Press = false;
+                    //}
 
                     /* Floating */
 
@@ -102,28 +110,40 @@ namespace TDJGame
                         {
                             Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
                         }
+
                         if (Energy < MaxEnergy)
-                            Energy += 1;
+                        {
+                            Energy += EnergyGainRate;
+                        }
+
+                    } else 
+                    {
+                        if (Energy > 0f && !EnergyRecharging)
+                        {
+                            Body.Velocity.Y = AnchorDownSpeed; //Floating Down
+                            Energy -= EnergyDrainRate;
+
+                        } else
+                        {
+                            Floating = true;
+                        }
                     }
 
-                    if (!Floating && Body.Position.Y <= Graphics.PreferredBackBufferHeight - Size.Y)
+                    if(Energy <= 0)
                     {
-                        if (Energy > 0f)
-                        {
-                            Body.Velocity.Y = 4f; //Floating Down
-                            Energy -= 1f;
-                        }
-                        else
-                            Floating = true;
+                        EnergyRecharging = true;
+
+                    } else if(Energy >= MaxEnergy)
+                    {
+                        EnergyRecharging = false;
                     }
 
                     /* ---- */
 
                     // cap velocity
-                    if (Body.Velocity.Length() > Body.MaxVelocity)
+                    if (Body.Velocity.X > Body.MaxVelocity)
                     {
-                        Body.Velocity.Normalize();
-                        Body.Velocity *= Body.MaxVelocity;
+                        Body.Velocity.X = Body.MaxVelocity;
                     }
 
                     this.Body.ResetCollisions();
