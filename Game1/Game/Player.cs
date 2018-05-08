@@ -68,6 +68,8 @@ namespace TDJGame
                 if (this.IsControllable && keyboardState != null)
                 {
 
+                    this.Body.PreMovementUpdate(gameTime);
+
                     float ellapsedTimeMultiplier = 1000f;
 
                     // move left
@@ -126,7 +128,7 @@ namespace TDJGame
                         Body.Velocity *= Body.MaxVelocity;
                     }
 
-                    this.Body.ResetCollisions();
+                    this.Body.PreCollisionUpdate(gameTime);
 
                     // apply x velocity
                     this.Body.X += this.Body.Velocity.X;

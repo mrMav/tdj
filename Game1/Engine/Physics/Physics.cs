@@ -11,7 +11,11 @@ namespace Engine.Physics
     {
         public static void Collide(Sprite a, Sprite b, int side)
         {
-            AABB intersection = MinkowskiDifference(a.Body.Bounds, b.Body.Bounds);
+
+            a.Body.UpdateCollisionRect();
+            b.Body.UpdateCollisionRect();
+
+            AABB intersection = MinkowskiDifference(a.Body.CollisionRect, b.Body.CollisionRect);
 
             if (intersection.X < 0 &&
                intersection.X + intersection.Width > 0 &&
@@ -41,7 +45,10 @@ namespace Engine.Physics
         public static bool Overlap(Sprite a, Sprite b)
         {
 
-            AABB intersection = MinkowskiDifference(a.Body.Bounds, b.Body.Bounds);
+            a.Body.UpdateCollisionRect();
+            b.Body.UpdateCollisionRect();
+
+            AABB intersection = MinkowskiDifference(a.Body.CollisionRect, b.Body.CollisionRect);
 
             return intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0;
 
@@ -69,8 +76,8 @@ namespace Engine.Physics
         public static void SetCollisionSide(AABB minkowski, Body a, Body b)
         {
 
-            float dx = a.Bounds.CenterX - b.Bounds.CenterX;
-            float dy = a.Bounds.CenterY - b.Bounds.CenterY;
+            float dx = a.CollisionRect.CenterX - b.CollisionRect.CenterX;
+            float dy = a.CollisionRect.CenterY - b.CollisionRect.CenterY;
 
             float wy = minkowski.Width * dy;
             float hx = minkowski.Height * dx;

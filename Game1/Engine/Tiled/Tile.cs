@@ -9,17 +9,9 @@ namespace Engine.Tiled
         
         // Reference to the layer this Tile belongs to;        
         public Layer Layer;
-
-        // display texture
-        //public Texture2D Texture;
-        //public Rectangle TextureBoundingRect;
-        //public Color Tint;
-
+        
         // the tile id
         public int ID { get; }
-
-        //physics
-        //public Body Body;
         
         // constructor
         public Tile(GraphicsDeviceManager graphics, Layer layer, Texture2D pTexture, Vector2 positionInTexture, Vector2 pPosition, int ID)
@@ -35,17 +27,9 @@ namespace Engine.Tiled
                 this.Layer.Level.TileWidth,
                 this.Layer.Level.TileHeight
             );
-
-
-            /*
-             * we do not multiply the world rect size for a scale
-             * because we will do that in the Camera2D class
-             */
-
+            
             this.ID = ID;
-
-            this.Body = new Body(pPosition.X, pPosition.Y, this.Layer.Level.TileWidth, this.Layer.Level.TileHeight);
-
+            
             this.Tint = Color.White;
 
         }
