@@ -105,8 +105,8 @@ namespace Engine.Physics
         {
             get
             {
-                _max.X = _x + _width - 1;
-                _max.Y = _y + _height - 1;
+                _max.X = _x + _width;
+                _max.Y = _y + _height;
 
                 return _max;
             }

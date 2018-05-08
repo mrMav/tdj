@@ -13,10 +13,10 @@ namespace Engine.Physics
         {
             AABB intersection = MinkowskiDifference(a.Body.Bounds, b.Body.Bounds);
 
-            if (intersection.X <= 0 &&
-               intersection.X + intersection.Width >= 0 &&
-               intersection.Y <= 0 &&
-               intersection.Y + intersection.Height >= 0)
+            if (intersection.X < 0 &&
+               intersection.X + intersection.Width > 0 &&
+               intersection.Y < 0 &&
+               intersection.Y + intersection.Height > 0)
             {
 
                 SetCollisionSide(intersection, a.Body, b.Body);
@@ -43,7 +43,7 @@ namespace Engine.Physics
 
             AABB intersection = MinkowskiDifference(a.Body.Bounds, b.Body.Bounds);
 
-            return intersection.X <= 0 && intersection.X + intersection.Width >= 0 && intersection.Y <= 0 && intersection.Y + intersection.Height >= 0;
+            return intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0;
 
         }
 
