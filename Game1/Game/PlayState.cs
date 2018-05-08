@@ -25,9 +25,7 @@ namespace TDJGame
         Texture2D backgroundGradientStrip;
         EnergyBar energyBar;
         EnergyBar healthBar;
-
         Player player;
-
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
@@ -58,7 +56,6 @@ namespace TDJGame
             camera.Zoom = 2.45f;
 
             font = content.Load<SpriteFont>("Font");
-            //tilemapTexture = content.Load<Texture2D>("tilemap");
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
 
             /*
@@ -97,9 +94,8 @@ namespace TDJGame
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            //level = XMLloader.LoadLevel(@"Content\test_map_3.tmx", tilemapTexture);
-            this.level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
-            this.level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
+            level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
+            level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
 
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 3 });
@@ -152,9 +148,7 @@ namespace TDJGame
             backgroundGradientStrip = null;
             energyBar = null;
             healthBar = null;
-
             player = null;
-
             spikesPointingDown = null;
             spikesPointingUp = null;
             enemies = null;

@@ -97,15 +97,12 @@ namespace Engine
 
         public virtual void ReceiveDamage(float ammount)
         {
-
-
             Health -= ammount;
 
             if(Health <= 0f)
             {
                 Kill();
             }
-            Console.WriteLine($"Received damage {Health}");
 
         }
 
