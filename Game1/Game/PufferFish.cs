@@ -26,9 +26,9 @@ namespace TDJGame
             Body.Tag = "pufferfish";
         }
 
-        public override void Update(GameTime gameTime, KeyboardState keyboardState)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime, keyboardState);
+            base.Update(gameTime);
 
             Body.X += Body.Velocity.X;
             Body.Y += Body.Velocity.Y;

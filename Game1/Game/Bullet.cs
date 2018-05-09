@@ -27,7 +27,7 @@ namespace TDJGame
             Visible = false;
         }
 
-        public override void Update(GameTime gameTime, KeyboardState keyboardState)
+        public override void Update(GameTime gameTime)
         {
             if(Alive)
             {

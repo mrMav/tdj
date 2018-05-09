@@ -16,7 +16,7 @@ namespace Engine
         protected ContentManager content;
         public bool ContentLoaded { get; set; }
 
-        protected GraphicsDeviceManager Graphics;
+        public GraphicsDeviceManager Graphics { get; set; }
 
         #endregion
         public GameState() { }

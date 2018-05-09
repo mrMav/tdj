@@ -47,7 +47,7 @@ namespace Engine
         }
 
         // logic update
-        public virtual void Update(GameTime gameTime, KeyboardState keyboardState)
+        public virtual void Update(GameTime gameTime)
         {
             if (IsBlinking)
             {

@@ -48,10 +48,6 @@ namespace Engine.Physics
             {
                 return _width;
             }
-            set
-            {
-                Width = value;
-            }
         }
 
         public float Height
@@ -59,10 +55,6 @@ namespace Engine.Physics
             get
             {
                 return _height;
-            }
-            set
-            {
-                Height = value;
             }
         }
 
