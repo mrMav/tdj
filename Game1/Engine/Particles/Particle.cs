@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TDJGame.Utils;
 
 namespace Engine.Particles
 {
@@ -17,6 +18,10 @@ namespace Engine.Particles
         public double SpawnedAtMilliseconds = 0f;
         public double MillisecondsAfterSpawn = 0f;
         public double LifespanMilliseconds = 0f;
+
+        public float Scale = 1f;
+        public float InitialScale = 1f;
+        public float FinalScale = 1f;
 
         /*
          * Constructor
@@ -52,6 +57,9 @@ namespace Engine.Particles
 
                 Body.Velocity.X *= Body.Drag.X;
                 Body.Velocity.Y *= Body.Drag.Y;
+
+                Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
+
             }
 
             if (MillisecondsAfterSpawn >= LifespanMilliseconds)
@@ -63,7 +71,10 @@ namespace Engine.Particles
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            base.Draw(gameTime, spriteBatch);
+            if (Visible)
+            {
+                spriteBatch.Draw(Texture, Body.Position, TextureBoundingRect, Tint, 0f, Body.Origin, Scale, SpriteEffects.None, 0f);
+            }
         }
 
         public void Reset()

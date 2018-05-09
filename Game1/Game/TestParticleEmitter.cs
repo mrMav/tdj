@@ -128,6 +128,8 @@ namespace TDJGame
             Emitters[5].SpawnRate = 0f;
             Emitters[5].ParticleLifespanMilliseconds = 5000f;
             Emitters[5].ParticleLifespanVariationMilliseconds = 1000f;
+            Emitters[5].InitialScale = 0.5f;
+            Emitters[5].FinalScale = 3.0f;
 
             Emitters[5].ForEachParticle(ChangeSpriteTintRed);
 
@@ -144,6 +146,8 @@ namespace TDJGame
             Emitters[6].ParticleLifespanVariationMilliseconds = 800f;
             Emitters[6].ParticlesPerBurst = 50;
             Emitters[6].Burst = true;
+            Emitters[6].InitialScale = 0.5f;
+            Emitters[6].FinalScale = 3.0f;
 
             Emitters[6].ForEachParticle(ChangeSpriteTintGreen);
 

@@ -81,6 +81,9 @@ namespace Engine.Particles
         public Vector2 XVelocityVariationRange;
         public Vector2 YVelocityVariationRange;
 
+        public float InitialScale;
+        public float FinalScale;
+
         #endregion
 
 
@@ -106,6 +109,9 @@ namespace Engine.Particles
             ParticleVelocity = Vector2.Zero;
             XVelocityVariationRange = Vector2.Zero;
             YVelocityVariationRange = Vector2.Zero;
+
+            InitialScale = 1f;
+            FinalScale = 1f;
 
             ParticlesPerBurst = 5;
             Burst = false;
@@ -233,6 +239,9 @@ namespace Engine.Particles
 
             p.Reset();
             p.Revive();
+
+            p.InitialScale = InitialScale;
+            p.FinalScale = FinalScale;
 
             p.SpawnedAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
             p.LifespanMilliseconds = ParticleLifespanMilliseconds + (float)Rnd.Next((int)-ParticleLifespanVariationMilliseconds,(int)ParticleLifespanVariationMilliseconds);
