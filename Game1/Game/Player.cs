@@ -41,7 +41,7 @@ namespace TDJGame
 
             Body.Acceleration.X = 0.1f;
             Body.MaxVelocity = 3f;
-            Body.Drag = 0.9f;
+            Body.Drag.X = 0.9f;
 
             /* Create a few bullets */
             Bullets = new List<Bullet>();
@@ -63,7 +63,7 @@ namespace TDJGame
             if (Alive)
             {
 
-                base.Update(gameTime, keyboardState);
+                base.Update(gameTime);
 
                 if (this.IsControllable && keyboardState != null)
                 {
@@ -149,7 +149,7 @@ namespace TDJGame
                     }
 
                     // apply drag
-                    Body.Velocity.X *= Body.Drag;
+                    Body.Velocity.X *= Body.Drag.X;
                     Body.Velocity.Y = 0;
 
                     this.Body.Update(gameTime);
@@ -207,7 +207,7 @@ namespace TDJGame
 
                     foreach (Bullet b in Bullets)
                     {
-                        b.Update(gameTime, keyboardState);
+                        b.Update(gameTime);
                     }
                     
                 }

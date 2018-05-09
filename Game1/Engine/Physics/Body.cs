@@ -11,6 +11,7 @@ namespace Engine.Physics
 
         public Vector2 Acceleration;
         public Vector2 Velocity;
+        public Vector2 Drag;
         public Vector2 Origin;
         public float MaxVelocity;
 
@@ -60,8 +61,7 @@ namespace Engine.Physics
             }
         }
 
-        public float Angle { get; set; }
-        public float Drag { get; set; }
+        public float Angle { get; set; }        
 
         public bool Enabled { get; set; }
 
@@ -92,7 +92,7 @@ namespace Engine.Physics
             SetSize(width, height, 0, 0);
 
             Angle = 0.0f;
-            Drag = 1.0f;
+            Drag = new Vector2(1f, 1f);
             MaxVelocity = 1000f;
 
             Enabled = false;

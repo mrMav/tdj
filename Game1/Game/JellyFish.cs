@@ -27,9 +27,9 @@ namespace TDJGame
             Body.Tag = "jellyfish";
         }
 
-        public override void Update(GameTime gameTime, KeyboardState keyboardState)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime, keyboardState);
+            base.Update(gameTime);
 
             float threshold = 0.002f;
 

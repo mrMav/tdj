@@ -72,7 +72,7 @@ namespace TDJGame
             player.Body.X = 16 * 3;
             player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
-            player.Body.Drag = 0.6f;
+            player.Body.Drag.X = 0.6f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
             player.Body.SetSize(16, 29, 9, 2);
@@ -180,7 +180,7 @@ namespace TDJGame
             {
                 if(s.Alive)
                 {
-                    s.Update(gameTime, kState);
+                    s.Update(gameTime);
 
                     if(Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
                     {

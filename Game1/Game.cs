@@ -36,6 +36,7 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
             StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
             StateManager.Instance.AddGameState(new CreditsState("CreditsState", graphics));
+            StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
 
             base.Initialize();
         }
@@ -50,7 +51,7 @@ namespace TDJGame
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("PlayState");
+            StateManager.Instance.StartGameState("TestParticles");
         }
 
         protected override void UnloadContent()

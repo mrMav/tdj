@@ -33,7 +33,7 @@ namespace Engine
         protected float Rotation { get; set; }
 
         public Matrix Transform { get; set; }
-        public Vector2 Position { get; set; }
+        public Vector2 Position;
 
         public Camera2D(Vector2 position)
         {
