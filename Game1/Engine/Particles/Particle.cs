@@ -16,6 +16,7 @@ namespace Engine.Particles
 
         public double SpawnedAtMilliseconds = 0f;
         public double MillisecondsAfterSpawn = 0f;
+        public double LifespanMilliseconds = 0f;
 
         /*
          * Constructor
@@ -52,6 +53,12 @@ namespace Engine.Particles
                 Body.Velocity.X *= Body.Drag.X;
                 Body.Velocity.Y *= Body.Drag.Y;
             }
+
+            if (MillisecondsAfterSpawn >= LifespanMilliseconds)
+            {
+                this.Kill();
+            }
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

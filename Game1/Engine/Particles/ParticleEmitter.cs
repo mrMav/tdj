@@ -73,6 +73,7 @@ namespace Engine.Particles
         #region [Particles Properties]
 
         public double ParticleLifespanMilliseconds;
+        public double ParticleLifespanVariationMilliseconds;
         public double LastSpawnedParticleMilliseconds;
         public double SpawnRate;
 
@@ -99,6 +100,7 @@ namespace Engine.Particles
             Activated = true;
             ParticleLifespanMilliseconds = 1000f;
             LastSpawnedParticleMilliseconds = 0f;
+            ParticleLifespanVariationMilliseconds = 0f;
             SpawnRate = 500f;
 
             ParticleVelocity = Vector2.Zero;
@@ -181,10 +183,6 @@ namespace Engine.Particles
 
                     p.Update(gameTime);
 
-                    if (p.MillisecondsAfterSpawn >= ParticleLifespanMilliseconds)
-                    {
-                        p.Kill();
-                    }
                 }
             }
         }
@@ -235,6 +233,7 @@ namespace Engine.Particles
             p.Revive();
 
             p.SpawnedAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+            p.LifespanMilliseconds = ParticleLifespanMilliseconds + (float)Rnd.Next((int)-ParticleLifespanVariationMilliseconds,(int)ParticleLifespanVariationMilliseconds);
 
             p.Body.Velocity.X = velocityX;
             p.Body.Velocity.Y = velocityY;
