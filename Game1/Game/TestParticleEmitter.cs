@@ -190,21 +190,21 @@ namespace TDJGame
                 Emitters[5].Activated = false;
             }
 
-            //if (mState.RightButton == ButtonState.Pressed)
-            //{
+            if (mState.RightButton == ButtonState.Pressed)
+            {
 
-            //    Vector2 cursorScreenToWorldPosition = Camera.GetScreenToWorldPosition(new Vector2(mState.X, mState.Y));
+                Vector2 cursorScreenToWorldPosition = Camera.GetScreenToWorldPosition(new Vector2(mState.X, mState.Y));
 
-            //    Emitters[6].EmitterBox.X = cursorScreenToWorldPosition.X;
-            //    Emitters[6].EmitterBox.Y = cursorScreenToWorldPosition.Y;
+                Emitters[6].EmitterBox.X = cursorScreenToWorldPosition.X;
+                Emitters[6].EmitterBox.Y = cursorScreenToWorldPosition.Y;
 
-            //    Emitters[6].Activated = true;
+                Emitters[6].Activated = true;
 
-            //}
-            //else
-            //{
-            //    Emitters[5].Activated = false;
-            //}
+            }
+            else
+            {
+            Emitters[6].Activated = false;
+            }
 
             foreach (ParticleEmitter Emitter in Emitters)
             {
