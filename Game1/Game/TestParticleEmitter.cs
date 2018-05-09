@@ -37,14 +37,18 @@ namespace TDJGame
 
             SpriteSheet = content.Load<Texture2D>("SpriteSheetDraft");
 
-            Emitter = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2);
+            Emitter = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2, 100);
             Emitter.MakeParticles(SpriteSheet, 16, 16);
-            Emitter.ParticleVelocity = new Vector2(2, -2);
-            Emitter.XVelocityVariationRange = new Vector2(-5f, 5f);
-            Emitter.YVelocityVariationRange = new Vector2(-5f, 5f);
+            Emitter.ParticleVelocity = new Vector2(0, 2);
+            Emitter.XVelocityVariationRange = new Vector2(-80f, 80f);
+            Emitter.YVelocityVariationRange = new Vector2(-80f, 80f);
             Emitter.SetTextureCropRectangle(new Rectangle(0, 32, 16, 16));
-            Emitter.EmitterBox.Resize(2f, 2f);
-            Emitter.SpawnRate = 50;
+            Emitter.EmitterBox.X = 0;
+            Emitter.EmitterBox.Y = 0;
+            Emitter.EmitterBox.Resize(800f, 1f);
+            Emitter.SpawnRate = 500f;
+            Emitter.ParticleLifespanMilliseconds = 5000f;
+            Emitter.Burst = false;
 
             this.ContentLoaded = true;
 

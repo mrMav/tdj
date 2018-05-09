@@ -43,10 +43,36 @@ namespace Engine.Particles
          */
         private Random Rnd;
 
+        /*
+         * Burst Mode Flag
+         */
+        public bool Burst;
+
+        /*
+         * How Many Particles per burst
+         */
+        private int _particlesPerBurst;
+        public int ParticlesPerBurst
+        {
+            get
+            {
+                return _particlesPerBurst;
+            }
+            set
+            {
+                if(value > MaxParticles)
+                {
+                    _particlesPerBurst = MaxParticles;
+                } else
+                {
+                    _particlesPerBurst = value;
+                }
+            }
+        }
 
         #region [Particles Properties]
 
-        public double MaxAliveMilliseconds;
+        public double ParticleLifespanMilliseconds;
         public double LastSpawnedParticleMilliseconds;
         public double SpawnRate;
 
@@ -71,13 +97,16 @@ namespace Engine.Particles
             Rnd = new Random(seed);
 
             Activated = true;
-            MaxAliveMilliseconds = 1000f;
+            ParticleLifespanMilliseconds = 1000f;
             LastSpawnedParticleMilliseconds = 0f;
             SpawnRate = 500f;
 
             ParticleVelocity = Vector2.Zero;
             XVelocityVariationRange = Vector2.Zero;
             YVelocityVariationRange = Vector2.Zero;
+
+            ParticlesPerBurst = 5;
+            Burst = false;
         }
 
         public void MakeParticles(Texture2D particleTexture, int width, int height)
@@ -102,39 +131,47 @@ namespace Engine.Particles
                     // update timer
                     LastSpawnedParticleMilliseconds = gameTime.TotalGameTime.TotalMilliseconds + SpawnRate;
 
-                    // get the first dead particle
-                    Particle p = null;
-                    for (int i = 0; i < MaxParticles; i++)
+                    if(Burst)
                     {
-                        if (!Particles[i].Alive)
+                        int count = 0;
+
+                        for (int i = 0; i < MaxParticles; i++)
                         {
-                            p = Particles[i];
-                            break;
+
+                            if(count >= ParticlesPerBurst)
+                            {
+                                break;
+                            }
+
+                            if (!Particles[i].Alive)
+                            {
+                                SetParticleReady(Particles[i], gameTime);
+                                count++;
+                            }
+                        }
+
+
+                    } else
+                    {
+                        // get the first dead particle
+                        Particle p = null;
+                        for (int i = 0; i < MaxParticles; i++)
+                        {
+                            if (!Particles[i].Alive)
+                            {
+                                p = Particles[i];
+                                break;
+                            }
+                        }
+
+                        if (p != null)
+                        {
+
+                            SetParticleReady(p, gameTime);
+
                         }
                     }
-
-
-                    if (p != null)
-                    {
-
-                        float spawnAtX = Rnd.Next((int)EmitterBox.Min.X, (int)EmitterBox.Max.X);
-                        float spawnAtY = Rnd.Next((int)EmitterBox.Min.Y, (int)EmitterBox.Max.Y);
-
-                        float velocityX = ParticleVelocity.X + Rnd.Next((int)XVelocityVariationRange.X, (int)XVelocityVariationRange.Y) * 0.1f;
-                        float velocityY = ParticleVelocity.Y + Rnd.Next((int)YVelocityVariationRange.X, (int)YVelocityVariationRange.Y) * 0.1f;
-
-                        p.Reset();
-                        p.Revive();
-
-                        p.SpawnedAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
-
-                        p.Body.Velocity.X = velocityX;
-                        p.Body.Velocity.Y = velocityY;
-
-                        p.Body.X = spawnAtX;
-                        p.Body.Y = spawnAtY;
-
-                    }
+                    
                 }
 
                 // update all particles
@@ -144,7 +181,7 @@ namespace Engine.Particles
 
                     p.Update(gameTime);
 
-                    if (p.MillisecondsAfterSpawn >= MaxAliveMilliseconds)
+                    if (p.MillisecondsAfterSpawn >= ParticleLifespanMilliseconds)
                     {
                         p.Kill();
                     }
@@ -184,6 +221,26 @@ namespace Engine.Particles
             {
                 Particles[i].TextureBoundingRect = rect;
             }
+        }
+
+        public void SetParticleReady(Particle p, GameTime gameTime)
+        {
+            float spawnAtX = Rnd.Next((int)EmitterBox.Min.X, (int)EmitterBox.Max.X);
+            float spawnAtY = Rnd.Next((int)EmitterBox.Min.Y, (int)EmitterBox.Max.Y);
+
+            float velocityX = ParticleVelocity.X + Rnd.Next((int)XVelocityVariationRange.X, (int)XVelocityVariationRange.Y) * 0.01f;
+            float velocityY = ParticleVelocity.Y + Rnd.Next((int)YVelocityVariationRange.X, (int)YVelocityVariationRange.Y) * 0.01f;
+
+            p.Reset();
+            p.Revive();
+
+            p.SpawnedAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+
+            p.Body.Velocity.X = velocityX;
+            p.Body.Velocity.Y = velocityY;
+
+            p.Body.X = spawnAtX;
+            p.Body.Y = spawnAtY;
         }
 
 
