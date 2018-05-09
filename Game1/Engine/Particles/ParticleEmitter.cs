@@ -176,15 +176,17 @@ namespace Engine.Particles
                     
                 }
 
-                // update all particles
-                for (int i = 0; i < MaxParticles; i++)
-                {
-                    Particle p = Particles[i];
-
-                    p.Update(gameTime);
-
-                }
             }
+
+            // update all particles
+            for (int i = 0; i < MaxParticles; i++)
+            {
+                Particle p = Particles[i];
+
+                p.Update(gameTime);
+
+            }
+
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -242,6 +244,12 @@ namespace Engine.Particles
             p.Body.Y = spawnAtY;
         }
 
-
+        public void ForEachParticle(Func<Particle, int> callback)
+        {
+            for(int i = 0; i < MaxParticles; i++)
+            {
+                callback(Particles[i]);
+            }
+        }
     }
 }
