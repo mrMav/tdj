@@ -37,6 +37,7 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
             StateManager.Instance.AddGameState(new CreditsState("CreditsState", graphics));
             StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
+            StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
 
             base.Initialize();
         }
@@ -46,12 +47,12 @@ namespace TDJGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            menuSong = Content.Load<Song>("menuSong");
-            MediaPlayer.Play(menuSong);
+            //menuSong = Content.Load<Song>("menuSong");
+            //MediaPlayer.Play(menuSong);
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("TestParticles");
+            StateManager.Instance.StartGameState("TestObjectImport");
         }
 
         protected override void UnloadContent()

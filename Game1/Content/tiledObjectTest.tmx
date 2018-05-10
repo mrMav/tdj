@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="16" tileheight="16" infinite="0" nextobjectid="16">
+ <tileset firstgid="1" name="sample" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="spritesheet-jn.png" width="256" height="256"/>
+ </tileset>
+ <layer name="tiles" width="32" height="16">
+  <data encoding="csv">
+49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,51,49,50,
+0,0,0,0,0,0,0,0,0,0,0,0,98,98,98,98,98,98,98,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,33,17,17,17,17,17,33,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,33,33,33,33,33,97,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,97,97,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+17,17,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
+17,17,17,17,17,17,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,17,17,
+17,17,17,17,17,17,17,17,17,1,1,1,1,1,1,1,98,98,98,98,0,0,1,1,1,1,1,17,17,17,17,17,
+2,2,2,17,17,17,17,17,17,17,17,17,17,17,17,17,1,1,1,1,1,1,17,17,17,17,17,17,17,17,17,17,
+18,18,18,2,2,2,2,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,2,
+18,18,18,18,18,18,18,2,2,2,2,2,2,2,2,17,17,17,17,17,17,17,17,17,17,17,17,2,2,2,2,18
+</data>
+ </layer>
+ <objectgroup name="objects">
+  <object id="7" name="JellyFish" type="Enemy" x="390.333" y="37.5" width="66.5" height="65">
+   <properties>
+    <property name="speed" type="float" value="0.01"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="11" name="PufferFish" type="Enemy" x="354" y="167.333" width="71.75" height="15">
+   <properties>
+    <property name="speed" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="12" name="PufferFish" type="Enemy" x="10" y="38" width="175.25" height="15">
+   <properties>
+    <property name="speed" type="float" value="0.5"/>
+   </properties>
+  </object>
+  <object id="13" name="JellyFish" type="Enemy" x="162.75" y="-2.5" width="172.5" height="110">
+   <properties>
+    <property name="speed" type="float" value="5"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="14" name="JellyFish" type="Enemy" x="290.75" y="116.5" width="25.5" height="61">
+   <properties>
+    <property name="speed" type="float" value="1"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="15" name="PufferFish" type="Enemy" x="18.125" y="114.5" width="430.75" height="15">
+   <properties>
+    <property name="speed" type="float" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

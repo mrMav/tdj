@@ -12,6 +12,8 @@ namespace Engine.Tiled
         public bool Infinite { get; set; }
 
         public List<Layer> Layers { get; set; }
+        public List<TiledObject> Objects { get; set; }
+
         public int NextObjectId { get; set; }
 
         public string Orientation { get; set; }
@@ -30,6 +32,7 @@ namespace Engine.Tiled
         {
 
             this.Layers = new List<Layer>();
+            this.Objects = new List<TiledObject>();
             this.CollidableTiles = new List<Tile>();
         }
 

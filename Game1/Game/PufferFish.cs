@@ -40,7 +40,7 @@ namespace TDJGame
                 FacingDirection = 1;  // go right now
                 Body.Velocity.X *= -1;
             }
-            else if (CurrentDistance >= TravelDistance)
+            else if (CurrentDistance + Body.Bounds.Width >= TravelDistance)
             {
                 FacingDirection = -1;  // go left now
                 Body.Velocity.X *= -1;
