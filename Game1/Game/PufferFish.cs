@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine;
 using Engine.Physics;
+using System.Collections.Generic;
+using System;
 
 namespace TDJGame
 {
@@ -13,8 +15,9 @@ namespace TDJGame
         float CurrentDistance;
         int FacingDirection = 1;  // 1 is right, -1 is left
 
+        public float LastShot = 0f;
         public float ShootingVelocity = 3f;
-        public float ShootRate = 80f;
+        public float ShootRate = 500f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -36,7 +39,7 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(0 * 16, 2 * 16, 16, 16);
+                b.TextureBoundingRect = new Rectangle(11 * 16, 0 * 16, 16, 32);
 
                 Bullets.Add(b);
             }
@@ -96,14 +99,14 @@ namespace TDJGame
                     b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 10;  //TODO: fix 16 offset with final sprites
 
                     b.Body.Velocity.X = 0;
-                    b.Body.Velocity.Y = 4;  // make it float a bit
+                    b.Body.Velocity.Y = 0.3f;
                 }
             }
 
-        foreach (Bullet b in Bullets)
-        {
-            b.Update(gameTime);
-        }
+            foreach (Bullet b in Bullets)
+            {
+                b.Update(gameTime);
+            }
             
         }
 
