@@ -25,7 +25,7 @@ namespace Engine.Animations
         /*
          * Currently displayed Frame.
          */
-        public Frame CurrentFrame { get; }
+        public Frame CurrentFrame { get; set; }
 
         /*
          * Currently playing animation.
@@ -44,6 +44,9 @@ namespace Engine.Animations
             State = state;
 
             Animations = new Dictionary<string, Animation>();
+
+            CurrentFrame = null;
+            CurrentAnimation = null;
 
         }
 

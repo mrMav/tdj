@@ -42,7 +42,7 @@ namespace Engine
             Texture = texture;
             Tint = Color.White;
 
-            AnimManager = new AnimationManager(this, null);
+            AnimManager = new AnimationManager(this, state);
 
             Body = new Body(position.X, position.Y, width, height);
 
@@ -84,7 +84,7 @@ namespace Engine
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(Visible)
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                spriteBatch.Draw(this.Texture, this.Body.Position, this.AnimManager.CurrentFrame.TextureSourceRect, this.Tint);
         }
 
         public virtual void Kill()

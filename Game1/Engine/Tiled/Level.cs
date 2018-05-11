@@ -39,12 +39,12 @@ namespace Engine.Tiled
             this.CollidableTiles = new List<Tile>();
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
             foreach (Layer layer in this.Layers)
             {
-                layer.Draw(spriteBatch);
+                layer.Draw(gameTime, spriteBatch);
             }
 
         }

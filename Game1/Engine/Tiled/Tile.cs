@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Engine.Physics;
+using Engine.Animations;
 
 namespace Engine.Tiled
 {
@@ -21,11 +21,12 @@ namespace Engine.Tiled
 
             this.Texture = pTexture;
 
-            this.TextureBoundingRect = new Rectangle(
+            this.AnimManager.CurrentFrame = new Frame(
                 (int)positionInTexture.X * this.Layer.Level.TileWidth,
                 (int)positionInTexture.Y * this.Layer.Level.TileHeight,
                 this.Layer.Level.TileWidth,
-                this.Layer.Level.TileHeight
+                this.Layer.Level.TileHeight,
+                0
             );
             
             this.ID = ID;
@@ -33,18 +34,5 @@ namespace Engine.Tiled
             this.Tint = Color.White;
 
         }
-
-        // logic update
-        public void Update(GameTime pGameTime)
-        {
-
-        }
-
-        // render
-        public void Draw(SpriteBatch pSpriteBatch)
-        {
-            pSpriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
-        }
-
     }
 }

@@ -343,7 +343,7 @@ namespace TDJGame
              */
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
-            level.Draw(spriteBatch);
+            level.Draw(gameTime, spriteBatch);
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,11 @@ namespace Engine.Animations
          * Index of this frame in the animation.
          */
         public int Index { get; set; }
+
+        /*
+         * This frame source rectangle.
+         */
+        public Rectangle TextureSourceRect { get; }
         
         public Frame(int x, int y, int width, int height, int index)
         {
@@ -46,6 +52,8 @@ namespace Engine.Animations
             Height = height;
 
             Index = index;
+
+            TextureSourceRect = new Rectangle(x, y, width, height);
 
         }
     }

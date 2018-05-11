@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 using Engine;
 using Engine.Tiled;
+using Engine.Animations;
+using TDJGame.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TDJGame.Utils;
 
 namespace TDJGame
 {
-    public class TestObjectImport : GameState
+    public class TestAnimations : GameState
     {
 
         #region [Properties]
@@ -23,10 +24,11 @@ namespace TDJGame
         Texture2D tilemapTexture;
         Level level;
         List<Sprite> enemies;
+        Sprite player;
 
         #endregion
 
-        public TestObjectImport(string key, GraphicsDeviceManager graphics)
+        public TestAnimations(string key, GraphicsDeviceManager graphics)
         {
             Key = key;
             Graphics = graphics;
@@ -49,43 +51,46 @@ namespace TDJGame
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
-                        
+
             /*
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             level = XMLloader.LoadLevel(this, @"Content\tiledObjectTest.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
-            
+
+            Console.WriteLine(this);
+
             /*
              * Enemies init
              */
-            foreach(TiledObject obj in level.Objects)
+            foreach (TiledObject obj in level.Objects)
             {
 
-                if(obj.Name.ToLower() == "jellyfish")
+                if (obj.Name.ToLower() == "jellyfish")
                 {
                     Vector2 center = new Vector2(obj.X + obj.Width / 2, obj.Y + obj.Height / 2);
                     Vector2 radius = new Vector2(obj.Width / 2, obj.Height / 2);
-                    
+
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.TextureBoundingRect = new Rectangle(48, 112, 16, 32);
+                    j.AnimManager.CurrentFrame = new Frame(48, 112, 16, 32, 0);
 
                     enemies.Add(j);
 
                     Console.WriteLine("added jelly");
 
 
-                } else if(obj.Name.ToLower() == "pufferfish")
+                }
+                else if (obj.Name.ToLower() == "pufferfish")
                 {
                     Vector2 position = new Vector2(obj.X, obj.Y);
 
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.TextureBoundingRect = new Rectangle(0, 112, 32, 32);
+                    p.AnimManager.CurrentFrame = new Frame(0, 112, 32, 32, 0);
 
                     enemies.Add(p);
 
@@ -94,8 +99,14 @@ namespace TDJGame
                 }
 
             }
-        
+
+            /*
+             *Player init
+            */
             
+            player = new Sprite(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
+            player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32, 0);
+            Animation idleAnim = player.AnimManager.Add("idle", new int[] { 177, 178, 179, 180, 181, 182 }, 10, true);
 
             ContentLoaded = true;
 
@@ -140,7 +151,7 @@ namespace TDJGame
             #endregion
 
 
-            foreach(Sprite s in enemies)
+            foreach (Sprite s in enemies)
             {
                 s.Update(gameTime);
             }
@@ -154,6 +165,8 @@ namespace TDJGame
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.Transform);
 
             level.Draw(gameTime, spriteBatch);
+
+            player.Draw(gameTime, spriteBatch);
 
             foreach (Sprite s in enemies)
             {
