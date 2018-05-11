@@ -51,6 +51,7 @@
     <Compile Include="Engine\Tiled\Layer.cs" />
     <Compile Include="Engine\Tiled\Level.cs" />
     <Compile Include="Engine\Tiled\Tile.cs" />
+    <Compile Include="Engine\Tiled\TiledObject.cs" />
     <Compile Include="Engine\Tiled\Tileset.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Engine\GameState.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
     <Compile Include="Game\PufferFish.cs" />
+    <Compile Include="Game\TestObjectImport.cs" />
     <Compile Include="Game\TestParticleEmitter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,6 +144,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\test_map_3.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\tiledObjectTest.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
