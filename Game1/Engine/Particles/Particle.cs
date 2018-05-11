@@ -26,8 +26,8 @@ namespace Engine.Particles
         /*
          * Constructor
          */
-        public Particle(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height)
-            : base(graphics, texture, position, width, height, false)
+        public Particle(GameState state, Texture2D texture, Vector2 position, int width, int height)
+            : base(state, texture, position, width, height, false)
         {
 
             Body.Acceleration = Vector2.Zero;

@@ -7,6 +7,8 @@ namespace Engine.Tiled
     public class Level
     {
 
+        public GameState State { get; }
+
         public int Width { get; set; }
         public int Height { get; set; }
         public bool Infinite { get; set; }
@@ -28,8 +30,9 @@ namespace Engine.Tiled
         public List<Tile> CollidableTiles;
 
 
-        public Level()
+        public Level(GameState state)
         {
+            this.State = state;
 
             this.Layers = new List<Layer>();
             this.Objects = new List<TiledObject>();

@@ -123,7 +123,7 @@ namespace Engine.Particles
 
             for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i] = new Particle(State.Graphics, particleTexture, new Vector2(0, 0), width, height);
+                Particles[i] = new Particle(State, particleTexture, new Vector2(0, 0), width, height);
                 Particles[i].Spawner = this;
             }
         }

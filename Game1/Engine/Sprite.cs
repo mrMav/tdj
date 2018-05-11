@@ -11,7 +11,7 @@ namespace Engine
     public class Sprite
     {
         // game reference
-        public GraphicsDeviceManager Graphics;
+        public GameState State;
 
         // display texture
         public Texture2D Texture;
@@ -36,9 +36,9 @@ namespace Engine
         public double BlinkingInterval = 500;
 
         // constructor
-        public Sprite(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
+        public Sprite(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
         {
-            Graphics = graphics;
+            State = state;
             Texture = texture;
             Tint = Color.White;
 

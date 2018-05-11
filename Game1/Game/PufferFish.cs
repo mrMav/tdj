@@ -22,8 +22,8 @@ namespace TDJGame
         public List<Bullet> Bullets;
         public Vector2 Size;
 
-        public PufferFish(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, float travelDistance = 32f, float travelSpeed = 0.5f)
-            : base(graphics, texture, position, width, height, false)
+        public PufferFish(GameState state, Texture2D texture, Vector2 position, int width, int height, float travelDistance = 32f, float travelSpeed = 0.5f)
+            : base(state, texture, position, width, height, false)
         {
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;
@@ -38,7 +38,7 @@ namespace TDJGame
             Bullets = new List<Bullet>();
             for(int i = 0; i < 50; i++)
             {
-                Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
+                Bullet b = new Bullet(state, texture, Vector2.Zero, this);
                 b.TextureBoundingRect = new Rectangle(11 * 16, 0 * 16, 16, 32);
 
                 Bullets.Add(b);
