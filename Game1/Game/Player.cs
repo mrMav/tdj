@@ -198,9 +198,6 @@ namespace TDJGame
                                 Energy -= BulletCost;
 
                             }
-
-
-
                         }
 
                     }

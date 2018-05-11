@@ -27,6 +27,7 @@ namespace TDJGame
         EnergyBar healthBar;
         Player player;
         List<Sprite> enemies;
+        List<Sprite> pufferFish;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
 
@@ -44,6 +45,7 @@ namespace TDJGame
 
             frameCounter = new FrameCounter();
             enemies = new List<Sprite>();
+            pufferFish = new List<Sprite>();
 
         }
 
@@ -81,11 +83,11 @@ namespace TDJGame
              * Enemies
              */
 
-            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
-            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
-            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
-            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
-            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
 
             enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
             enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
@@ -152,6 +154,7 @@ namespace TDJGame
             spikesPointingDown = null;
             spikesPointingUp = null;
             enemies = null;
+            pufferFish = null;
 
         }
 
@@ -189,8 +192,21 @@ namespace TDJGame
                     }
                 }
             }
+            foreach (Sprite s in pufferFish)
+            {
+                if (s.Alive)
+                {
+                    s.Update(gameTime);
 
-            foreach(Tile spike in spikesPointingDown)
+                    if (Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
+                    {
+                        player.ReceiveDamage(s.Damage);
+                        player.StartBlinking(gameTime);
+                    }
+                }
+            }
+
+            foreach (Tile spike in spikesPointingDown)
             {
                 if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
                 {
@@ -222,6 +238,21 @@ namespace TDJGame
                             b.Kill();
                         }
                     }
+                    foreach (Sprite s in pufferFish)
+                    {
+                        if (s.Alive)
+                        {
+                            if (Physics.Overlap(b, s))
+                            {
+                                b.Kill();
+                                s.ReceiveDamage(b.Damage);
+                                s.StartBlinking(gameTime);
+
+                                // we should remove dead actors from the list
+
+                            }
+                        }
+                    }
 
                     foreach (Sprite s in enemies)
                     {
@@ -239,6 +270,37 @@ namespace TDJGame
                         }
                     }
                 }                
+            }
+
+            /*
+             * Projectiles
+             */
+            foreach (PufferFish p in pufferFish)
+            {
+                foreach (Bullet b in p.Bullets)
+                {
+                    if (b.Alive)
+                    {
+                        foreach (Tile t in level.CollidableTiles)
+                        {
+                            if (Physics.Overlap(b, t))
+                            {
+                                b.Kill();
+                            }
+                        }
+
+                        if (player.Alive)
+                        {
+                            if (Physics.Overlap(b, player) && !player.IsBlinking)
+                            {
+
+                                player.ReceiveDamage(10);
+                                player.StartBlinking(gameTime);
+
+                            }
+                        }
+                    }
+                }
             }
 
             /*
@@ -283,6 +345,10 @@ namespace TDJGame
 
             level.Draw(spriteBatch);
             foreach (Sprite s in enemies)
+            {
+                s.Draw(gameTime, spriteBatch);
+            }
+            foreach (Sprite s in pufferFish)
             {
                 s.Draw(gameTime, spriteBatch);
             }
