@@ -61,17 +61,38 @@ namespace Engine.Animations
          */
         public Frame CurrentFrame { get; }
 
-        public Animation(Sprite parent, string name, Frame[] frames, double frameRate = 60, bool loop = true)
+
+        public Animation(Sprite parent, string name, int[] indexes, double frameRate = 60, bool loop = true)
         {
 
             Parent = parent;
             Name = name;
 
-            Frames = frames;
+            Frames = MakeFrames(indexes);
             Delay = 1000 / frameRate;
 
             Loop = loop;
 
+        }
+
+        public Frame[] MakeFrames(int[] indexes)
+        {
+            Frame[] frames = new Frame[indexes.Length];
+
+            for(int i = 0; i < indexes.Length; i++)
+            {
+
+                int x = indexes[i] % Parent.Texture.Width;
+                int y = indexes[i] / Parent.Texture.Height;
+
+                int w = (int)Parent.Body.Bounds.Width;
+                int h = (int)Parent.Body.Bounds.Height;
+
+                frames[i] = new Frame(x, y, w, h, i);
+
+            }
+
+            return frames;
         }
     }
 }

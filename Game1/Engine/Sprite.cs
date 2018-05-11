@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine.Physics;
+using Engine.Animations;
 using TDJGame.Utils;
 using System;
 
@@ -16,6 +17,8 @@ namespace Engine
         public Texture2D Texture;
         public Rectangle TextureBoundingRect;
         public Color Tint;
+
+        public AnimationManager AnimManager;
 
         // physics body
         public Body Body;
@@ -38,6 +41,8 @@ namespace Engine
             Graphics = graphics;
             Texture = texture;
             Tint = Color.White;
+
+            AnimManager = new AnimationManager(this, null);
 
             Body = new Body(position.X, position.Y, width, height);
 

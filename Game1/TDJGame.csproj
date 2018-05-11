@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Animations\Animation.cs" />
+    <Compile Include="Engine\Animations\AnimationManager.cs" />
     <Compile Include="Engine\Animations\Frame.cs" />
     <Compile Include="Engine\Camera2D.cs" />
     <Compile Include="Engine\Particles\Particle.cs" />
