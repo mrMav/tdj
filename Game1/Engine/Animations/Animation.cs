@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace Engine.Animations
         /*
          * How many times the animation has looped.
          */
-        public int LoopCount { get; }
+        public int LoopCount { get; set; }
 
         /*
          * Flags if the animation should loop.
@@ -49,17 +50,22 @@ namespace Engine.Animations
         /*
          * Flags if the animation is currently playng.
          */
-        public bool IsPlaying { get; }
+        public bool IsPlaying { get; set; }
 
         /*
          * The current frame index.
          */
-        public int FrameIndex { get; }
+        public int FrameIndex { get; set; }
 
         /*
          * Current Frame
          */
-        public Frame CurrentFrame { get; }
+        public Frame CurrentFrame { get; set; }
+
+        /*
+         * The time when the next frame plays
+         */ 
+        public double TimeNextFrame;
 
 
         public Animation(Sprite parent, string name, int[] indexes, double frameRate = 60, bool loop = true)
@@ -72,6 +78,33 @@ namespace Engine.Animations
             Delay = 1000 / frameRate;
 
             Loop = loop;
+            LoopCount = 0;
+            IsPlaying = false;
+            FrameIndex = 0;
+            CurrentFrame = null;
+            TimeNextFrame = 0;
+
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
+            if(gameTime.TotalGameTime.TotalMilliseconds >= TimeNextFrame)
+            {
+
+                if(FrameIndex + 1 > Frames.Length - 1)
+                {
+                    FrameIndex = 0;
+                    LoopCount++;
+                } else
+                {
+                    FrameIndex++;
+                }
+
+                CurrentFrame = Frames[FrameIndex];
+
+                TimeNextFrame = gameTime.TotalGameTime.TotalMilliseconds + Delay;
+            }
 
         }
 
@@ -81,9 +114,12 @@ namespace Engine.Animations
 
             for(int i = 0; i < indexes.Length; i++)
             {
+                
+                int x = indexes[i] % (Parent.Texture.Width / (int)Parent.Body.Bounds.Width) - 1;
+                int y = indexes[i] / (Parent.Texture.Width / (int)Parent.Body.Bounds.Width);
 
-                int x = indexes[i] % Parent.Texture.Width;
-                int y = indexes[i] / Parent.Texture.Height;
+                x *= (int)Parent.Body.Bounds.Width;
+                y *= (int)Parent.Body.Bounds.Width;
 
                 int w = (int)Parent.Body.Bounds.Width;
                 int h = (int)Parent.Body.Bounds.Height;
@@ -93,6 +129,20 @@ namespace Engine.Animations
             }
 
             return frames;
+        }
+
+        public void Reset()
+        {
+            LoopCount = 0;
+            IsPlaying = false;
+            FrameIndex = Frames.Length - 1;
+            CurrentFrame = null;
+            TimeNextFrame = 0;
+        }
+
+        public string GetDebugInfo()
+        {
+            return $"Animation: {Name}, FPS: {1000 / Delay}, Frames: {Frames.Length}, CurrentFrame {FrameIndex}\nLoop: {Loop}, Loops Count: {LoopCount}\nTimeNextFrame: {TimeNextFrame}";
         }
     }
 }

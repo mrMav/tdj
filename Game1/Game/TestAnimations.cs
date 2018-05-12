@@ -106,7 +106,9 @@ namespace TDJGame
             
             player = new Sprite(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
             player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32, 0);
-            Animation idleAnim = player.AnimManager.Add("idle", new int[] { 177, 178, 179, 180, 181, 182 }, 10, true);
+            player.AnimManager.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
+            player.AnimManager.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
+            player.Body.Y = 7 * 16;
 
             ContentLoaded = true;
 
@@ -150,6 +152,16 @@ namespace TDJGame
 
             #endregion
 
+            if (kState.IsKeyDown(Keys.X))
+            {
+                player.AnimManager.Play("robot-idle");
+            }
+            else if (kState.IsKeyDown(Keys.C))
+            {
+                player.AnimManager.Play("woman-run");
+            }
+
+            player.Update(gameTime);
 
             foreach (Sprite s in enemies)
             {
@@ -174,6 +186,19 @@ namespace TDJGame
             }
 
             spriteBatch.End();
+
+            spriteBatch.Begin();
+
+            spriteBatch.DrawString(font, "'X' and 'C' to switch between animations", new Vector2(8, 16), Color.LightGreen);
+
+            if (player.AnimManager.CurrentAnimation != null)
+            {
+
+                spriteBatch.DrawString(font, player.AnimManager.CurrentAnimation.GetDebugInfo(), new Vector2(8, 48), Color.Red);
+
+            }
+            spriteBatch.End();
+
         }
     }
 }

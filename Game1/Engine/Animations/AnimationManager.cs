@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace Engine.Animations
         /*
          * Currently playing animation.
          */
-        public Animation CurrentAnimation { get; }
+        public Animation CurrentAnimation { get; set; }
 
         /*
          * Dictionary holding all the Animation objects.
@@ -59,5 +60,40 @@ namespace Engine.Animations
             return anim;
 
         }
+
+        public Animation Play(string key)
+        {
+            Animation anim;
+
+            if (Animations.TryGetValue(key, out anim))
+            {
+
+                if (CurrentAnimation != null)
+                {
+                    CurrentAnimation.Reset();
+                }
+
+                CurrentAnimation = anim;
+
+                return anim;
+            }
+
+            return null;
+
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
+            if(CurrentAnimation != null)
+            {
+                CurrentAnimation.Update(gameTime);
+
+                CurrentFrame = CurrentAnimation.CurrentFrame;
+
+            }
+
+        }
+
     }
 }
