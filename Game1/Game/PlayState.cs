@@ -55,7 +55,7 @@ namespace TDJGame
             MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 2.45f;
+            camera.Zoom = 4.85f;
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
@@ -71,8 +71,8 @@ namespace TDJGame
              */ 
             player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
-            player.Body.X = 16 * 3;
-            player.Body.Y = 16 * 3;
+            player.Body.X = 16 * 3; //spawn x
+            player.Body.Y = 16 * 3; //spawn y
             player.Body.MaxVelocity = 3f;
             player.Body.Drag.X = 0.6f;
             player.Body.Enabled = true;
@@ -83,21 +83,64 @@ namespace TDJGame
              * Enemies
              */
 
-            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
+            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
+            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
+            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
+            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
+            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
 
-            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
-            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
+            //enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
+            //enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
 
             /*
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
+            level = XMLloader.LoadLevel(@"Content\prototipo2.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
+
+            /*
+             Enemies Init tiled
+             */
+
+            foreach (TiledObject obj in level.Objects)
+            {
+
+                if (obj.Name.ToLower() == "jellyfish")
+                {
+                    Vector2 center = new Vector2(obj.X + obj.Width / 2, obj.Y + obj.Height / 2);
+                    Vector2 radius = new Vector2(obj.Width / 2, obj.Height / 2);
+
+                    float speed = float.Parse(obj.GetProperty("speed"));
+                   
+
+                    JellyFish j = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
+                    j.TextureBoundingRect = new Rectangle(192, 0, 16, 32);
+
+                    enemies.Add(j);
+
+                    Console.WriteLine("added jelly");
+
+
+                }
+                else if (obj.Name.ToLower() == "pufferfish")
+                {
+                    Vector2 position = new Vector2(obj.X, obj.Y);
+
+                    float speed = float.Parse(obj.GetProperty("speed"));
+                    //float direction = float.Parse(obj.GetProperty("direction"));
+
+                    PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
+                    p.TextureBoundingRect = new Rectangle(9*16, 0, 32, 32);
+
+                    enemies.Add(p);
+
+                    Console.WriteLine("added puffer");
+
+                }
+
+            }
+            //
 
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 3 });
@@ -368,7 +411,7 @@ namespace TDJGame
             energyBar.Draw(spriteBatch, gameTime);
             healthBar.Draw(spriteBatch, gameTime);
             //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
-            //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
+            spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             
             spriteBatch.End();

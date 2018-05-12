@@ -48,7 +48,7 @@ namespace TDJGame
             Camera.Zoom = 2.45f;
 
             font = content.Load<SpriteFont>("Font");
-            tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
+            tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
                         
             /*
              * Level init
@@ -71,7 +71,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.TextureBoundingRect = new Rectangle(48, 112, 16, 32);
+                    j.TextureBoundingRect = new Rectangle(192, 0, 16, 32);
 
                     enemies.Add(j);
 
