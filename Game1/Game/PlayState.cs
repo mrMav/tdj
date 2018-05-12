@@ -71,7 +71,7 @@ namespace TDJGame
              */ 
             player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
-            player.Body.X = 16 * 3; //spawn x
+            player.Body.X = 16 * 3 /*370*/; //spawn x
             player.Body.Y = 16 * 3; //spawn y
             player.Body.MaxVelocity = 3f;
             player.Body.Drag.X = 0.6f;
@@ -128,12 +128,21 @@ namespace TDJGame
                     Vector2 position = new Vector2(obj.X, obj.Y);
 
                     float speed = float.Parse(obj.GetProperty("speed"));
-                    //float direction = float.Parse(obj.GetProperty("direction"));
+                    int walkingDirection = int.Parse(obj.GetProperty("direction"));
 
-                    PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.TextureBoundingRect = new Rectangle(9*16, 0, 32, 32);
+                    //if (walkingDirection == -1)
+                    //{
+                    //    //position += new Vector2(obj.Width, 0);
+                    //    PufferFish p2 = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, -speed);
+                    //    enemies.Add(p2);
+                    //}
+                    
+                        PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
+                        p.TextureBoundingRect = new Rectangle(9 * 16, 0, 32, 32);
 
-                    enemies.Add(p);
+
+
+                        enemies.Add(p);
 
                     Console.WriteLine("added puffer");
 

@@ -88,12 +88,21 @@ namespace TDJGame
                     if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
                     {
                         Press = true;
+                        
                     }
 
-                    if (Press && keyboardState.IsKeyUp(Keys.Space)) //Switch entre estados
+                    if (Press && keyboardState.IsKeyUp(Keys.Space) && !Floating) //Switch entre estados
                     {
                         Floating = !Floating;
                         Press = false;
+                        
+                    }
+
+                    if (Press && keyboardState.IsKeyUp(Keys.Space) && Floating) //Switch entre estados
+                    {
+                        Floating = !Floating;
+                        Press = false;
+                        Energy -= 25f; // mudar para n remover valor quando player vai para cima
                     }
 
                     /* Floating */
@@ -113,7 +122,8 @@ namespace TDJGame
                         if (Energy > 0f)
                         {
                             Body.Velocity.Y = 4f; //Floating Down
-                            Energy -= 1f;
+                            Energy -= 0.35f;
+
                         }
                         else
                             Floating = true;

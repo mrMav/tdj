@@ -54,7 +54,7 @@ namespace TDJGame
 
             CurrentDistance += Body.Velocity.X;
 
-            if (CurrentDistance <= 0)
+            if (CurrentDistance <= 0) //arranjar maneira do inimigo começar na posição final do x que é = obj.width ou seja andar no sentido oposto
             {
                 FacingDirection = 1;  // go right now
                 Body.Velocity.X *= -1;
