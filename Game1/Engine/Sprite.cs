@@ -50,7 +50,7 @@ namespace Engine
             IsControllable = isControllable;
                         
         }
-
+                
         // logic update
         public virtual void Update(GameTime gameTime)
         {

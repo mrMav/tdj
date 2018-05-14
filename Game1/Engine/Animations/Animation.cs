@@ -53,6 +53,11 @@ namespace Engine.Animations
         public bool IsPlaying { get; set; }
 
         /*
+         * Flags if the animation is finished
+         */
+        public bool IsFinished { get; set; }
+
+        /*
          * The current frame index.
          */
         public int FrameIndex { get; set; }
@@ -68,7 +73,7 @@ namespace Engine.Animations
         public double TimeNextFrame;
 
 
-        public Animation(Sprite parent, string name, int[] indexes, double frameRate = 60, bool loop = true)
+        public Animation(Sprite parent, string name, int[] indexes, double frameRate = 60, bool loop = true, bool killOnComplete = false)
         {
 
             Parent = parent;
@@ -76,6 +81,8 @@ namespace Engine.Animations
 
             Frames = MakeFrames(indexes);
             Delay = 1000 / frameRate;
+
+            KillOnComplete = killOnComplete;
 
             Loop = loop;
             LoopCount = 0;
@@ -89,21 +96,33 @@ namespace Engine.Animations
         public void Update(GameTime gameTime)
         {
 
-            if(gameTime.TotalGameTime.TotalMilliseconds >= TimeNextFrame)
+            if(gameTime.TotalGameTime.TotalMilliseconds >= TimeNextFrame && !IsFinished)
             {
-
                 if(FrameIndex + 1 > Frames.Length - 1)
                 {
                     FrameIndex = 0;
                     LoopCount++;
+
                 } else
                 {
+
                     FrameIndex++;
                 }
 
                 CurrentFrame = Frames[FrameIndex];
 
                 TimeNextFrame = gameTime.TotalGameTime.TotalMilliseconds + Delay;
+            }
+
+            if(!Loop && LoopCount == 1)
+            {                
+                Stop();
+
+                if(KillOnComplete)
+                {
+                    Parent.Kill();
+                }
+
             }
 
         }
@@ -133,11 +152,17 @@ namespace Engine.Animations
 
         public void Reset()
         {
-            LoopCount = 0;
+            LoopCount = -1;
             IsPlaying = false;
+            IsFinished = false;
             FrameIndex = Frames.Length - 1;
             CurrentFrame = null;
             TimeNextFrame = 0;
+        }
+
+        public void Stop()
+        {
+            IsFinished = true;
         }
 
         public string GetDebugInfo()

@@ -71,9 +71,7 @@ namespace TDJGame.Utils
                     {
                         l.Data[i] = int.Parse(data[i]);
                     }
-
-                    Console.WriteLine(l.Data[0]);
-
+                    
                     l.MakeTiles();
 
                     level.Layers.Add(l);

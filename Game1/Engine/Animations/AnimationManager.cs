@@ -51,9 +51,21 @@ namespace Engine.Animations
 
         }
 
-        public Animation Add(string name, int[] frameIndexes, int frameRate, bool loop)
+        public void SetCurrentFrame(Frame frame)
         {
-            Animation anim = new Animation(Parent, name, frameIndexes, frameRate, loop);
+
+            if(CurrentAnimation != null)
+            {
+                CurrentAnimation.Stop();
+            }
+
+            CurrentFrame = frame;
+
+        }
+
+        public Animation Add(string name, int[] frameIndexes, int frameRate, bool loop, bool killoncomplete = false)
+        {
+            Animation anim = new Animation(Parent, name, frameIndexes, frameRate, loop, killoncomplete);
 
             Animations.Add(name, anim);
 
@@ -68,12 +80,8 @@ namespace Engine.Animations
             if (Animations.TryGetValue(key, out anim))
             {
 
-                if (CurrentAnimation != null)
-                {
-                    CurrentAnimation.Reset();
-                }
-
                 CurrentAnimation = anim;
+                CurrentAnimation.Reset();
 
                 return anim;
             }
@@ -90,7 +98,7 @@ namespace Engine.Animations
                 CurrentAnimation.Update(gameTime);
 
                 CurrentFrame = CurrentAnimation.CurrentFrame;
-
+                
             }
 
         }

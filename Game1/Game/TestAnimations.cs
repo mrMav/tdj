@@ -28,6 +28,7 @@ namespace TDJGame
         Player player;
         Texture2D backgroundGradientStrip;
         ParticleEmitter emitter1;
+        ParticleEmitter playerDeathEmitter;
 
         #endregion
 
@@ -61,9 +62,7 @@ namespace TDJGame
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             level = XMLloader.LoadLevel(this, @"Content\tiledObjectTest.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
-
-            Console.WriteLine(this);
-
+            
             /*
              * Enemies init
              */
@@ -109,7 +108,7 @@ namespace TDJGame
             
             player = new Player(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
             player.Animations.CurrentFrame = new Frame(0, 176, 16, 32);
-            player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
+            player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 3;
             player.Body.Y = 16 * 3;
@@ -136,24 +135,31 @@ namespace TDJGame
                 DrawMe.Pixel(backgroundGradientStrip, 0, i, currentColor);
             }
 
-            emitter1 = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2, 1000);
-            emitter1.MakeParticles(tilemapTexture, 16, 16);
-            emitter1.ParticleVelocity = new Vector2(0, -0.5f);
-            emitter1.XVelocityVariationRange = new Vector2(-80f, 80f);
-            emitter1.YVelocityVariationRange = new Vector2(-40f, 0f);
-            emitter1.SetTextureCropRectangle(new Rectangle(48, 96, 16, 16));
+            emitter1 = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2, 512);
+            //emitter1.MakeParticles(tilemapTexture, 16, 16);
+            emitter1.ParseTextureToParticles(tilemapTexture, 96, 176, 16, 32);
+            emitter1.ParticleVelocity = new Vector2(0, -0.1f);
+            emitter1.XVelocityVariationRange = new Vector2(-30f, 30f);
+            emitter1.YVelocityVariationRange = new Vector2(-30f, 0f);
+            //emitter1.SetTextureCropRectangle(new Rectangle(48, 96, 16, 16));
             emitter1.EmitterBox.X = 0;
-            emitter1.EmitterBox.Y = level.Height * level.TileHeight;
-            emitter1.EmitterBox.Resize(level.Width * level.TileWidth, 1f);
-            emitter1.SpawnRate = 100f;
-            emitter1.ParticleLifespanMilliseconds = 5000f;
-            emitter1.ParticleLifespanVariationMilliseconds = 1000f;
-            emitter1.Burst = false;
-            emitter1.InitialScale = 0.1f;
-            emitter1.FinalScale = 2.0f;
+            //emitter1.EmitterBox.Y = level.Height * level.TileHeight;
+            emitter1.EmitterBox.Y = 0;
+            //emitter1.EmitterBox.Resize(level.Width * level.TileWidth, 1f);
+            emitter1.EmitterBox.Resize(50f, 50f);
+            emitter1.SpawnRate = 1500f;
+            emitter1.ParticleLifespanMilliseconds = 1000f;
+            emitter1.ParticleLifespanVariationMilliseconds = 150f;
+            //emitter1.Burst = false;
+            emitter1.Burst = true;
+            emitter1.ParticlesPerBurst = 512;
+            emitter1.InitialScale = 1.0f;
+            emitter1.FinalScale = 0.1f;
+            emitter1.RandomizeParticlePositions = false;
 
-            emitter1.ForEachParticle(TintBlue);
+            //emitter1.ForEachParticle(TintBlue);
 
+            //playerDeathEmitter = new ParticleEmitter(this, 0, 0);
 
             ContentLoaded = true;
 
@@ -161,7 +167,7 @@ namespace TDJGame
 
         public int TintBlue(Particle p)
         {
-            p.Tint = new Color(70, 70, 70, 70);
+            p.Tint = new Color(20, 10, 90, 50);
             return 0;
         }
 
@@ -233,7 +239,7 @@ namespace TDJGame
 
             emitter1.Draw(gameTime, spriteBatch);
 
-            level.Draw(gameTime, spriteBatch);
+            //level.Draw(gameTime, spriteBatch);
 
             player.Draw(gameTime, spriteBatch);
 
@@ -241,7 +247,6 @@ namespace TDJGame
             {
                 s.Draw(gameTime, spriteBatch);
             }
-
 
             spriteBatch.End();
 

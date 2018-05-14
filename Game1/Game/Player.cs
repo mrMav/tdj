@@ -217,32 +217,24 @@ namespace TDJGame
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            if (FacingDirection < 0)
+            if (Visible)
             {
+                if (FacingDirection < 0)
+                {
+                    spriteBatch.Draw(
+                             Texture,
+                             position: Body.Position,
+                             sourceRectangle: Animations.CurrentFrame.TextureSourceRect,
+                             effects: SpriteEffects.FlipHorizontally,
+                             color: Tint
+                        );
 
-                //spriteBatch.Draw(
-                //     Texture2D texture,
-                //     Rectangle destinationRectangle,
-                //     Nullable<Rectangle> sourceRectangle,
-                //     Color color,
-                //     float rotation,
-                //     Vector2 origin,
-                //     SpriteEffects effects,
-                //     float layerDepth
-                //);
+                }
+                else
+                {
+                    spriteBatch.Draw(this.Texture, this.Body.Position, Animations.CurrentFrame.TextureSourceRect, this.Tint);
+                }
 
-                spriteBatch.Draw(
-                         Texture,
-                         position: Body.Position,
-                         sourceRectangle: Animations.CurrentFrame.TextureSourceRect,
-                         effects: SpriteEffects.FlipHorizontally,
-                         color: Tint
-                    );
-
-            }
-            else
-            {
-                spriteBatch.Draw(this.Texture, this.Body.Position, Animations.CurrentFrame.TextureSourceRect, this.Tint);
             }
 
             foreach (Bullet b in Bullets)

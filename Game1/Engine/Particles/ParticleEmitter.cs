@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,9 +82,12 @@ namespace Engine.Particles
         public Vector2 ParticleVelocity;
         public Vector2 XVelocityVariationRange;
         public Vector2 YVelocityVariationRange;
+        public float VelocityMultiplier;
 
         public float InitialScale;
         public float FinalScale;
+
+        public bool RandomizeParticlePositions;
 
         #endregion
 
@@ -116,6 +120,9 @@ namespace Engine.Particles
 
             ParticlesPerBurst = 5;
             Burst = false;
+
+            RandomizeParticlePositions = true;
+
         }
 
         public void MakeParticles(Texture2D particleTexture, int width, int height)
@@ -129,11 +136,40 @@ namespace Engine.Particles
             }
         }
 
+        public void ParseTextureToParticles(Texture2D texture, int offsetX, int offsetY, int cropRectWith, int cropRectHeight)
+        {
+
+            Particles = new Particle[MaxParticles];
+
+            if(cropRectWith * cropRectHeight > MaxParticles)
+            {
+                Debug.Fail("Particle Emitter can not hold that many particles: " + cropRectWith * cropRectHeight + "!");
+                return;
+            }
+
+            int currentParticleIndex = 0;
+
+            for(int y = 0; y < cropRectHeight; y++)
+            {
+
+                for(int x = 0; x < cropRectWith; x++)
+                {
+                    Particles[currentParticleIndex] = new Particle(State, texture, new Vector2(x, y), 1, 1);
+                    Particles[currentParticleIndex].Animations.SetCurrentFrame(new Frame(offsetX + x, offsetY + y, 1, 1));
+                    Particles[currentParticleIndex].Spawner = this;
+
+                    currentParticleIndex++;
+
+                }
+
+            }
+                        
+        }
+
         public void Update(GameTime gameTime)
         {
             if (Activated)
             {
-
                 // spawn particle
                 if (LastSpawnedParticleMilliseconds < gameTime.TotalGameTime.TotalMilliseconds)
                 {
@@ -232,9 +268,7 @@ namespace Engine.Particles
 
         public void SetParticleReady(Particle p, GameTime gameTime)
         {
-            float spawnAtX = Rnd.Next((int)EmitterBox.Min.X, (int)EmitterBox.Max.X);
-            float spawnAtY = Rnd.Next((int)EmitterBox.Min.Y, (int)EmitterBox.Max.Y);
-
+            
             float velocityX = ParticleVelocity.X + Rnd.Next((int)XVelocityVariationRange.X, (int)XVelocityVariationRange.Y) * 0.01f;
             float velocityY = ParticleVelocity.Y + Rnd.Next((int)YVelocityVariationRange.X, (int)YVelocityVariationRange.Y) * 0.01f;
 
@@ -250,8 +284,20 @@ namespace Engine.Particles
             p.Body.Velocity.X = velocityX;
             p.Body.Velocity.Y = velocityY;
 
-            p.Body.X = spawnAtX;
-            p.Body.Y = spawnAtY;
+            if (RandomizeParticlePositions)
+            {
+                p.Body.X = Rnd.Next((int)EmitterBox.Min.X, (int)EmitterBox.Max.X);
+                p.Body.Y = Rnd.Next((int)EmitterBox.Min.Y, (int)EmitterBox.Max.Y);
+
+            }
+            else
+            {
+                p.Body.X = p.InitialPosition.X + EmitterBox.X;
+                p.Body.Y = p.InitialPosition.Y + EmitterBox.Y;
+            }
+
+            // TODO: avoid square explosion by normalizing vector and multiplying by smth
+
         }
 
         public void ForEachParticle(Func<Particle, int> callback)

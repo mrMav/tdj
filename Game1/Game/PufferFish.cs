@@ -29,7 +29,7 @@ namespace TDJGame
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;
 
-            TextureBoundingRect = new Rectangle(9 * 16, 0, 32, 32);
+            Animations.CurrentFrame = new Frame(9 * 16, 0, 32, 32);
 
             Body.Enabled = true;
             Body.Velocity.X = TravelSpeed;

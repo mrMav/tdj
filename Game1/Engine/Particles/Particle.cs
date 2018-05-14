@@ -23,6 +23,8 @@ namespace Engine.Particles
         public float InitialScale = 1f;
         public float FinalScale = 1f;
 
+        public Vector2 InitialPosition;
+
         /*
          * Constructor
          */
@@ -34,13 +36,16 @@ namespace Engine.Particles
 
             Body.Drag = new Vector2(1f, 1f);
 
+            InitialPosition.X = position.X;
+            InitialPosition.Y = position.Y;
+
             Kill();
 
         }
 
         public override void Update(GameTime gameTime)
         {
-            // call base.Update() for blinking feature
+            base.Update(gameTime);
 
             if(Alive)
             {

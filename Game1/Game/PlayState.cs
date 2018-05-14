@@ -8,6 +8,7 @@ using Engine.Tiled;
 using TDJGame.Utils;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -70,7 +71,7 @@ namespace TDJGame
              * Player init
              */ 
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
-            player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
+            player.Animations.CurrentFrame = new Frame(96, 0, 32, 32);
             player.Body.X = 16 * 3;
             player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
@@ -369,7 +370,7 @@ namespace TDJGame
             healthBar.Draw(spriteBatch, gameTime);
             //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
-            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
+            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             
             spriteBatch.End();
 

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Engine;
 using Engine.Physics;
 using System;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -21,7 +22,7 @@ namespace TDJGame
             CenterPoint = centerPoint;
             Radius = radius;
 
-            TextureBoundingRect = new Rectangle(12 * 16, 0 * 16, 16, 32);
+            Animations.CurrentFrame = new Frame(12 * 16, 0 * 16, 16, 32);
             
             Body.Enabled = true;
             Body.Tag = "jellyfish";
