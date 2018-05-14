@@ -1,4 +1,5 @@
-﻿using Engine.Physics;
+﻿using Engine.Animations;
+using Engine.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -225,7 +226,7 @@ namespace Engine.Particles
         {
             for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i].TextureBoundingRect = rect;
+                Particles[i].AnimManager.CurrentFrame = new Frame(rect.X, rect.Y, rect.Width, rect.Height, 0);
             }
         }
 

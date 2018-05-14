@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Engine;
 using Engine.Tiled;
 using Engine.Animations;
+using Engine.Particles;
 using TDJGame.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,7 +25,9 @@ namespace TDJGame
         Texture2D tilemapTexture;
         Level level;
         List<Sprite> enemies;
-        Sprite player;
+        Player player;
+        Texture2D backgroundGradientStrip;
+        ParticleEmitter emitter1;
 
         #endregion
 
@@ -104,14 +107,62 @@ namespace TDJGame
              *Player init
             */
             
-            player = new Sprite(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
+            player = new Player(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
             player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32, 0);
             player.AnimManager.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
             player.AnimManager.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.Y = 7 * 16;
+            player.Body.X = 16 * 3;
+            player.Body.Y = 16 * 3;
+            player.Body.MaxVelocity = 3f;
+            player.Body.Drag.X = 0.6f;
+            player.Body.Enabled = true;
+            player.Body.Tag = "player";
+            player.Body.SetSize(16, 32, 0, 0);
+
+
+            /*
+             * Build Background Gradient
+             */
+            backgroundGradientStrip = new Texture2D(Graphics.GraphicsDevice, 1, level.Height * level.TileHeight);
+
+            Color startColor = new Color(57, 92, 181);
+            Color finishColor = new Color(17, 43, 104);
+            Color currentColor;
+            for (int i = 0; i < backgroundGradientStrip.Height; i++)
+            {
+                float ratio = Math2.Map(i, 0f, backgroundGradientStrip.Height, 0f, 1.0f);
+
+                currentColor = Color.Lerp(startColor, finishColor, ratio);
+                DrawMe.Pixel(backgroundGradientStrip, 0, i, currentColor);
+            }
+
+            emitter1 = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2, 1000);
+            emitter1.MakeParticles(tilemapTexture, 16, 16);
+            emitter1.ParticleVelocity = new Vector2(0, -0.5f);
+            emitter1.XVelocityVariationRange = new Vector2(-80f, 80f);
+            emitter1.YVelocityVariationRange = new Vector2(-40f, 0f);
+            emitter1.SetTextureCropRectangle(new Rectangle(48, 96, 16, 16));
+            emitter1.EmitterBox.X = 0;
+            emitter1.EmitterBox.Y = level.Height * level.TileHeight;
+            emitter1.EmitterBox.Resize(level.Width * level.TileWidth, 1f);
+            emitter1.SpawnRate = 100f;
+            emitter1.ParticleLifespanMilliseconds = 5000f;
+            emitter1.ParticleLifespanVariationMilliseconds = 1000f;
+            emitter1.Burst = false;
+            emitter1.InitialScale = 0.1f;
+            emitter1.FinalScale = 2.0f;
+
+            emitter1.ForEachParticle(TintBlue);
+
 
             ContentLoaded = true;
 
+        }
+
+        public int TintBlue(Particle p)
+        {
+            p.Tint = new Color(70, 70, 70, 70);
+            return 0;
         }
 
         public override void Update(GameTime gameTime)
@@ -123,29 +174,24 @@ namespace TDJGame
 
             if (kState.IsKeyDown(Keys.Q))
             {
-                Camera.Zoom += 0.1f;
+                Camera.Zoom *= 1.1f;
             }
             else if (kState.IsKeyDown(Keys.E))
             {
-                Camera.Zoom -= 0.1f;
+                Camera.Zoom *= 0.9f;
             }
 
-            float ammount = 4f;
-            if (kState.IsKeyDown(Keys.W))
+            //Camera.Position.X = player.Body.X + player.Body.Bounds.HalfWidth;
+            //Camera.Position.Y = player.Body.Y + player.Body.Bounds.HalfHeight;
+
+            if(mState.LeftButton == ButtonState.Pressed)
             {
-                Camera.Position.Y -= ammount;
-            }
-            else if (kState.IsKeyDown(Keys.S))
-            {
-                Camera.Position.Y += ammount;
-            }
-            if (kState.IsKeyDown(Keys.A))
-            {
-                Camera.Position.X -= ammount;
-            }
-            else if (kState.IsKeyDown(Keys.D))
-            {
-                Camera.Position.X += ammount;
+                Vector2 newpos = Camera.GetScreenToWorldPosition(new Vector2(mState.X, mState.Y));
+
+                Vector2 dist = newpos - Camera.Position;
+
+                Camera.Position.X += dist.X * 0.2f;
+                Camera.Position.Y += dist.Y * 0.2f;
             }
 
             Camera.GetTransform(Graphics.GraphicsDevice);
@@ -161,12 +207,14 @@ namespace TDJGame
                 player.AnimManager.Play("woman-run");
             }
 
-            player.Update(gameTime);
+            player.UpdateMotion(gameTime, kState, level);
 
             foreach (Sprite s in enemies)
             {
                 s.Update(gameTime);
             }
+
+            emitter1.Update(gameTime);
 
         }
 
@@ -174,7 +222,16 @@ namespace TDJGame
         {
             graphicsDevice.Clear(Color.Black);
 
+            /*
+             * Background
+             */
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            spriteBatch.Draw(backgroundGradientStrip, new Rectangle(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), Color.White);
+            spriteBatch.End();
+
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.Transform);
+
+            emitter1.Draw(gameTime, spriteBatch);
 
             level.Draw(gameTime, spriteBatch);
 
@@ -184,6 +241,7 @@ namespace TDJGame
             {
                 s.Draw(gameTime, spriteBatch);
             }
+
 
             spriteBatch.End();
 

@@ -6,6 +6,7 @@ using Engine.Tiled;
 using Engine.Physics;
 using System.Collections.Generic;
 using System;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -48,7 +49,7 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(state, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(0 * 16, 2 * 16, 16, 16);
+                b.AnimManager.CurrentFrame = new Frame(0 * 16, 2 * 16, 16, 16, 0);
 
                 Bullets.Add(b);
             }
@@ -233,7 +234,7 @@ namespace TDJGame
                 spriteBatch.Draw(
                          Texture,
                          position: Body.Position,
-                         sourceRectangle: TextureBoundingRect,
+                         sourceRectangle: AnimManager.CurrentFrame.TextureSourceRect,
                          effects: SpriteEffects.FlipHorizontally,
                          color: Tint
                     );
@@ -241,7 +242,7 @@ namespace TDJGame
             }
             else
             {
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                spriteBatch.Draw(this.Texture, this.Body.Position, AnimManager.CurrentFrame.TextureSourceRect, this.Tint);
             }
 
             foreach (Bullet b in Bullets)

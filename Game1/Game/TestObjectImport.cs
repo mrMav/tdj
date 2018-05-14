@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Engine;
+using Engine.Animations;
 using Engine.Tiled;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -54,7 +55,7 @@ namespace TDJGame
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(this, @"Content\tiledObjectTest.tmx", tilemapTexture);
+            level = XMLloader.LoadLevel(this, @"Content\sampleTallLevel.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
             
             /*
@@ -71,7 +72,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.TextureBoundingRect = new Rectangle(48, 112, 16, 32);
+                    j.AnimManager.CurrentFrame = new Frame(48, 112, 16, 32);
 
                     enemies.Add(j);
 
@@ -85,7 +86,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.TextureBoundingRect = new Rectangle(0, 112, 32, 32);
+                    p.AnimManager.CurrentFrame = new Frame(0, 112, 32, 32);
 
                     enemies.Add(p);
 

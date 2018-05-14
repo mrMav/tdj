@@ -42,7 +42,7 @@ namespace Engine.Animations
          */
         public Rectangle TextureSourceRect { get; }
         
-        public Frame(int x, int y, int width, int height, int index)
+        public Frame(int x, int y, int width, int height, int index = 0)
         {
 
             X = x;

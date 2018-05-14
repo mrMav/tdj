@@ -73,7 +73,7 @@ namespace Engine.Particles
         {
             if (Visible)
             {
-                spriteBatch.Draw(Texture, Body.Position, TextureBoundingRect, Tint, 0f, Body.Origin, Scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Body.Position, AnimManager.CurrentFrame.TextureSourceRect, Tint, 0f, Body.Origin, Scale, SpriteEffects.None, 0f);
             }
         }
 

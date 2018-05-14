@@ -100,13 +100,18 @@ namespace TDJGame.Utils
 
                         // fetch custom properties
                         XmlNode props = obj.SelectSingleNode("properties");
-                        
-                        foreach (XmlNode prop in props)
-                        {
-                            string key = prop.Attributes["name"]?.InnerText;
-                            string value = prop.Attributes["value"]?.InnerText;
 
-                            newObj.SetProperty(key, value);
+                        if (props != null)
+                        {
+
+                            foreach (XmlNode prop in props)
+                            {
+                                string key = prop.Attributes["name"]?.InnerText;
+                                string value = prop.Attributes["value"]?.InnerText;
+
+                                newObj.SetProperty(key, value);
+                            }
+
                         }
 
                         level.Objects.Add(newObj);
