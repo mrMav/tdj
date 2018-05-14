@@ -20,6 +20,7 @@ namespace TDJGame
 
         #region [Properties]
 
+        FrameCounter frameCounter = new FrameCounter();
         Camera2D Camera;
         SpriteFont font;
         Texture2D tilemapTexture;
@@ -29,6 +30,7 @@ namespace TDJGame
         Texture2D backgroundGradientStrip;
         ParticleEmitter emitter1;
         ParticleEmitter playerDeathEmitter;
+        double updateTime;
 
         #endregion
 
@@ -107,11 +109,11 @@ namespace TDJGame
             */
             
             player = new Player(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
-            player.Animations.CurrentFrame = new Frame(0, 176, 16, 32);
+            player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);
             player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 3;
-            player.Body.Y = 16 * 3;
+            player.Body.X = 0;
+            player.Body.Y = 0;
             player.Body.MaxVelocity = 3f;
             player.Body.Drag.X = 0.6f;
             player.Body.Enabled = true;
@@ -137,25 +139,27 @@ namespace TDJGame
 
             emitter1 = new ParticleEmitter(this, Graphics.PreferredBackBufferWidth / 2, Graphics.PreferredBackBufferWidth / 2, 512);
             //emitter1.MakeParticles(tilemapTexture, 16, 16);
-            emitter1.ParseTextureToParticles(tilemapTexture, 96, 176, 16, 32);
-            emitter1.ParticleVelocity = new Vector2(0, -0.1f);
-            emitter1.XVelocityVariationRange = new Vector2(-30f, 30f);
-            emitter1.YVelocityVariationRange = new Vector2(-30f, 0f);
             //emitter1.SetTextureCropRectangle(new Rectangle(48, 96, 16, 16));
+            emitter1.ParseTextureToParticles(tilemapTexture, 0, 0, 16, 32, 4, 4);
+            emitter1.ParticleVelocity = new Vector2(0, 0f);
+            emitter1.XVelocityVariationRange = new Vector2(-10f, 10f);
+            emitter1.YVelocityVariationRange = new Vector2(-30f, 0f);
             emitter1.EmitterBox.X = 0;
             //emitter1.EmitterBox.Y = level.Height * level.TileHeight;
             emitter1.EmitterBox.Y = 0;
             //emitter1.EmitterBox.Resize(level.Width * level.TileWidth, 1f);
-            emitter1.EmitterBox.Resize(50f, 50f);
-            emitter1.SpawnRate = 1500f;
-            emitter1.ParticleLifespanMilliseconds = 1000f;
-            emitter1.ParticleLifespanVariationMilliseconds = 150f;
-            //emitter1.Burst = false;
-            emitter1.Burst = true;
+            emitter1.EmitterBox.Resize(1f, 1f);
+            emitter1.SpawnRate = 0f;
+            emitter1.ParticleLifespanMilliseconds = 5000f;
+            emitter1.ParticleLifespanVariationMilliseconds = 500f;
+            emitter1.Burst = false;
+            //emitter1.Burst = true;
             emitter1.ParticlesPerBurst = 512;
             emitter1.InitialScale = 1.0f;
             emitter1.FinalScale = 0.1f;
-            emitter1.RandomizeParticlePositions = false;
+            //emitter1.RandomizeParticlePositions = false;
+
+            emitter1.SetAcceleration(0.0f, -0.01f);
 
             //emitter1.ForEachParticle(TintBlue);
 
@@ -173,6 +177,8 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
+            updateTime = 0;
+
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
@@ -213,6 +219,11 @@ namespace TDJGame
                 player.Animations.Play("woman-run");
             }
 
+            if (kState.IsKeyDown(Keys.F))
+            {
+                emitter1.Activated = true;
+            }
+
             player.UpdateMotion(gameTime, kState, level);
 
             foreach (Sprite s in enemies)
@@ -220,12 +231,22 @@ namespace TDJGame
                 s.Update(gameTime);
             }
 
+
+            //emitter1.ParticleVelocity.X = (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds);
+            //emitter1.ParticleVelocity.Y = (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds);
+            //emitter1.ParticleVelocity.Y = -0.2f;
+
             emitter1.Update(gameTime);
+
+            updateTime = gameTime.ElapsedGameTime.TotalMilliseconds;
 
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            frameCounter.Update(deltaTime);
+
             graphicsDevice.Clear(Color.Black);
 
             /*
@@ -237,22 +258,25 @@ namespace TDJGame
 
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.Transform);
 
-            emitter1.Draw(gameTime, spriteBatch);
 
             //level.Draw(gameTime, spriteBatch);
 
-            player.Draw(gameTime, spriteBatch);
+            //player.Draw(gameTime, spriteBatch);
+            emitter1.Draw(gameTime, spriteBatch);
 
-            foreach (Sprite s in enemies)
-            {
-                s.Draw(gameTime, spriteBatch);
-            }
+            //foreach (Sprite s in enemies)
+            //{
+            //    s.Draw(gameTime, spriteBatch);
+            //}
 
             spriteBatch.End();
 
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(font, "'X' and 'C' to switch between animations", new Vector2(8, 16), Color.LightGreen);
+            //spriteBatch.DrawString(font, "'X' and 'C' to switch between animations", new Vector2(8, 16), Color.LightGreen);
+
+            spriteBatch.DrawString(font, $"{(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
+            spriteBatch.DrawString(font, $"{(updateTime)}", new Vector2(0, 16), Color.Red);
 
             if (player.Animations.CurrentAnimation != null)
             {

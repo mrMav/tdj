@@ -51,19 +51,17 @@ namespace Engine.Particles
             {
                 MillisecondsAfterSpawn += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if(Body.Acceleration.Length() > 0f)
-                {
-                    Body.Velocity.X += Body.Acceleration.X;
-                    Body.Velocity.Y += Body.Acceleration.Y;
-                }
-
+                Body.Velocity.X += Body.Acceleration.X;
+                Body.Velocity.Y += Body.Acceleration.Y;
+                
                 Body.X += Body.Velocity.X;
                 Body.Y += Body.Velocity.Y;
 
                 Body.Velocity.X *= Body.Drag.X;
                 Body.Velocity.Y *= Body.Drag.Y;
 
-                Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
+                if(InitialScale != FinalScale)
+                    Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
 
             }
 

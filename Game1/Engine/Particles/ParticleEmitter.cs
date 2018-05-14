@@ -27,8 +27,8 @@ namespace Engine.Particles
 
         /*
          * The maximum number of particles.
-         */ 
-        public int MaxParticles { get; }
+         */
+        private int MaxParticles;
 
         /*
          * If this emitter is active.
@@ -136,26 +136,22 @@ namespace Engine.Particles
             }
         }
 
-        public void ParseTextureToParticles(Texture2D texture, int offsetX, int offsetY, int cropRectWith, int cropRectHeight)
+        public void ParseTextureToParticles(Texture2D texture, int offsetX, int offsetY, int cropRectWith, int cropRectHeight, int chunkWidth = 1, int chunkHeight = 1)
         {
 
+            MaxParticles = (cropRectWith / chunkWidth) * (cropRectHeight / chunkHeight);
+
             Particles = new Particle[MaxParticles];
-
-            if(cropRectWith * cropRectHeight > MaxParticles)
-            {
-                Debug.Fail("Particle Emitter can not hold that many particles: " + cropRectWith * cropRectHeight + "!");
-                return;
-            }
-
+            
             int currentParticleIndex = 0;
 
-            for(int y = 0; y < cropRectHeight; y++)
+            for(int y = 0; y < cropRectHeight; y += chunkWidth)
             {
 
-                for(int x = 0; x < cropRectWith; x++)
+                for(int x = 0; x < cropRectWith; x += chunkHeight)
                 {
-                    Particles[currentParticleIndex] = new Particle(State, texture, new Vector2(x, y), 1, 1);
-                    Particles[currentParticleIndex].Animations.SetCurrentFrame(new Frame(offsetX + x, offsetY + y, 1, 1));
+                    Particles[currentParticleIndex] = new Particle(State, texture, new Vector2(x, y), chunkWidth, chunkHeight);
+                    Particles[currentParticleIndex].Animations.SetCurrentFrame(new Frame(offsetX + x, offsetY + y, chunkWidth, chunkHeight));
                     Particles[currentParticleIndex].Spawner = this;
 
                     currentParticleIndex++;
@@ -195,6 +191,7 @@ namespace Engine.Particles
                             }
                         }
 
+                        Activated = false;
 
                     } else
                     {
