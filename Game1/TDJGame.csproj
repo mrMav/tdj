@@ -141,9 +141,6 @@
     <None Include="Content\prototipo.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Content\sampleTallLevel.tmx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Content\test_map.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

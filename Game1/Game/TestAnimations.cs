@@ -108,7 +108,7 @@ namespace TDJGame
             */
             
             player = new Player(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
-            player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32, 0);
+            player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32);
             player.AnimManager.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
             player.AnimManager.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 3;
