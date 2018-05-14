@@ -4,6 +4,7 @@ using System.IO;
 using Engine.Tiled;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using Engine;
 
 namespace TDJGame.Utils
 {
@@ -15,7 +16,7 @@ namespace TDJGame.Utils
 
         }
 
-        public Level LoadLevel(string path, Texture2D texture)
+        public Level LoadLevel(GameState state, string path, Texture2D texture)
         {
             
             if(File.Exists(path))
@@ -25,7 +26,7 @@ namespace TDJGame.Utils
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);
 
-                Level level = new Level();
+                Level level = new Level(state);
 
                 // get the map node for atributtes extraction
                 XmlNode node = doc.DocumentElement.SelectSingleNode("/map");
@@ -99,13 +100,18 @@ namespace TDJGame.Utils
 
                         // fetch custom properties
                         XmlNode props = obj.SelectSingleNode("properties");
-                        
-                        foreach (XmlNode prop in props)
-                        {
-                            string key = prop.Attributes["name"]?.InnerText;
-                            string value = prop.Attributes["value"]?.InnerText;
 
-                            newObj.SetProperty(key, value);
+                        if (props != null)
+                        {
+
+                            foreach (XmlNode prop in props)
+                            {
+                                string key = prop.Attributes["name"]?.InnerText;
+                                string value = prop.Attributes["value"]?.InnerText;
+
+                                newObj.SetProperty(key, value);
+                            }
+
                         }
 
                         level.Objects.Add(newObj);

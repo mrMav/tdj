@@ -13,8 +13,8 @@ namespace TDJGame
         Vector2 CenterPoint;
         Vector2 Radius;
         
-        public JellyFish(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, Vector2 centerPoint, Vector2 radius, float travelSpeed = 0.5f)
-            : base(graphics, texture, position, width, height, false)
+        public JellyFish(GameState state, Texture2D texture, Vector2 position, int width, int height, Vector2 centerPoint, Vector2 radius, float travelSpeed = 0.5f)
+            : base(state, texture, position, width, height, false)
         {
             TravelSpeed = travelSpeed;
 

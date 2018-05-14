@@ -17,8 +17,8 @@ namespace TDJGame
         public double StartingFadeAnimAt = 750f;
         public double MaxAliveMilliseconds = 1000f;
         
-        public Bullet(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, Sprite spawner)
-            : base(graphics, texture, position, 16, 16, false)
+        public Bullet(GameState state, Texture2D texture, Vector2 position, Sprite spawner)
+            : base(state, texture, position, 16, 16, false)
         {
 
             Spawner = spawner;

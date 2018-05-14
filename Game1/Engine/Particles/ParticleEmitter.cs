@@ -1,4 +1,5 @@
-﻿using Engine.Physics;
+﻿using Engine.Animations;
+using Engine.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -123,7 +124,7 @@ namespace Engine.Particles
 
             for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i] = new Particle(State.Graphics, particleTexture, new Vector2(0, 0), width, height);
+                Particles[i] = new Particle(State, particleTexture, new Vector2(0, 0), width, height);
                 Particles[i].Spawner = this;
             }
         }
@@ -225,7 +226,7 @@ namespace Engine.Particles
         {
             for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i].TextureBoundingRect = rect;
+                Particles[i].Animations.CurrentFrame = new Frame(rect.X, rect.Y, rect.Width, rect.Height, 0);
             }
         }
 

@@ -6,6 +6,7 @@ using Engine.Tiled;
 using Engine.Physics;
 using System.Collections.Generic;
 using System;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -29,8 +30,8 @@ namespace TDJGame
         // 1 right -1 left
         public int FacingDirection = 1;
 
-        public Player(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
-            : base(graphics, texture, position, width, height, true)
+        public Player(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
+            : base(state, texture, position, width, height, true)
         {
 
             Energy = MaxEnergy;
@@ -47,8 +48,8 @@ namespace TDJGame
             Bullets = new List<Bullet>();
             for(int i = 0; i < 50; i++)
             {
-                Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(0 * 16, 2 * 16, 16, 16);
+                Bullet b = new Bullet(state, texture, Vector2.Zero, this);
+                b.Animations.CurrentFrame = new Frame(0 * 16, 2 * 16, 16, 16, 0);
 
                 Bullets.Add(b);
             }
@@ -108,7 +109,7 @@ namespace TDJGame
                             Energy += 1;
                     }
 
-                    if (!Floating && Body.Position.Y <= Graphics.PreferredBackBufferHeight - Size.Y)
+                    if (!Floating && Body.Position.Y <= State.Graphics.PreferredBackBufferHeight - Size.Y)
                     {
                         if (Energy > 0f)
                         {
@@ -233,7 +234,7 @@ namespace TDJGame
                 spriteBatch.Draw(
                          Texture,
                          position: Body.Position,
-                         sourceRectangle: TextureBoundingRect,
+                         sourceRectangle: Animations.CurrentFrame.TextureSourceRect,
                          effects: SpriteEffects.FlipHorizontally,
                          color: Tint
                     );
@@ -241,7 +242,7 @@ namespace TDJGame
             }
             else
             {
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                spriteBatch.Draw(this.Texture, this.Body.Position, Animations.CurrentFrame.TextureSourceRect, this.Tint);
             }
 
             foreach (Bullet b in Bullets)
