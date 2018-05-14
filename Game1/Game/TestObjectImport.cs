@@ -72,7 +72,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.AnimManager.CurrentFrame = new Frame(48, 112, 16, 32);
+                    j.Animations.CurrentFrame = new Frame(48, 112, 16, 32);
 
                     enemies.Add(j);
 
@@ -86,7 +86,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.AnimManager.CurrentFrame = new Frame(0, 112, 32, 32);
+                    p.Animations.CurrentFrame = new Frame(0, 112, 32, 32);
 
                     enemies.Add(p);
 

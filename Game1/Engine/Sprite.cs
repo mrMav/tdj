@@ -18,7 +18,7 @@ namespace Engine
         public Rectangle TextureBoundingRect;
         public Color Tint;
 
-        public AnimationManager AnimManager;
+        public AnimationManager Animations;
 
         // physics body
         public Body Body;
@@ -42,7 +42,7 @@ namespace Engine
             Texture = texture;
             Tint = Color.White;
 
-            AnimManager = new AnimationManager(this, state);
+            Animations = new AnimationManager(this, state);
 
             Body = new Body(position.X, position.Y, width, height);
 
@@ -55,7 +55,7 @@ namespace Engine
         public virtual void Update(GameTime gameTime)
         {
 
-            AnimManager.Update(gameTime);
+            Animations.Update(gameTime);
 
             if (IsBlinking)
             {
@@ -87,7 +87,7 @@ namespace Engine
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(Visible)
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.AnimManager.CurrentFrame.TextureSourceRect, this.Tint);
+                spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
         }
 
         public virtual void Kill()

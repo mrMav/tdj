@@ -226,7 +226,7 @@ namespace Engine.Particles
         {
             for (int i = 0; i < MaxParticles; i++)
             {
-                Particles[i].AnimManager.CurrentFrame = new Frame(rect.X, rect.Y, rect.Width, rect.Height, 0);
+                Particles[i].Animations.CurrentFrame = new Frame(rect.X, rect.Y, rect.Width, rect.Height, 0);
             }
         }
 

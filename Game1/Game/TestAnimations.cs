@@ -78,7 +78,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.AnimManager.CurrentFrame = new Frame(48, 112, 16, 32, 0);
+                    j.Animations.CurrentFrame = new Frame(48, 112, 16, 32, 0);
 
                     enemies.Add(j);
 
@@ -93,7 +93,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.AnimManager.CurrentFrame = new Frame(0, 112, 32, 32, 0);
+                    p.Animations.CurrentFrame = new Frame(0, 112, 32, 32, 0);
 
                     enemies.Add(p);
 
@@ -108,9 +108,9 @@ namespace TDJGame
             */
             
             player = new Player(this, tilemapTexture, new Vector2(0, 0), 16, 32, true);
-            player.AnimManager.CurrentFrame = new Frame(0, 176, 16, 32);
-            player.AnimManager.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
-            player.AnimManager.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
+            player.Animations.CurrentFrame = new Frame(0, 176, 16, 32);
+            player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, true);
+            player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 3;
             player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
@@ -200,11 +200,11 @@ namespace TDJGame
 
             if (kState.IsKeyDown(Keys.X))
             {
-                player.AnimManager.Play("robot-idle");
+                player.Animations.Play("robot-idle");
             }
             else if (kState.IsKeyDown(Keys.C))
             {
-                player.AnimManager.Play("woman-run");
+                player.Animations.Play("woman-run");
             }
 
             player.UpdateMotion(gameTime, kState, level);
@@ -249,10 +249,10 @@ namespace TDJGame
 
             spriteBatch.DrawString(font, "'X' and 'C' to switch between animations", new Vector2(8, 16), Color.LightGreen);
 
-            if (player.AnimManager.CurrentAnimation != null)
+            if (player.Animations.CurrentAnimation != null)
             {
 
-                spriteBatch.DrawString(font, player.AnimManager.CurrentAnimation.GetDebugInfo(), new Vector2(8, 48), Color.Red);
+                spriteBatch.DrawString(font, player.Animations.CurrentAnimation.GetDebugInfo(), new Vector2(8, 48), Color.Red);
 
             }
             spriteBatch.End();

@@ -21,7 +21,7 @@ namespace Engine.Tiled
 
             this.Texture = pTexture;
 
-            this.AnimManager.CurrentFrame = new Frame(
+            this.Animations.CurrentFrame = new Frame(
                 (int)positionInTexture.X * this.Layer.Level.TileWidth,
                 (int)positionInTexture.Y * this.Layer.Level.TileHeight,
                 this.Layer.Level.TileWidth,
