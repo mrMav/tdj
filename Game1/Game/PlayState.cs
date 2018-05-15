@@ -46,6 +46,7 @@ namespace TDJGame
             frameCounter = new FrameCounter();
             enemies = new List<Sprite>();
             pufferFish = new List<Sprite>();
+            
 
         }
 
@@ -71,13 +72,13 @@ namespace TDJGame
              */ 
             player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
-            player.Body.X = 16 * 3 /*370*/; //spawn x
+            player.Body.X = 16 * 3 /*330*/; //spawn x
             player.Body.Y = 16 * 3; //spawn y
             player.Body.MaxVelocity = 3f;
-            player.Body.Drag.X = 0.6f;
+            player.Body.Drag.X = 0.7f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
-            player.Body.SetSize(16, 29, 9, 2);
+            player.Body.SetSize(11, 27, 10, 2);
 
             /*
              * Enemies
@@ -130,14 +131,14 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
                     int walkingDirection = int.Parse(obj.GetProperty("direction"));
 
-                    //if (walkingDirection == -1)
+                    PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
+                    //if (walkingDirection == 1)
                     //{
-                    //    //position += new Vector2(obj.Width, 0);
-                    //    PufferFish p2 = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, -speed);
-                    //    enemies.Add(p2);
+                    //    p.Body.X += obj.Width;
+                    //    p.CurrentDistance = obj.Width;
+                    //    p.FacingDirection = -1;
                     //}
                     
-                        PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
                         p.TextureBoundingRect = new Rectangle(9 * 16, 0, 32, 32);
 
 
@@ -154,15 +155,21 @@ namespace TDJGame
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 3 });
             spikesPointingUp   = level.GetTilesListByID(new int[] { 5 });
+            //spikesPointingRight = level.GetTilesListByID(new int[] { 35 }); lvl2
 
             foreach (Tile spike in spikesPointingDown)
             {
-                spike.Body.SetSize(12, 6, 2, 0);
+                spike.Body.SetSize(5, 6, 6, 0);
             }
             foreach (Tile spike in spikesPointingUp)
             {
-                spike.Body.SetSize(12, 6, 2, 10);
+                spike.Body.SetSize(5, 6, 6, 10);
             }
+
+            //foreach (Tile spike in spikesPointingRight)
+            //{
+            //    spike.Body.SetSize(6, 12, 0, 2); dar tweaks ao offset
+            //}
 
             /*
              * UI Elements init
@@ -405,6 +412,7 @@ namespace TDJGame
                 s.Draw(gameTime, spriteBatch);
             }
             player.Draw(gameTime, spriteBatch);
+            //DrawBodyShape(player, spriteBatch, new Color(0, 150, 0, 150));
 
             //DrawBodyShape(player, spriteBatch, new Color(0, 160, 0, 170));
             //DrawBodyShape(spikesPointingDown[0], spriteBatch, new Color(160, 0, 0, 170));

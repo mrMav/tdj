@@ -119,7 +119,9 @@ namespace TDJGame
 
                     if (!Floating && Body.Position.Y <= Graphics.PreferredBackBufferHeight - Size.Y)
                     {
-                        if (Energy > 0f)
+                        if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
+
+                        if (Energy > 25f)
                         {
                             Body.Velocity.Y = 4f; //Floating Down
                             Energy -= 0.35f;

@@ -12,8 +12,8 @@ namespace TDJGame
     {
         float TravelSpeed;
         float TravelDistance;
-        float CurrentDistance;
-        int FacingDirection = 1;  // 1 is right, -1 is left
+        public float CurrentDistance;
+        public int FacingDirection = 1;  // 1 is right, -1 is left
 
         public float LastShot = 0f;
         public float ShootingVelocity = 3f;
