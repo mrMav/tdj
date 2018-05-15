@@ -49,7 +49,7 @@ namespace Engine.Tiled
 
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             
             for(int y = 0; y < this.TileMap.GetLength(0); y++)
@@ -58,7 +58,7 @@ namespace Engine.Tiled
                 for(int x = 0; x < this.TileMap.GetLength(1); x++)
                 {
 
-                    this.TileMap[y, x]?.Draw(spriteBatch);
+                    this.TileMap[y, x]?.Draw(gameTime, spriteBatch);
 
                 }
 

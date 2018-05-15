@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Engine.Physics;
+using Engine.Animations;
 
 namespace Engine.Tiled
 {
@@ -14,18 +14,19 @@ namespace Engine.Tiled
         public int ID { get; }
         
         // constructor
-        public Tile(GraphicsDeviceManager graphics, Layer layer, Texture2D pTexture, Vector2 positionInTexture, Vector2 pPosition, int ID)
-            : base(graphics, pTexture, pPosition, layer.Level.TileWidth, layer.Level.TileWidth, false)
+        public Tile(GameState state, Layer layer, Texture2D pTexture, Vector2 positionInTexture, Vector2 pPosition, int ID)
+            : base(state, pTexture, pPosition, layer.Level.TileWidth, layer.Level.TileWidth, false)
         {
             this.Layer = layer;
 
             this.Texture = pTexture;
 
-            this.TextureBoundingRect = new Rectangle(
+            this.Animations.CurrentFrame = new Frame(
                 (int)positionInTexture.X * this.Layer.Level.TileWidth,
                 (int)positionInTexture.Y * this.Layer.Level.TileHeight,
                 this.Layer.Level.TileWidth,
-                this.Layer.Level.TileHeight
+                this.Layer.Level.TileHeight,
+                0
             );
             
             this.ID = ID;
@@ -33,18 +34,5 @@ namespace Engine.Tiled
             this.Tint = Color.White;
 
         }
-
-        // logic update
-        public void Update(GameTime pGameTime)
-        {
-
-        }
-
-        // render
-        public void Draw(SpriteBatch pSpriteBatch)
-        {
-            pSpriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
-        }
-
     }
 }

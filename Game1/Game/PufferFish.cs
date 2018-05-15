@@ -5,6 +5,7 @@ using Engine;
 using Engine.Physics;
 using System.Collections.Generic;
 using System;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -22,13 +23,13 @@ namespace TDJGame
         public List<Bullet> Bullets;
         public Vector2 Size;
 
-        public PufferFish(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, float travelDistance = 32f, float travelSpeed = 0.5f)
-            : base(graphics, texture, position, width, height, false)
+        public PufferFish(GameState state, Texture2D texture, Vector2 position, int width, int height, float travelDistance = 32f, float travelSpeed = 0.5f)
+            : base(state, texture, position, width, height, false)
         {
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;
 
-            TextureBoundingRect = new Rectangle(9 * 16, 0, 32, 32);
+            Animations.CurrentFrame = new Frame(9 * 16, 0, 32, 32);
 
             Body.Enabled = true;
             Body.Velocity.X = TravelSpeed;
@@ -38,8 +39,8 @@ namespace TDJGame
             Bullets = new List<Bullet>();
             for(int i = 0; i < 50; i++)
             {
-                Bullet b = new Bullet(graphics, texture, Vector2.Zero, this);
-                b.TextureBoundingRect = new Rectangle(11 * 16, 0 * 16, 16, 32);
+                Bullet b = new Bullet(state, texture, Vector2.Zero, this);
+                b.Animations.CurrentFrame = new Frame(11 * 16, 0 * 16, 16, 32, 0);
 
                 Bullets.Add(b);
             }
@@ -133,14 +134,14 @@ namespace TDJGame
                     spriteBatch.Draw(
                              Texture,
                              position: Body.Position,
-                             sourceRectangle: TextureBoundingRect,
+                             sourceRectangle: this.Animations.CurrentFrame.TextureSourceRect,
                              effects: SpriteEffects.FlipHorizontally,
                              color: Tint
                         );
 
                 } else
                 {
-                    spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                    spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
                 }
 
                 foreach (Bullet b in Bullets)

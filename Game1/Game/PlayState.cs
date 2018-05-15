@@ -8,6 +8,7 @@ using Engine.Tiled;
 using TDJGame.Utils;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
+using Engine.Animations;
 
 namespace TDJGame
 {
@@ -70,28 +71,15 @@ namespace TDJGame
             /*
              * Player init
              */ 
-            player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
-            player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
-            player.Body.X = 16 * 3 /*330*/; //spawn x
+            player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
+            player.Animations.CurrentFrame = new Frame(96, 0, 32, 32);
+            player.Body.X = 16 * 3; /*330*/ //spawn x
             player.Body.Y = 16 * 3; //spawn y
             player.Body.MaxVelocity = 3f;
             player.Body.Drag.X = 0.7f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
             player.Body.SetSize(11, 27, 10, 2);
-
-            /*
-             * Enemies
-             */
-
-            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
-            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
-            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
-            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
-            //pufferFish.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
-
-            //enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
-            //enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
 
             /*
              * Level init
@@ -402,7 +390,7 @@ namespace TDJGame
              */
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
-            level.Draw(spriteBatch);
+            level.Draw(gameTime, spriteBatch);
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);
@@ -428,8 +416,10 @@ namespace TDJGame
             energyBar.Draw(spriteBatch, gameTime);
             healthBar.Draw(spriteBatch, gameTime);
             //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+
             spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
+
             
             spriteBatch.End();
 
