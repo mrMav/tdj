@@ -67,6 +67,7 @@
     <Compile Include="Game\PlayState.cs" />
     <Compile Include="Game\PufferFish.cs" />
     <Compile Include="Game\TestAnimations.cs" />
+    <Compile Include="Game\TestCamera.cs" />
     <Compile Include="Game\TestObjectImport.cs" />
     <Compile Include="Game\TestParticleEmitter.cs" />
     <Compile Include="Program.cs" />

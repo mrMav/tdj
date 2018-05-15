@@ -36,14 +36,21 @@ namespace Engine
         public Matrix Transform { get; set; }
 
         public Vector2 Position;
+        public Vector2 TargetPosition;
+        public Vector2 OriginalPosition;
         public Vector2 ShakeOffset;
+
+        public float Drag = 0.8f;
 
         public float StartedShakeMilliseconds;
         public float ShackingInterval;
-        public float ShackingAmplitude;
+        public float ShackingAmmount;
+        public float ShackingFrequency;
+        public float ZoomShakeMultiplyer;
 
+        public bool ShakeZoom;
         public bool Shaking;
-
+        
         public Camera2D(Vector2 position)
         {
             this._zoom = 1.0f;
@@ -61,18 +68,41 @@ namespace Engine
 
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
+            // need to reset the zoom;
+            Zoom = 2.45f;
 
-            if(gameTime.TotalGameTime.TotalMilliseconds > ShackingInterval + StartedShakeMilliseconds)
+            if(Shaking)
             {
-                Shaking = false;                
-                ShakeOffset = Vector2.Zero;
+                if(gameTime.TotalGameTime.TotalMilliseconds > ShackingInterval + StartedShakeMilliseconds)
+                {
+                    Shaking = false;
+                    ShakeOffset = Vector2.Zero;
 
-            } else
-            {
-                UpdateShake(gameTime);
-                Position += ShakeOffset;
+                    StartedShakeMilliseconds = 0;
+                    ShackingInterval = 0;
+                    ShackingAmmount = 0;
+                    ShackingFrequency = 0;
+                    ZoomShakeMultiplyer = 0;
+
+                    ShakeZoom = false;
+                    
+                } else
+                {
+                    UpdateShake(gameTime);
+
+                    Position += ShakeOffset;
+
+                    if(ShakeZoom)
+                        Zoom += ShakeOffset.Y * ZoomShakeMultiplyer;
+
+                }
+
             }
 
+            // after shacking, we must reposition the camera.
+            //Vector2 distToOrigin = OriginalPosition - Position;
+            //distToOrigin *= 0.6f;
+            //Move(distToOrigin.X, distToOrigin.Y);
 
             GetTransform(graphicsDevice);
 
@@ -112,43 +142,47 @@ namespace Engine
             return Vector2.Transform(v, this.Transform);
         }
 
-        public void ActivateShake(GameTime gameTime, float interval = 150f, float amplitude = 16f)
+        public void ActivateShake(GameTime gameTime, float interval = 150f, float ammount = 32f, float frequency = 0.01f, bool zoom = false, float zoommultiplyer = 0.01f)
         {
 
             this.Shaking = true;
             this.StartedShakeMilliseconds = (float)gameTime.TotalGameTime.TotalMilliseconds;
             this.ShackingInterval = interval;
-            this.ShackingAmplitude = amplitude;
+            this.ShackingAmmount = ammount;
+            this.ShackingFrequency = frequency;
+            this.ShakeZoom = zoom;
+            this.ZoomShakeMultiplyer = zoommultiplyer;
+
+            this.OriginalPosition = Position;
+
 
         }
 
         public void UpdateShake(GameTime gameTime)
         {
+            //https://www.desmos.com/calculator/7sgktk2drh
 
-            // https://www.graphpad.com/guides/prism/7/curve-fitting/reg_damped_sine_wave.htm?toc=0&printWindow
+            Random rnd = new Random();
 
-            float gameMs = (float)gameTime.TotalGameTime.TotalMilliseconds - StartedShakeMilliseconds;
-            float initialAmplitude = ShackingAmplitude;
-            float decayConstant = 0.001f;
-            float angularFrequency = ShackingInterval;
-            float y = initialAmplitude *
-                (float)Math.Exp(-decayConstant * gameMs) *
-                (float)Math.Sin((2 * Math.PI * gameMs / angularFrequency) + Math.PI * 2);
+            float freqy = ShackingFrequency > 0 ? ShackingFrequency : rnd.Next(3, 5) * 0.1f;
+            float freqx = ShackingFrequency > 0 ? ShackingFrequency : rnd.Next(3, 5) * 0.1f;
 
-            // Amplitude is the height of top of the waves, in Y units.
-            // Wavelength is the time it takes for a complete cycle, in units of X
-            // Frequency is the number of cycles per time unit.It is calculated as the reciprocal of wavelength, and is expressed in the inverse of the time units of X.
-            // PhaseShift in radians.A phaseshift of 0 sets Y equal to 0 at X = 0.
-            // K is the decay constant, in the reciprocal of the time units of the X axis.
-            // HalfLlife is the time it takes for the maximum amplitude to decrease by a factor of 2.It is computed as 0.693 / K.
-            
-            this.ShakeOffset.Y = y;
+            float x = (float)gameTime.TotalGameTime.TotalMilliseconds - StartedShakeMilliseconds;
+            float a = (float)(Math.Sqrt(ShackingAmmount));  // this is the magnitude
+            float v = (float)(Math.Pow((a - x * (a / ShackingInterval)), 2));
+            float q1 = (float)(freqy * Math.PI * x);
+            float q2 = (float)(freqx * Math.PI * x);
+            float d1 = (float)Math.Sin(q1);
+            float d2 = (float)Math.Cos(q2);
+
+            ShakeOffset.X = v * d1;
+            ShakeOffset.Y = v * d2;
 
         }
 
         public string GetDebugString()
         {
-            return $"Position: {Position}, Zoom {Zoom}\nShaking: {Shaking}, ShakeOffset: {ShakeOffset}\nShakeInterval: {ShackingInterval}, ShackingAmplitude: {ShackingAmplitude}";
+            return $"Position: {Position}, Zoom {Zoom}\nShaking: {Shaking}, ShakeOffset: {ShakeOffset}\nShakeInterval: {ShackingInterval}, ShackingAmplitude: {ShackingAmmount}";
         }
 
     }
