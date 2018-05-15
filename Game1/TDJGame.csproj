@@ -42,6 +42,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Engine\Animations\Animation.cs" />
+    <Compile Include="Engine\Animations\AnimationManager.cs" />
+    <Compile Include="Engine\Animations\Frame.cs" />
     <Compile Include="Engine\Camera2D.cs" />
     <Compile Include="Engine\Particles\Particle.cs" />
     <Compile Include="Engine\Particles\ParticleEmitter.cs" />
@@ -51,6 +54,7 @@
     <Compile Include="Engine\Tiled\Layer.cs" />
     <Compile Include="Engine\Tiled\Level.cs" />
     <Compile Include="Engine\Tiled\Tile.cs" />
+    <Compile Include="Engine\Tiled\TiledObject.cs" />
     <Compile Include="Engine\Tiled\Tileset.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Engine\GameState.cs" />
@@ -62,6 +66,8 @@
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
     <Compile Include="Game\PufferFish.cs" />
+    <Compile Include="Game\TestAnimations.cs" />
+    <Compile Include="Game\TestObjectImport.cs" />
     <Compile Include="Game\TestParticleEmitter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,6 +141,9 @@
     <None Include="Content\prototipo.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\prototipo2.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\test_map.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -142,6 +151,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Content\test_map_3.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\tiledObjectTest.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

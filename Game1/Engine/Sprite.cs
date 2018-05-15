@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine.Physics;
+using Engine.Animations;
 using TDJGame.Utils;
 using System;
 
@@ -10,18 +11,20 @@ namespace Engine
     public class Sprite
     {
         // game reference
-        public GraphicsDeviceManager Graphics;
+        public GameState State;
 
         // display texture
         public Texture2D Texture;
         public Rectangle TextureBoundingRect;
         public Color Tint;
 
+        public AnimationManager Animations;
+
         // physics body
         public Body Body;
 
         // gameplay handy properties
-        public float MaxHealth = 100f;
+        public float MaxHealth = 30f;
         public float Health;
         public float Damage = 10f;
         public bool Alive = true;
@@ -33,11 +36,13 @@ namespace Engine
         public double BlinkingInterval = 500;
 
         // constructor
-        public Sprite(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
+        public Sprite(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
         {
-            Graphics = graphics;
+            State = state;
             Texture = texture;
             Tint = Color.White;
+
+            Animations = new AnimationManager(this, state);
 
             Body = new Body(position.X, position.Y, width, height);
 
@@ -45,10 +50,13 @@ namespace Engine
             IsControllable = isControllable;
                         
         }
-
+                
         // logic update
         public virtual void Update(GameTime gameTime)
         {
+
+            Animations.Update(gameTime);
+
             if (IsBlinking)
             {
 
@@ -79,7 +87,7 @@ namespace Engine
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             if(Visible)
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.TextureBoundingRect, this.Tint);
+                spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
         }
 
         public virtual void Kill()

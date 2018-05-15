@@ -8,11 +8,10 @@ using Engine.Tiled;
 using TDJGame.Utils;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
-using Engine.Animations;
 
 namespace TDJGame
 {
-    public class PlayState : GameState
+    public class TiledObjectImportTest : GameState
     {
 
         #region [Properties]
@@ -28,13 +27,12 @@ namespace TDJGame
         EnergyBar healthBar;
         Player player;
         List<Sprite> enemies;
-        List<Sprite> pufferFish;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
 
         #endregion
 
-        public PlayState(string key, GraphicsDeviceManager graphics)
+        public TiledObjectImportTest(string key, GraphicsDeviceManager graphics)
         {
             Key = key;
             Graphics = graphics;
@@ -46,8 +44,6 @@ namespace TDJGame
 
             frameCounter = new FrameCounter();
             enemies = new List<Sprite>();
-            pufferFish = new List<Sprite>();
-            
 
         }
 
@@ -57,7 +53,7 @@ namespace TDJGame
             MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 4.85f;
+            camera.Zoom = 2.45f;
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheetDraft");
@@ -71,93 +67,48 @@ namespace TDJGame
             /*
              * Player init
              */ 
-            player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
-            player.Animations.CurrentFrame = new Frame(96, 0, 32, 32);
-            player.Body.X = 16 * 3; /*330*/ //spawn x
-            player.Body.Y = 16 * 3; //spawn y
+            player = new Player(Graphics, tilemapTexture, Vector2.Zero, 32, 32, true);
+            player.TextureBoundingRect = new Rectangle(96, 0, 32, 32);
+            player.Body.X = 16 * 3;
+            player.Body.Y = 16 * 3;
             player.Body.MaxVelocity = 3f;
-            player.Body.Drag.X = 0.7f;
+            player.Body.Drag.X = 0.6f;
             player.Body.Enabled = true;
             player.Body.Tag = "player";
-            player.Body.SetSize(11, 27, 10, 2);
+            player.Body.SetSize(16, 29, 9, 2);
+
+            /*
+             * Enemies
+             */
+
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(150 * 16, 2  * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(191 * 16, 2  * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
+            enemies.Add(new PufferFish(Graphics, tilemapTexture, new Vector2(219 * 16, 5  * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
+
+            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60  * 16, 6 * 16), new Vector2(4  * 16, 4 * 16), 0.5f));
+            enemies.Add(new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
 
             /*
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(@"Content\prototipo2.tmx", tilemapTexture);
+            level = XMLloader.LoadLevel(@"Content\prototipo.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
-
-            /*
-             Enemies Init tiled
-             */
-
-            foreach (TiledObject obj in level.Objects)
-            {
-
-                if (obj.Name.ToLower() == "jellyfish")
-                {
-                    Vector2 center = new Vector2(obj.X + obj.Width / 2, obj.Y + obj.Height / 2);
-                    Vector2 radius = new Vector2(obj.Width / 2, obj.Height / 2);
-
-                    float speed = float.Parse(obj.GetProperty("speed"));
-                   
-
-                    JellyFish j = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.TextureBoundingRect = new Rectangle(192, 0, 16, 32);
-
-                    enemies.Add(j);
-
-                    Console.WriteLine("added jelly");
-
-
-                }
-                else if (obj.Name.ToLower() == "pufferfish")
-                {
-                    Vector2 position = new Vector2(obj.X, obj.Y);
-
-                    float speed = float.Parse(obj.GetProperty("speed"));
-                    int walkingDirection = int.Parse(obj.GetProperty("direction"));
-
-                    PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    //if (walkingDirection == 1)
-                    //{
-                    //    p.Body.X += obj.Width;
-                    //    p.CurrentDistance = obj.Width;
-                    //    p.FacingDirection = -1;
-                    //}
-                    
-                        p.TextureBoundingRect = new Rectangle(9 * 16, 0, 32, 32);
-
-
-
-                        enemies.Add(p);
-
-                    Console.WriteLine("added puffer");
-
-                }
-
-            }
-            //
 
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 3 });
             spikesPointingUp   = level.GetTilesListByID(new int[] { 5 });
-            //spikesPointingRight = level.GetTilesListByID(new int[] { 35 }); lvl2
 
             foreach (Tile spike in spikesPointingDown)
             {
-                spike.Body.SetSize(5, 6, 6, 0);
+                spike.Body.SetSize(12, 6, 2, 0);
             }
             foreach (Tile spike in spikesPointingUp)
             {
-                spike.Body.SetSize(5, 6, 6, 10);
+                spike.Body.SetSize(12, 6, 2, 10);
             }
-
-            //foreach (Tile spike in spikesPointingRight)
-            //{
-            //    spike.Body.SetSize(6, 12, 0, 2); dar tweaks ao offset
-            //}
 
             /*
              * UI Elements init
@@ -201,7 +152,6 @@ namespace TDJGame
             spikesPointingDown = null;
             spikesPointingUp = null;
             enemies = null;
-            pufferFish = null;
 
         }
 
@@ -239,21 +189,8 @@ namespace TDJGame
                     }
                 }
             }
-            foreach (Sprite s in pufferFish)
-            {
-                if (s.Alive)
-                {
-                    s.Update(gameTime);
 
-                    if (Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
-                    {
-                        player.ReceiveDamage(s.Damage);
-                        player.StartBlinking(gameTime);
-                    }
-                }
-            }
-
-            foreach (Tile spike in spikesPointingDown)
+            foreach(Tile spike in spikesPointingDown)
             {
                 if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
                 {
@@ -285,21 +222,6 @@ namespace TDJGame
                             b.Kill();
                         }
                     }
-                    foreach (Sprite s in pufferFish)
-                    {
-                        if (s.Alive)
-                        {
-                            if (Physics.Overlap(b, s))
-                            {
-                                b.Kill();
-                                s.ReceiveDamage(b.Damage);
-                                s.StartBlinking(gameTime);
-
-                                // we should remove dead actors from the list
-
-                            }
-                        }
-                    }
 
                     foreach (Sprite s in enemies)
                     {
@@ -317,37 +239,6 @@ namespace TDJGame
                         }
                     }
                 }                
-            }
-
-            /*
-             * Projectiles
-             */
-            foreach (PufferFish p in pufferFish)
-            {
-                foreach (Bullet b in p.Bullets)
-                {
-                    if (b.Alive)
-                    {
-                        foreach (Tile t in level.CollidableTiles)
-                        {
-                            if (Physics.Overlap(b, t))
-                            {
-                                b.Kill();
-                            }
-                        }
-
-                        if (player.Alive)
-                        {
-                            if (Physics.Overlap(b, player) && !player.IsBlinking)
-                            {
-
-                                player.ReceiveDamage(10);
-                                player.StartBlinking(gameTime);
-
-                            }
-                        }
-                    }
-                }
             }
 
             /*
@@ -390,17 +281,12 @@ namespace TDJGame
              */
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
-            level.Draw(gameTime, spriteBatch);
+            level.Draw(spriteBatch);
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);
             }
-            foreach (Sprite s in pufferFish)
-            {
-                s.Draw(gameTime, spriteBatch);
-            }
             player.Draw(gameTime, spriteBatch);
-            //DrawBodyShape(player, spriteBatch, new Color(0, 150, 0, 150));
 
             //DrawBodyShape(player, spriteBatch, new Color(0, 160, 0, 170));
             //DrawBodyShape(spikesPointingDown[0], spriteBatch, new Color(160, 0, 0, 170));
@@ -416,10 +302,8 @@ namespace TDJGame
             energyBar.Draw(spriteBatch, gameTime);
             healthBar.Draw(spriteBatch, gameTime);
             //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
-
-            spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
+            //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.AverageFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
-
             
             spriteBatch.End();
 

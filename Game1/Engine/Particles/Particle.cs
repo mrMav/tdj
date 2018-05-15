@@ -23,16 +23,21 @@ namespace Engine.Particles
         public float InitialScale = 1f;
         public float FinalScale = 1f;
 
+        public Vector2 InitialPosition;
+
         /*
          * Constructor
          */
-        public Particle(GraphicsDeviceManager graphics, Texture2D texture, Vector2 position, int width, int height)
-            : base(graphics, texture, position, width, height, false)
+        public Particle(GameState state, Texture2D texture, Vector2 position, int width, int height)
+            : base(state, texture, position, width, height, false)
         {
 
             Body.Acceleration = Vector2.Zero;
 
             Body.Drag = new Vector2(1f, 1f);
+
+            InitialPosition.X = position.X;
+            InitialPosition.Y = position.Y;
 
             Kill();
 
@@ -40,25 +45,23 @@ namespace Engine.Particles
 
         public override void Update(GameTime gameTime)
         {
-            // call base.Update() for blinking feature
+            base.Update(gameTime);
 
             if(Alive)
             {
                 MillisecondsAfterSpawn += gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if(Body.Acceleration.Length() > 0f)
-                {
-                    Body.Velocity.X += Body.Acceleration.X;
-                    Body.Velocity.Y += Body.Acceleration.Y;
-                }
-
+                Body.Velocity.X += Body.Acceleration.X;
+                Body.Velocity.Y += Body.Acceleration.Y;
+                
                 Body.X += Body.Velocity.X;
                 Body.Y += Body.Velocity.Y;
 
                 Body.Velocity.X *= Body.Drag.X;
                 Body.Velocity.Y *= Body.Drag.Y;
 
-                Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
+                if(InitialScale != FinalScale)
+                    Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
 
             }
 
@@ -73,7 +76,7 @@ namespace Engine.Particles
         {
             if (Visible)
             {
-                spriteBatch.Draw(Texture, Body.Position, TextureBoundingRect, Tint, 0f, Body.Origin, Scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Body.Position, Animations.CurrentFrame.TextureSourceRect, Tint, 0f, Body.Origin, Scale, SpriteEffects.None, 0f);
             }
         }
 

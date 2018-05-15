@@ -28,8 +28,8 @@ namespace TDJGame
         protected override void Initialize()
         {
 
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
             StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
@@ -37,6 +37,8 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
             StateManager.Instance.AddGameState(new CreditsState("CreditsState", graphics));
             StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
+            StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
+            StateManager.Instance.AddGameState(new TestAnimations("TestAnimations", graphics));
 
             base.Initialize();
         }
@@ -46,12 +48,12 @@ namespace TDJGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            menuSong = Content.Load<Song>("menuSong");
-            MediaPlayer.Play(menuSong);
+            //menuSong = Content.Load<Song>("menuSong");
+            //MediaPlayer.Play(menuSong);
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("MenuState");
+            StateManager.Instance.StartGameState("TestAnimations");
         }
 
         protected override void UnloadContent()
