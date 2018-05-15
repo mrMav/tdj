@@ -13,8 +13,8 @@ namespace TDJGame
     {
         float TravelSpeed;
         float TravelDistance;
-        float CurrentDistance;
-        int FacingDirection = 1;  // 1 is right, -1 is left
+        public float CurrentDistance;
+        public int FacingDirection = 1;  // 1 is right, -1 is left
 
         public float LastShot = 0f;
         public float ShootingVelocity = 3f;
@@ -55,7 +55,7 @@ namespace TDJGame
 
             CurrentDistance += Body.Velocity.X;
 
-            if (CurrentDistance <= 0)
+            if (CurrentDistance <= 0) //arranjar maneira do inimigo começar na posição final do x que é = obj.width ou seja andar no sentido oposto
             {
                 FacingDirection = 1;  // go right now
                 Body.Velocity.X *= -1;

@@ -141,6 +141,9 @@
     <None Include="Content\prototipo.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\prototipo2.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\test_map.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
