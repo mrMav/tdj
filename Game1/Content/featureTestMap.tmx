@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="16" tileheight="16" infinite="0" nextobjectid="25">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="32" tilewidth="16" tileheight="16" infinite="0" nextobjectid="28">
  <tileset firstgid="1" name="sample" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="spritesheet-jn.png" width="256" height="256"/>
  </tileset>
@@ -72,11 +72,21 @@
     <property name="speed" type="float" value="0.5"/>
    </properties>
   </object>
-  <object id="23" name="Particles" x="407" y="103.5">
+  <object id="23" name="Particles" x="893.818" y="154.955">
    <properties>
     <property name="type" value="bubble"/>
    </properties>
    <point/>
+  </object>
+  <object id="26" name="particles" x="36" y="216" width="524" height="42">
+   <properties>
+    <property name="type" value="bubble"/>
+   </properties>
+  </object>
+  <object id="27" name="particles" x="-1" y="508" width="1023" height="42">
+   <properties>
+    <property name="type" value="bubble"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

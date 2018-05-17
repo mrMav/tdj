@@ -39,13 +39,8 @@ namespace TDJGame
                 Body.X += Body.Velocity.X;
                 Body.Y += Body.Velocity.Y;
 
-                Body.Velocity.Y *= 1.1f;
-
-                //if(Vector2.Distance(Spawner.Body.Position, Body.Position) >= MaxDistanceFromSpawner)
-                //{
-                //    Kill();
-                //}
-
+                Body.Velocity.Y *= Body.Drag.Y;
+                
                 if(TimeAfterShot >= MaxAliveMilliseconds)
                 {
                     Kill();

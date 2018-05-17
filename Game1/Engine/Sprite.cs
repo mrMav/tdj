@@ -54,7 +54,6 @@ namespace Engine
         // logic update
         public virtual void Update(GameTime gameTime)
         {
-
             Animations.Update(gameTime);
 
             if (IsBlinking)

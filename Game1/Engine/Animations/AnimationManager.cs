@@ -79,7 +79,6 @@ namespace Engine.Animations
 
             if (Animations.TryGetValue(key, out anim))
             {
-
                 CurrentAnimation = anim;
                 CurrentAnimation.Reset();
 

@@ -32,7 +32,7 @@ namespace TDJGame
         float duration = 350f;
         float amplitude = 8f;
         float frequency = 0.03f;
-        float zoommultiplyer = 0.01f;
+        float zoommultiplyer = 0.05f;
         bool zoom = false;
 
         #endregion
