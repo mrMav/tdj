@@ -238,7 +238,7 @@ namespace TDJGame
             /*
              * Player Update
              */
-            player.UpdateMotion(gameTime, kState, level, bubble);
+            player.UpdateMotion(gameTime, kState, level);
 
             /*
              * AI (lol) Update

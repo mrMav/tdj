@@ -62,7 +62,6 @@ namespace TDJGame
                 b.Animations.CurrentFrame = new Frame(48, 96, 16, 16);
                 b.Body.SetSize(6, 6, 5, 5);
                 b.Body.Drag.Y *= 1.1f;
-                b.Damage = 500f;
 
                 Bullets.Add(b);
             }
