@@ -82,10 +82,24 @@ namespace TDJGame
             player.Body.SetSize(11, 27, 10, 2);
 
             /*
+             * Enemies
+             */
+            enemies.Add(new TurtleX(this, tilemapTexture, new Vector2(20 * 16, 8 * 16), 32, 32, 5 * 16, 174 * 16 - 149 * 16, 1.5f));
+
+            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(150 * 16, 2 * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(191 * 16, 2 * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
+            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(219 * 16, 5 * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
+
+            enemies.Add(new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60 * 16, 6 * 16), new Vector2(4 * 16, 4 * 16), 0.5f));
+            enemies.Add(new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
+
+            /*
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(@"Content\prototipo2.tmx", tilemapTexture);
+            level = XMLloader.LoadLevel(this, @"Content\prototipo.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 4, 6 });
 
             /*
@@ -103,7 +117,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
                    
 
-                    JellyFish j = new JellyFish(Graphics, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
+                    JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
                     j.TextureBoundingRect = new Rectangle(192, 0, 16, 32);
 
                     enemies.Add(j);
@@ -119,7 +133,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
                     int walkingDirection = int.Parse(obj.GetProperty("direction"));
 
-                    PufferFish p = new PufferFish(Graphics, tilemapTexture, position, 32, 32, obj.Width, speed);
+                    PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
                     //if (walkingDirection == 1)
                     //{
                     //    p.Body.X += obj.Width;
@@ -230,9 +244,17 @@ namespace TDJGame
             {
                 if(s.Alive)
                 {
-                    s.Update(gameTime);
+                    if (s.GetType() == typeof(TurtleX))
+                    {
+                        TurtleX t = (TurtleX)s;
+                        t.UpdateMov(gameTime, player);
+                    }
+                    else
+                    {
+                        s.Update(gameTime);
+                    }
 
-                    if(Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
+                        if (Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
                     {
                         player.ReceiveDamage(s.Damage);
                         player.StartBlinking(gameTime);
