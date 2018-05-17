@@ -15,7 +15,7 @@ namespace TDJGame
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Song menuSong;
-
+                
         public Game()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -28,8 +28,8 @@ namespace TDJGame
         protected override void Initialize()
         {
 
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
             StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
@@ -39,7 +39,9 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
             StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
             StateManager.Instance.AddGameState(new TestAnimations("TestAnimations", graphics));
-
+            StateManager.Instance.AddGameState(new TestCamera("TestCamera", graphics));
+            StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
+            
             base.Initialize();
         }
 
@@ -53,7 +55,8 @@ namespace TDJGame
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("MenuState");
+            StateManager.Instance.StartGameState("FeatureTestMap");
+
         }
 
         protected override void UnloadContent()

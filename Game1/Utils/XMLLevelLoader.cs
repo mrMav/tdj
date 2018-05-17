@@ -10,7 +10,7 @@ namespace TDJGame.Utils
 {
     public class XMLLevelLoader
     {
-        
+
         public XMLLevelLoader()
         {
 
@@ -18,8 +18,8 @@ namespace TDJGame.Utils
 
         public Level LoadLevel(GameState state, string path, Texture2D texture)
         {
-            
-            if(File.Exists(path))
+
+            if (File.Exists(path))
             {
 
                 // load xml file
@@ -32,16 +32,16 @@ namespace TDJGame.Utils
                 XmlNode node = doc.DocumentElement.SelectSingleNode("/map");
 
                 // somthing happened with the xml map node
-                if(node == null)
+                if (node == null)
                 {
 
                     Debug.Print("somthing happened with the xml map node");
 
                     return null;
                 }
-                
+
                 level.Height = int.Parse(node.Attributes["height"]?.InnerText);
-                level.Width  = int.Parse(node.Attributes["width"]?.InnerText);
+                level.Width = int.Parse(node.Attributes["width"]?.InnerText);
 
                 level.TileWidth = int.Parse(node.Attributes["tilewidth"]?.InnerText);
                 level.TileHeight = int.Parse(node.Attributes["tileheight"]?.InnerText);
@@ -52,7 +52,7 @@ namespace TDJGame.Utils
                 XmlNodeList layers = doc.DocumentElement.SelectNodes("/map/layer");
 
                 // this will look just plain ugly
-                foreach(XmlNode layer in layers)
+                foreach (XmlNode layer in layers)
                 {
 
                     int width = int.Parse(layer.Attributes["width"]?.InnerText);
@@ -67,11 +67,11 @@ namespace TDJGame.Utils
                     string[] data = children.Item(0).InnerText.Split(',');
                     l.Data = new int[data.Length];
 
-                    for(int i = 0; i < data.Length; i++)
+                    for (int i = 0; i < data.Length; i++)
                     {
                         l.Data[i] = int.Parse(data[i]);
                     }
-                    
+
                     l.MakeTiles();
 
                     level.Layers.Add(l);
@@ -79,22 +79,32 @@ namespace TDJGame.Utils
                 }
 
                 // get the objects groups
-                XmlNodeList objectGroups = doc.DocumentElement.SelectNodes("/map/objectgroup");                
+                XmlNodeList objectGroups = doc.DocumentElement.SelectNodes("/map/objectgroup");
 
-                foreach(XmlNode group in objectGroups)
+                foreach (XmlNode group in objectGroups)
                 {
                     foreach (XmlNode obj in group)
                     {
+
                         string name = obj.Attributes["name"]?.InnerText;
                         string type = obj.Attributes["type"]?.InnerText;
 
                         float x = float.Parse(obj.Attributes["x"]?.InnerText);
                         float y = float.Parse(obj.Attributes["y"]?.InnerText);
+                        
+                        float width = 1;
+                        float height = 1;
 
-                        float width = float.Parse(obj.Attributes["width"]?.InnerText);
-                        float height = float.Parse(obj.Attributes["height"]?.InnerText);
+                        try
+                        {
+                            width = float.Parse(obj.Attributes["width"]?.InnerText);
+                            height = float.Parse(obj.Attributes["height"]?.InnerText);
+                        }
+                        catch { };
 
                         TiledObject newObj = new TiledObject(name, type, x, y, width, height);
+
+                        
 
                         // fetch custom properties
                         XmlNode props = obj.SelectSingleNode("properties");
@@ -113,12 +123,14 @@ namespace TDJGame.Utils
                         }
 
                         level.Objects.Add(newObj);
+
                     }
                 }
 
                 return level;
 
-            } else
+            }
+            else
             {
 
                 Debug.Print("xml file does not exist");
@@ -128,7 +140,7 @@ namespace TDJGame.Utils
             }
 
         }
-        
-        
+
+
     }
 }

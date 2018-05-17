@@ -61,6 +61,7 @@
     <Compile Include="Game\Bullet.cs" />
     <Compile Include="Game\CreditsState.cs" />
     <Compile Include="Game\EnergyBar.cs" />
+    <Compile Include="Game\FeatureTestMap.cs" />
     <Compile Include="Game\JellyFish.cs" />
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Game\TurtleX.cs" />
     <Compile Include="Game\PufferFish.cs" />
     <Compile Include="Game\TestAnimations.cs" />
+    <Compile Include="Game\TestCamera.cs" />
     <Compile Include="Game\TestObjectImport.cs" />
     <Compile Include="Game\TestParticleEmitter.cs" />
     <Compile Include="Program.cs" />
@@ -139,6 +141,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
+    <None Include="Content\featureTestMap.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Content\prototipo.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -7,6 +7,8 @@ using Engine.Physics;
 using System.Collections.Generic;
 using System;
 using Engine.Animations;
+using TDJGame.Utils;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
@@ -17,12 +19,20 @@ namespace TDJGame
 
         public float Energy;
         public float FloatingUpSpeed = 2f;
+        public float FloatingDownSpeed = 4f;
         public float MaxEnergy = 200f;
-        
+
+        public bool IsBobing = false;
+        public float BobStarted = 0f;
+        public float BobAmplitude = 1f;
+        public float BobFrequency = 0.005f;
+
         public float LastShot = 0f;
         public float ShootingVelocity = 3f;
         public float ShootRate = 80f;
         public float BulletCost = 10f;
+
+        public float KnockBackAmmount = 64f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -49,7 +59,9 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(state, texture, Vector2.Zero, this);
-                b.Animations.CurrentFrame = new Frame(0 * 16, 2 * 16, 16, 16, 0);
+                b.Animations.CurrentFrame = new Frame(48, 96, 16, 16);
+                b.Body.SetSize(6, 6, 5, 5);
+                b.Body.Drag.Y *= 1.1f;
 
                 Bullets.Add(b);
             }
@@ -63,7 +75,6 @@ namespace TDJGame
 
             if (Alive)
             {
-
                 base.Update(gameTime);
 
                 if (this.IsControllable && keyboardState != null)
@@ -114,24 +125,53 @@ namespace TDJGame
                         {
                             Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
                         }
-                        if (Energy < MaxEnergy)
-                            Energy += 1;
-                    }
 
+                        // bob a bit
+                        if(Body.Position.Y <= 0f && !IsBobing)
+                        {
+                            IsBobing = true;
+                            BobStarted = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                            Energy = MathHelper.Clamp(Energy + MaxEnergy / 2, 0, MaxEnergy);
+                        }
+
+                        // recharge
+                        if (Energy < MaxEnergy)
+                        {
+                            Energy += 1;
+                        }
+
+                    } else
+                    {
+
+                        IsBobing = false;
+
+                    }
+                    
                     if (!Floating && Body.Position.Y <= State.Graphics.PreferredBackBufferHeight - Size.Y)
                     {
                         if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
 
                         if (Energy > 25f)
                         {
-                            Body.Velocity.Y = 4f; //Floating Down
+                            Body.Velocity.Y = FloatingDownSpeed; //Floating Down
                             Energy -= 0.35f;
-
                         }
                         else
                             Floating = true;
                     }
 
+                    // makes the player bob on surface
+                    if(IsBobing)
+                    {
+
+                        float x = (float)gameTime.TotalGameTime.TotalMilliseconds - BobStarted;
+
+                        float phaseShift = 0.5f * (float)Math.PI;
+
+                        Body.Velocity.Y = Math2.SinWave((x * BobFrequency - phaseShift), BobAmplitude);
+
+                    }
+                    
                     /* ---- */
 
                     // cap velocity
@@ -223,6 +263,19 @@ namespace TDJGame
                 }
 
             }
+            
+        }
+
+        public void ApplyKnockBack(Sprite sprite)
+        {
+
+            Floating = true;
+
+            float intersectionAngle = (float)Math.Atan2((sprite.Body.Y - Body.Y), (sprite.Body.X - Body.X));
+
+            // apply 
+            Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
+            Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
             
         }
 
