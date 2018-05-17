@@ -56,6 +56,7 @@ namespace TDJGame
             StateManager.Instance.LoadContent(Content);
 
             StateManager.Instance.StartGameState("FeatureTestMap");
+
         }
 
         protected override void UnloadContent()

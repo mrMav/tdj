@@ -66,6 +66,7 @@
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
+    <Compile Include="Game\TurtleX.cs" />
     <Compile Include="Game\PufferFish.cs" />
     <Compile Include="Game\TestAnimations.cs" />
     <Compile Include="Game\TestCamera.cs" />
@@ -144,6 +145,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\prototipo.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\prototipo2.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\test_map.tmx">
