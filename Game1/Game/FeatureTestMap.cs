@@ -25,15 +25,18 @@ namespace TDJGame
         Texture2D tilemapTexture;
         Level level;
         Texture2D pixel;
-        Texture2D backgroundGradientStrip;
+        Texture2D backgroundWaterGradientStrip;
+        Texture2D backgroundSkyGradientStrip;
         EnergyBar energyBar;
         EnergyBar healthBar;
         Player player;
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
-        List<ParticleEmitter> particleEmitters;
-
+        List<Tile> topWaterTiles;
+        List<ParticleEmitter> backgroundParticles;
+        float c = 19.7f;
+        float a = 1f;
         SoundEffect bubble;
 
         #endregion
@@ -50,7 +53,7 @@ namespace TDJGame
 
             frameCounter = new FrameCounter();
             enemies = new List<Sprite>();
-            particleEmitters = new List<ParticleEmitter>();
+            backgroundParticles = new List<ParticleEmitter>();
 
         }
 
@@ -68,6 +71,12 @@ namespace TDJGame
             bubble = this.content.Load<SoundEffect>("sfx_bubble");
 
             /*
+             * A single pixel to draw lines and stuff
+             */
+            pixel = new Texture2D(Graphics.GraphicsDevice, 1, 1);
+            DrawMe.Fill(pixel, Color.White);
+
+            /*
              * Player init
              */
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
@@ -76,10 +85,6 @@ namespace TDJGame
             player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 7;
             player.Body.Y = 16 * 5;
-            player.Body.MaxVelocity = 3f;
-            player.Body.Drag.X = 0.6f;
-            player.Body.Enabled = true;
-            player.Body.Tag = "player";
             player.Body.SetSize(16, 32, 0, 0);
             //player.Animations.Play("woman-run");
 
@@ -147,7 +152,7 @@ namespace TDJGame
                     
                     particleEmitter.ForEachParticle(ChangeSpriteTintBlue);
 
-                    particleEmitters.Add(particleEmitter);
+                    backgroundParticles.Add(particleEmitter);
 
 
 
@@ -171,6 +176,8 @@ namespace TDJGame
                 spike.Body.SetSize(12, 6, 2, 10);
             }
 
+            topWaterTiles = level.GetTilesListByID(new int[] { 49, 50, 51 });
+
             /*
              * UI Elements init
              */
@@ -180,17 +187,32 @@ namespace TDJGame
             /*
              * Build Background Gradient
              */
-            backgroundGradientStrip = new Texture2D(Graphics.GraphicsDevice, 1, level.Height * level.TileHeight);
+            backgroundWaterGradientStrip = new Texture2D(Graphics.GraphicsDevice, 1, level.Height * level.TileHeight);
 
             Color startColor = new Color(57, 92, 181);
             Color finishColor = new Color(17, 43, 104);
             Color currentColor;
-            for (int i = 0; i < backgroundGradientStrip.Height; i++)
+            for (int i = 0; i < backgroundWaterGradientStrip.Height; i++)
             {
-                float ratio = Math2.Map(i, 0f, backgroundGradientStrip.Height, 0f, 1.0f);
+                float ratio = Math2.Map(i, 0f, backgroundWaterGradientStrip.Height, 0f, 1.0f);
 
                 currentColor = Color.Lerp(startColor, finishColor, ratio);
-                DrawMe.Pixel(backgroundGradientStrip, 0, i, currentColor);
+                DrawMe.Pixel(backgroundWaterGradientStrip, 0, i, currentColor);
+            }
+
+            /*
+             * Build Background Gradient
+             */
+            backgroundSkyGradientStrip = new Texture2D(Graphics.GraphicsDevice, 1, Graphics.PreferredBackBufferHeight / 2);
+
+            startColor = new Color(61, 28, 111);
+            finishColor = new Color(158, 98, 123);
+            for (int i = 0; i < backgroundSkyGradientStrip.Height; i++)
+            {
+                float ratio = Math2.Map(i, 0f, backgroundSkyGradientStrip.Height, 0f, 1.0f);
+
+                currentColor = Color.Lerp(startColor, finishColor, ratio);
+                DrawMe.Pixel(backgroundSkyGradientStrip, 0, i, currentColor);
             }
 
             ContentLoaded = true;
@@ -212,7 +234,7 @@ namespace TDJGame
             tilemapTexture = null;
             level = null;
             pixel = null;
-            backgroundGradientStrip = null;
+            backgroundWaterGradientStrip = null;
             energyBar = null;
             healthBar = null;
             player = null;
@@ -227,22 +249,37 @@ namespace TDJGame
             /*
              * Input State refresh
              */
+            #region [System Status Refresh]
+
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
-            if (kState.IsKeyDown(Keys.Q))
+            if (kState.IsKeyDown(Keys.Up))
             {
-                player.StartBlinking(gameTime);
+                c += 0.1f;
             }
+            if (kState.IsKeyDown(Keys.Down))
+            {
+                c -= 0.1f;
+            }
+            if (kState.IsKeyDown(Keys.NumPad1))
+            {
+                a += 0.1f;
+            }
+            if (kState.IsKeyDown(Keys.NumPad2))
+            {
+                a -= 0.1f;
+            }
+            #endregion
 
             /*
-             * Player Update
+             * First of all, we update the player
+             * and other sprites velocity vectors
              */
-            player.UpdateMotion(gameTime, kState, level);
+            #region [Update Sprites Velocity and Position]
 
-            /*
-             * AI (lol) Update
-             */
+            player.UpdateMotion(gameTime, kState);
+
             foreach (Sprite s in enemies)
             {
                 if (s.Alive)
@@ -255,41 +292,36 @@ namespace TDJGame
                     }
                 }
             }
-            //foreach (Sprite s in pufferFish)
-            //{
-            //    if (s.Alive)
-            //    {
-            //        s.Update(gameTime);
 
-            //        if (Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
-            //        {
-            //            player.ReceiveDamage(s.Damage);
-            //            player.StartBlinking(gameTime);
-            //        }
-            //    }
-            //}
+            #endregion
+
+            /*
+             * Because the hazards may cause velocity changes,
+             * we overlap the player with them, BEFORE checking
+             * for collisions with the world.
+             */
+            #region [Hazards Overlap]
 
             foreach (Tile spike in spikesPointingDown)
             {
-                if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
+                if (Physics.Overlap(spike, player) && !player.IsBlinking)
                 {
                     TriggerPlayerHurt(gameTime, spike);
                 }
             }
             foreach (Tile spike in spikesPointingUp)
             {
-                if (Physics.Overlap(spike, player) && !player.IsBlinking)  // when blinking, take no damage
+                if (Physics.Overlap(spike, player) && !player.IsBlinking)
                 {
                     TriggerPlayerHurt(gameTime, spike);
                 }
             }
 
-            foreach (ParticleEmitter p in particleEmitters)
-                p.Update(gameTime);
-
             /*
              * Player Projectiles
              */
+            player.UpdateProjectiles(gameTime, kState);
+
             foreach (Bullet b in player.Bullets)
             {
                 if (b.Alive)
@@ -309,7 +341,7 @@ namespace TDJGame
                             {
                                 b.Kill();
                                 s.ReceiveDamage(b.Damage);
-                                s.StartBlinking(gameTime);                                
+                                s.StartBlinking(gameTime);
                                 // we should remove dead actors from the list
 
                             }
@@ -357,24 +389,72 @@ namespace TDJGame
                 }
             }
 
+            #endregion
+            
             /*
-             * UI Update
+             * Next up, we have the world collisions
+             * and resolution.
              */
+            #region [World Collisions]
+
+            player.UpdateCollisions(gameTime, level);
+
+            #endregion
+
+            /*
+             * Particle Emitters, background assets, UI, etc..
+             */
+            #region [ Secondary Assets ]
+
+            // water waves
+            float count = 1f;
+            foreach(Tile t in topWaterTiles)
+            {
+                float x = (float)gameTime.TotalGameTime.TotalMilliseconds;
+                float phaseShift = (count / topWaterTiles.Count) * (float)Math.PI * c;
+                float freq = 0.005f;
+                float amp = a;
+
+                // low freq motion, sin wave 1
+                t.Body.Y = Math2.SinWave((x * freq - phaseShift), amp);
+
+                count++;
+            }
+
+            foreach (ParticleEmitter p in backgroundParticles)
+            {
+                p.Update(gameTime);
+                p.ForEachParticle(KillOutOfBoundsParticle);
+            }
+
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
             camera.Position = new Vector2(player.Body.Position.X + player.Body.Bounds.HalfWidth, player.Body.Position.Y + player.Body.Bounds.HalfHeight);
+
+            // clamp camera position
+            float halfscreenwidth = Graphics.PreferredBackBufferWidth / 2f;
+            float halfscreenheight = Graphics.PreferredBackBufferHeight / 2f;
+            camera.Position.X = MathHelper.Clamp(camera.Position.X, halfscreenwidth / camera.Zoom, (level.Width * level.TileWidth) - (halfscreenwidth / camera.Zoom));
+            camera.Position.Y = MathHelper.Clamp(camera.Position.Y, -1000f, (level.Height * level.TileHeight) - (halfscreenheight / camera.Zoom));
+
             camera.Update(gameTime, Graphics.GraphicsDevice);
 
+            #endregion
+
             /*
-             * End Condition
+             * Game resolution
              */
+            #region [ Game Resolution and other checks ]
+
             if (!player.Alive)
             {
                 // show end game screen
                 // now we will just restart this state
                 StateManager.Instance.StartGameState("FeatureTestMap");
             }
+
+            #endregion
 
         }
 
@@ -385,54 +465,75 @@ namespace TDJGame
 
             graphicsDevice.Clear(Color.CornflowerBlue);
 
-            /*
-             * Background
-             */
+            #region [Layer 0 - Behind World Map - Static]
+
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
-            spriteBatch.Draw(backgroundGradientStrip, new Rectangle(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), Color.White);
+
+            Color depthbasedtint = Color.White;
+            float multiplyer = (1f - player.Body.Y / (level.Height * level.TileHeight));
+
+            if (multiplyer >= 1f)
+                multiplyer = 1f;
+
+            byte colorvalue = (byte)(255f * multiplyer);
+
+            depthbasedtint.R = colorvalue;
+            depthbasedtint.G = colorvalue;
+            depthbasedtint.B = colorvalue;
+            spriteBatch.Draw(backgroundWaterGradientStrip, new Rectangle(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), depthbasedtint);
+
+            Console.WriteLine(1f - player.Body.Y / (level.Height * level.TileHeight));
+
+            Vector2 skypos = camera.GetWorldToScreenPosition(new Vector2(0, 3f));
+            spriteBatch.Draw(backgroundSkyGradientStrip, new Rectangle(0, (int)skypos.Y - Graphics.PreferredBackBufferHeight, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), Color.White);
+
             spriteBatch.End();
 
-            /*
-             * World Render
-             */
+            #endregion
+
+            #region [Layer 1 - World Map - Camera]
+
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.Transform);
 
-            foreach (ParticleEmitter p in particleEmitters)
-                p.Draw(gameTime, spriteBatch);
+            // beackground tiles
+            level.Layers[0].Draw(gameTime, spriteBatch);
 
-            level.Draw(gameTime, spriteBatch);
+            // background particle effects
+            foreach (ParticleEmitter p in backgroundParticles)
+            {
+                p.Draw(gameTime, spriteBatch);
+            }
+
+            // world tiles
+            level.Layers[1].Draw(gameTime, spriteBatch);
+
+            // enemies
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);
-                //DrawBodyShape(s, spriteBatch, new Color(0, 150, 0, 150));
             }
 
-            foreach (Sprite s in spikesPointingDown)
-            {
-                //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
-            }
-            foreach (Sprite s in spikesPointingUp)
-            {
-                //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
-            }
-
+            // player
             player.Draw(gameTime, spriteBatch);
-            //DrawBodyShape(player, spriteBatch, new Color(0, 0, 150, 150));
 
             spriteBatch.End();
 
-            /* 
-             * GUI render
-             */
+            #endregion
+
+            #region [Layer 2 - UI - Static]
+
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             energyBar.Draw(spriteBatch, gameTime);
             healthBar.Draw(spriteBatch, gameTime);
-            //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
-            spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
-            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
+
+            //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
+            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)} {c},{a}", Vector2.Zero, Color.LightGreen);
+            spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
 
             spriteBatch.End();
+
+            #endregion
 
         }
 
@@ -440,19 +541,50 @@ namespace TDJGame
         {
             //player.ReceiveDamage(theHurtingSprite.Damage);
             player.StartBlinking(gameTime);
-            //camera.ActivateShake(gameTime, 350, 8, 0.02f);
+            camera.ActivateShake(gameTime, 250, 6, 0.015f);
             player.ApplyKnockBack(theHurtingSprite);
         }
 
-        /*
-         * SERIOUS MEMORY LEAK HERE!
-         */
+        public int KillOutOfBoundsParticle(Particle p)
+        {
+
+            if(p.Body.Y <= 0f)
+            {
+                p.Kill();
+            }
+
+            return 0;
+
+        }
+
         void DrawBodyShape(Sprite sprite, SpriteBatch spriteBatch, Color color)
         {
-            Texture2D texture = new Texture2D(Graphics.GraphicsDevice, (int)sprite.Body.CollisionRect.Width, (int)sprite.Body.CollisionRect.Height);
-            DrawMe.Fill(texture, color);
+            
+            spriteBatch.Draw(pixel, new Rectangle((int)sprite.Body.CollisionRect.Position.X,
+                                                  (int)sprite.Body.CollisionRect.Position.Y,
+                                                  (int)sprite.Body.CollisionRect.Width,
+                                                  (int)sprite.Body.CollisionRect.Height),  color);
+        }
 
-            spriteBatch.Draw(texture, sprite.Body.CollisionRect.Position, Color.White);
+        void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color)
+        {
+            Vector2 edge = end - start;
+
+            float angle = (float)Math.Atan2(edge.Y, edge.X);
+
+            spriteBatch.Draw(pixel,
+                new Rectangle(
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(),
+                    1),
+                null,
+                color,
+                angle,
+                new Vector2(0, 0),
+                SpriteEffects.None,
+                0);
+
         }
 
     }
