@@ -375,6 +375,8 @@ namespace TDJGame
 
             player.UpdateCollisions(gameTime, level);
 
+            RepositionOutOfBoundsPlayer(gameTime);
+
             #endregion
 
             /*
@@ -537,6 +539,25 @@ namespace TDJGame
 
             return 0;
 
+        }
+
+        public void RepositionOutOfBoundsPlayer(GameTime gameTime)
+        {
+
+            float levelWidth = level.Width * level.TileWidth;
+            float levelHeight = level.Height * level.TileHeight;
+
+            if(player.Body.X < 0 || player.Body.X > levelWidth || player.Body.Y > levelHeight)
+            {
+                player.Body.X = 16 * 3;
+                player.Body.Y = 16 * 3;
+
+                player.Floating = true;
+                player.Energy = player.MaxEnergy;
+
+                player.StartBlinking(gameTime);
+
+            }
         }
 
         void DrawBodyShape(Sprite sprite, SpriteBatch spriteBatch, Color color)
