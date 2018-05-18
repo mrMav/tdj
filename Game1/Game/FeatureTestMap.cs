@@ -78,12 +78,15 @@ namespace TDJGame
              * Player init
              */
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
-            player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);
+            player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);  // woman
+            player.Animations.CurrentFrame = new Frame(0, 144, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
-            player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
+            //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 7;
             player.Body.Y = 16 * 5;
-            player.Body.SetSize(16, 32, 0, 0);
+            player.Body.SetSize(16, 32, 0, 0);  // woman
+            player.Body.SetSize(10, 26, 11, 3);  // actual player
+
             //player.Animations.Play("woman-run");
 
             /*
@@ -251,6 +254,7 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
+            
             /*
              * Input State refresh
              */
@@ -386,8 +390,8 @@ namespace TDJGame
              */
             #region [World Collisions]
 
-            player.UpdateCollisions(gameTime, level);
-
+            bool cameraShakeResponse = player.UpdateCollisions(gameTime, level);
+            
             RepositionOutOfBoundsPlayer(gameTime);
 
             #endregion
@@ -430,6 +434,13 @@ namespace TDJGame
 
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
+
+            if(cameraShakeResponse && !camera.Shaking)
+            {
+                //camera.ActivateShake(gameTime, 250f, 4f, 0.05f, true, 0.01f); // static
+                camera.ActivateShake(gameTime, 250f, Math.Abs(player.Body.DeltaY()) * 4, 0.05f, true, 0.01f); // based on delta
+                Console.WriteLine(Math.Abs(player.Body.DeltaY()));
+            }
 
             camera.Position = new Vector2(player.Body.Position.X + player.Body.Bounds.HalfWidth, player.Body.Position.Y + player.Body.Bounds.HalfHeight);
 
@@ -525,6 +536,7 @@ namespace TDJGame
 
             // player
             player.Draw(gameTime, spriteBatch);
+            //DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
 
             spriteBatch.End();
 

@@ -9,7 +9,7 @@ namespace Engine.Physics
     /// </summary>
     public class Physics
     {
-        public static void Collide(Sprite a, Sprite b, int side)
+        public static bool Collide(Sprite a, Sprite b, int side)
         {
 
             a.Body.UpdateCollisionRect();
@@ -26,7 +26,12 @@ namespace Engine.Physics
                 SetCollisionSide(intersection, a.Body, b.Body);
 
                 AABBPenetrationCollisionResponse(intersection, a.Body, side);
+
+                return true;
+
             }
+
+            return false;
 
         }
 

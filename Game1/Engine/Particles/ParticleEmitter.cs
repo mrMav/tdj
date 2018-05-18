@@ -139,12 +139,10 @@ namespace Engine.Particles
         public void MakeRandomParticles(Texture2D particleTexture, Rectangle[] rects)
         {
             Particles = new Particle[MaxParticles];
-
-            Random rnd = new Random();
-
+            
             for (int i = 0; i < MaxParticles; i++)
             {
-                Rectangle picked = rects[rnd.Next(0, rects.Length - 1)];
+                Rectangle picked = rects[Rnd.Next(0, rects.Length)];
 
                 Particles[i] = new Particle(State, particleTexture, new Vector2(0, 0), picked.Width, picked.Height);
                 Particles[i].Spawner = this;

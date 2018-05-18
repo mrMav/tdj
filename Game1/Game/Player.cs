@@ -37,7 +37,8 @@ namespace TDJGame
 
         public List<Bullet> Bullets;
         public Vector2 Size;
-        public ParticleEmitter particleEmitter;
+        public ParticleEmitter movementParticleEmitter;
+        public ParticleEmitter anchorParticleEmitter;
 
         // 1 right -1 left
         public int FacingDirection = 1;
@@ -75,19 +76,34 @@ namespace TDJGame
                 Bullets.Add(b);
             }
 
-            particleEmitter = new ParticleEmitter(State, 0, 0, 128);
-            particleEmitter.EmitterBox.Resize(1, 4);
-            particleEmitter.MakeParticles(texture, 16, 16);
-            particleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
-            particleEmitter.SetAcceleration(0, -0.005f);
-            particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
-            particleEmitter.YVelocityVariationRange = new Vector2(-40f, 40f);
-            particleEmitter.SetTextureCropRectangle(new Rectangle(3 * 16, 6 * 16, 16, 16));
-            particleEmitter.SpawnRate = 40f;
-            particleEmitter.ParticleLifespanMilliseconds = 750f;
-            particleEmitter.ParticleLifespanVariationMilliseconds = 50f;
-            particleEmitter.InitialScale = 0.5f;
-            particleEmitter.FinalScale = 1.1f;
+            movementParticleEmitter = new ParticleEmitter(State, 0, 0, 128);
+            movementParticleEmitter.EmitterBox.Resize(1, 4);
+            movementParticleEmitter.MakeParticles(texture, 16, 16);
+            movementParticleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
+            movementParticleEmitter.SetAcceleration(0, -0.005f);
+            movementParticleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
+            movementParticleEmitter.YVelocityVariationRange = new Vector2(-40f, 40f);
+            movementParticleEmitter.SetTextureCropRectangle(new Rectangle(3 * 16, 6 * 16, 16, 16));
+            movementParticleEmitter.SpawnRate = 40f;
+            movementParticleEmitter.ParticleLifespanMilliseconds = 750f;
+            movementParticleEmitter.ParticleLifespanVariationMilliseconds = 50f;
+            movementParticleEmitter.InitialScale = 0.5f;
+            movementParticleEmitter.FinalScale = 1.1f;
+
+            anchorParticleEmitter = new ParticleEmitter(State, 0, 0, 10);
+            anchorParticleEmitter.EmitterBox.Resize(1, 4);
+            anchorParticleEmitter.MakeRandomParticles(texture, new Rectangle[] { new Rectangle(0, 80, 16, 16), new Rectangle(16, 80, 16, 16) });
+            float dispersion = 200f;
+            anchorParticleEmitter.XVelocityVariationRange = new Vector2(-dispersion, dispersion);
+            anchorParticleEmitter.YVelocityVariationRange = new Vector2(-dispersion, dispersion);
+            anchorParticleEmitter.SpawnRate = 0f;
+            anchorParticleEmitter.ParticleLifespanMilliseconds = 750f;
+            anchorParticleEmitter.ParticleLifespanVariationMilliseconds = 100f;
+            anchorParticleEmitter.InitialScale = 0.5f;
+            anchorParticleEmitter.FinalScale = 0.1f;
+            anchorParticleEmitter.Burst = true;
+            anchorParticleEmitter.ParticlesPerBurst = 5;
+            anchorParticleEmitter.Activated = false;
 
             Floating = true;
 
@@ -112,33 +128,34 @@ namespace TDJGame
                     {
                         this.Body.Velocity.X -= this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = -1;
-                        this.particleEmitter.Activated = true;                        
+                        this.movementParticleEmitter.Activated = true;                        
                     }
                     // move right
                     if (keyboardState.IsKeyDown(Keys.D))
                     {
                         this.Body.Velocity.X += this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = 1;
-                        this.particleEmitter.Activated = true;
+                        this.movementParticleEmitter.Activated = true;
                     }
 
                     if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
                     {
-                        Press = true;
-                        
+                        Press = true;                        
                     }
 
                     if (Press && keyboardState.IsKeyUp(Keys.Space) && !Floating) //Switch entre estados
                     {
                         Floating = !Floating;
                         Press = false;
-
+                        anchorParticleEmitter.Activated = true;
                     }
                     if (Press && keyboardState.IsKeyUp(Keys.Space) && Floating) //Switch entre estados
                     {
                         Floating = !Floating;
                         Press = false;
                         Energy -= 25f; // mudar para n remover valor quando player vai para cima
+                        anchorParticleEmitter.Activated = true;
+
                     }
 
                     /* Floating */
@@ -211,8 +228,11 @@ namespace TDJGame
             
         }
 
-        public void UpdateCollisions(GameTime gameTime, Level level)
+        public bool UpdateCollisions(GameTime gameTime, Level level)
         {
+
+            bool CameraShakeResponse = false;
+
             Body.PreCollisionUpdate(gameTime);
 
             // apply x velocity
@@ -228,18 +248,29 @@ namespace TDJGame
             Body.Y += Body.Velocity.Y;
 
             // solve y collisions
+            bool collided = false;
             for (int i = 0; i < level.CollidableTiles.Count; i++)
             {
-                Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
+                collided = Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y                                
+
+                //if the player was moving down:
+                if (collided && Body.MovingDown)
+                {
+                    CameraShakeResponse = true;
+                }
+
             }
 
             // bound to world
-            if(Body.Y < -16f)
+            if (Body.Y < -16f)
             {
                 Body.Y = -16f;
             }
 
             Body.Update(gameTime);
+
+            return CameraShakeResponse;
+
         }
 
         public void UpdateProjectiles(GameTime gameTime, KeyboardState keyboardState)
@@ -248,11 +279,16 @@ namespace TDJGame
             
             if(Alive)
             {
-                this.particleEmitter.Update(gameTime);
-                this.particleEmitter.ForEachParticle(KillOutOfBoundsParticle);
-                this.particleEmitter.EmitterBox.X = Body.X + 8;
-                this.particleEmitter.EmitterBox.Y = Body.Y + 16;
-                this.particleEmitter.Activated = false;
+                this.movementParticleEmitter.Update(gameTime);
+                this.movementParticleEmitter.ForEachParticle(KillOutOfBoundsParticle);
+                this.movementParticleEmitter.EmitterBox.X = Body.X + 8;
+                this.movementParticleEmitter.EmitterBox.Y = Body.Y + 16;
+                this.movementParticleEmitter.Activated = false;
+
+                this.anchorParticleEmitter.Update(gameTime);
+                this.anchorParticleEmitter.EmitterBox.X = Body.X + 8;
+                this.anchorParticleEmitter.EmitterBox.Y = Body.Y + 16;
+                this.anchorParticleEmitter.Activated = false;
             }
 
             if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
@@ -335,7 +371,7 @@ namespace TDJGame
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            this.particleEmitter.Draw(gameTime, spriteBatch);
+            this.movementParticleEmitter.Draw(gameTime, spriteBatch);
 
             if (Visible && Alive)
             {
@@ -364,6 +400,9 @@ namespace TDJGame
                     b.Draw(gameTime, spriteBatch);
                 }
             }
+
+            this.anchorParticleEmitter.Draw(gameTime, spriteBatch);
+
 
         }
 
