@@ -65,6 +65,11 @@ namespace Engine.Particles
                 if(InitialScale != FinalScale)
                     Scale = Math2.Map((float)MillisecondsAfterSpawn, 0f, (float)LifespanMilliseconds, InitialScale, FinalScale);
 
+                Tint.A = (byte)(255 * (1f - percent));
+                Tint.R = Tint.A;
+                Tint.G = Tint.A;
+                Tint.B = Tint.A;
+
             }
 
             if (MillisecondsAfterSpawn >= LifespanMilliseconds)

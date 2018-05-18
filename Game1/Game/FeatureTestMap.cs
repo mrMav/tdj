@@ -35,8 +35,6 @@ namespace TDJGame
         List<Tile> spikesPointingUp;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
-        float c = 19.7f;
-        float a = 1f;
         SoundEffect bubble;
 
         #endregion
@@ -218,12 +216,6 @@ namespace TDJGame
             ContentLoaded = true;
         }
 
-        public int ChangeSpriteTintBlue(Sprite s)
-        {
-            s.Tint = new Color(17, 43, 104, 20);
-            return 0;
-        }
-
         public override void UnloadContent()
         {
             base.UnloadContent();
@@ -254,22 +246,6 @@ namespace TDJGame
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
-            if (kState.IsKeyDown(Keys.Up))
-            {
-                c += 0.1f;
-            }
-            if (kState.IsKeyDown(Keys.Down))
-            {
-                c -= 0.1f;
-            }
-            if (kState.IsKeyDown(Keys.NumPad1))
-            {
-                a += 0.1f;
-            }
-            if (kState.IsKeyDown(Keys.NumPad2))
-            {
-                a -= 0.1f;
-            }
             #endregion
 
             /*
@@ -411,9 +387,9 @@ namespace TDJGame
             foreach(Tile t in topWaterTiles)
             {
                 float x = (float)gameTime.TotalGameTime.TotalMilliseconds;
-                float phaseShift = (count / topWaterTiles.Count) * (float)Math.PI * c;
+                float phaseShift = (count / topWaterTiles.Count) * (float)Math.PI * 19.7f;
                 float freq = 0.005f;
-                float amp = a;
+                float amp = 1f;
 
                 // low freq motion, sin wave 1
                 t.Body.Y = Math2.SinWave((x * freq - phaseShift), amp);
@@ -528,7 +504,7 @@ namespace TDJGame
             healthBar.Draw(spriteBatch, gameTime);
 
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
-            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)} {c},{a}", Vector2.Zero, Color.LightGreen);
+            spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
             spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
 
             spriteBatch.End();
@@ -543,6 +519,12 @@ namespace TDJGame
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
             player.ApplyKnockBack(theHurtingSprite);
+        }
+
+        public int ChangeSpriteTintBlue(Sprite s)
+        {
+            s.Tint = new Color(255, 255, 255, 255);
+            return 0;
         }
 
         public int KillOutOfBoundsParticle(Particle p)
