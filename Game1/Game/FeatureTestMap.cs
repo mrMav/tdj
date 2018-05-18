@@ -36,6 +36,7 @@ namespace TDJGame
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
+        Trigger endLevelTriggerAABB;
 
         #endregion
 
@@ -159,6 +160,15 @@ namespace TDJGame
 
                     Console.WriteLine("added particles");
 
+                }
+                else if(obj.Name.ToLower() == "player_spawn")
+                {
+                    player.Body.X = obj.X;
+                    player.Body.Y = obj.Y;
+                }
+                else if(obj.Name.ToLower() == "end_level_trigger")
+                {
+                    endLevelTriggerAABB = new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value"));
                 }
 
             }
@@ -445,6 +455,11 @@ namespace TDJGame
                 StateManager.Instance.StartGameState("FeatureTestMap");
             }
 
+            if(Physics.Overlap(player.Body.Bounds, endLevelTriggerAABB))
+            {
+                StateManager.Instance.StartGameState(endLevelTriggerAABB.Value);
+            }
+
             #endregion
 
         }
@@ -558,6 +573,11 @@ namespace TDJGame
 
         }
 
+        /// <summary>
+        /// This functions will be called to detect if the player glitched out of the world.
+        /// It's necessary to prevent unknown bugs from breaking the user experience.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void RepositionOutOfBoundsPlayer(GameTime gameTime)
         {
 
@@ -566,8 +586,15 @@ namespace TDJGame
 
             if(player.Body.X < 0 || player.Body.X > levelWidth || player.Body.Y > levelHeight)
             {
-                player.Body.X = 16 * 3;
-                player.Body.Y = 16 * 3;
+                
+                foreach(TiledObject obj in level.Objects)
+                {
+                    if(obj.Name.ToLower() == "player_spawn")
+                    {
+                        player.Body.X = obj.X;
+                        player.Body.Y = obj.Y;
+                    }
+                }
 
                 player.Floating = true;
                 player.Energy = player.MaxEnergy;

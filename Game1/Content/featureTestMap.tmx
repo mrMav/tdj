@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="48" tilewidth="16" tileheight="16" infinite="0" nextobjectid="39">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="48" tilewidth="16" tileheight="16" infinite="0" nextobjectid="40">
  <tileset firstgid="1" name="sample" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="spritesheet-jn.png" width="256" height="256"/>
  </tileset>
@@ -193,8 +193,13 @@
   <object id="36" name="goldfish" x="909.5" y="136">
    <point/>
   </object>
-  <object id="37" name="player_spawn" x="79.6667" y="32">
+  <object id="37" name="player_spawn" x="79.8333" y="32.4167">
    <point/>
+  </object>
+  <object id="39" name="end_level_trigger" x="850.333" y="-58.3333" width="91.6667" height="73">
+   <properties>
+    <property name="value" value="featureTestMap"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

@@ -67,6 +67,7 @@
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
+    <Compile Include="Game\Trigger.cs" />
     <Compile Include="Game\TurtleX.cs" />
     <Compile Include="Game\PufferFish.cs" />
     <Compile Include="Game\TestAnimations.cs" />
