@@ -9,6 +9,7 @@ using System;
 using Engine.Animations;
 using TDJGame.Utils;
 using Microsoft.Xna.Framework.Audio;
+using Engine.Particles;
 
 namespace TDJGame
 {
@@ -36,6 +37,7 @@ namespace TDJGame
 
         public List<Bullet> Bullets;
         public Vector2 Size;
+        public ParticleEmitter particleEmitter;
 
         // 1 right -1 left
         public int FacingDirection = 1;
@@ -73,6 +75,20 @@ namespace TDJGame
                 Bullets.Add(b);
             }
 
+            particleEmitter = new ParticleEmitter(State, 0, 0, 128);
+            particleEmitter.EmitterBox.Resize(1, 4);
+            particleEmitter.MakeParticles(texture, 16, 16);
+            particleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
+            particleEmitter.SetAcceleration(0, -0.005f);
+            particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
+            particleEmitter.YVelocityVariationRange = new Vector2(-40f, 40f);
+            particleEmitter.SetTextureCropRectangle(new Rectangle(3 * 16, 6 * 16, 16, 16));
+            particleEmitter.SpawnRate = 40f;
+            particleEmitter.ParticleLifespanMilliseconds = 750f;
+            particleEmitter.ParticleLifespanVariationMilliseconds = 50f;
+            particleEmitter.InitialScale = 0.5f;
+            particleEmitter.FinalScale = 1.1f;
+
             Floating = true;
 
         }
@@ -96,12 +112,14 @@ namespace TDJGame
                     {
                         this.Body.Velocity.X -= this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = -1;
+                        this.particleEmitter.Activated = true;                        
                     }
                     // move right
                     if (keyboardState.IsKeyDown(Keys.D))
                     {
                         this.Body.Velocity.X += this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = 1;
+                        this.particleEmitter.Activated = true;
                     }
 
                     if (keyboardState.IsKeyDown(Keys.Space)) // Basicly trigger
@@ -226,7 +244,17 @@ namespace TDJGame
 
         public void UpdateProjectiles(GameTime gameTime, KeyboardState keyboardState)
         {
+
             
+            if(Alive)
+            {
+                this.particleEmitter.Update(gameTime);
+                this.particleEmitter.ForEachParticle(KillOutOfBoundsParticle);
+                this.particleEmitter.EmitterBox.X = Body.X + 8;
+                this.particleEmitter.EmitterBox.Y = Body.Y + 16;
+                this.particleEmitter.Activated = false;
+            }
+
             if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
             {
 
@@ -279,6 +307,18 @@ namespace TDJGame
 
         }
 
+        public int KillOutOfBoundsParticle(Particle p)
+        {
+
+            if (p.Body.Y <= 0f)
+            {
+                p.Kill();
+            }
+
+            return 0;
+
+        }
+
         public void ApplyKnockBack(Sprite sprite)
         {
 
@@ -294,6 +334,8 @@ namespace TDJGame
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+
+            this.particleEmitter.Draw(gameTime, spriteBatch);
 
             if (Visible && Alive)
             {
