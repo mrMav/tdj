@@ -438,8 +438,8 @@ namespace TDJGame
             if(cameraShakeResponse && !camera.Shaking)
             {
                 //camera.ActivateShake(gameTime, 250f, 4f, 0.05f, true, 0.01f); // static
-                camera.ActivateShake(gameTime, 250f, Math.Abs(player.Body.DeltaY()) * 4, 0.05f, true, 0.01f); // based on delta
-                Console.WriteLine(Math.Abs(player.Body.DeltaY()));
+                camera.ActivateShake(gameTime, 250f, Math.Abs(player.Body.DeltaY()) * 3, 0.05f, true, 0.01f); // based on delta
+                //Console.WriteLine(Math.Abs(player.Body.DeltaY()));
             }
 
             camera.Position = new Vector2(player.Body.Position.X + player.Body.Bounds.HalfWidth, player.Body.Position.Y + player.Body.Bounds.HalfHeight);

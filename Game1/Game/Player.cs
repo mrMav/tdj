@@ -147,7 +147,7 @@ namespace TDJGame
                     {
                         Floating = !Floating;
                         Press = false;
-                        anchorParticleEmitter.Activated = true;
+                        //anchorParticleEmitter.Activated = true;
                     }
                     if (Press && keyboardState.IsKeyUp(Keys.Space) && Floating) //Switch entre estados
                     {
