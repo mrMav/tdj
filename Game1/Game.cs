@@ -9,14 +9,14 @@ namespace TDJGame
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class TDJGame : Game
     {
 
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Song menuSong;
-                
-        public Game()
+        
+        public TDJGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -27,7 +27,7 @@ namespace TDJGame
 
         protected override void Initialize()
         {
-
+            graphics.SynchronizeWithVerticalRetrace = true;
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();

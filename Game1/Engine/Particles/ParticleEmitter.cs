@@ -136,6 +136,22 @@ namespace Engine.Particles
             }
         }
 
+        public void MakeRandomParticles(Texture2D particleTexture, Rectangle[] rects)
+        {
+            Particles = new Particle[MaxParticles];
+
+            Random rnd = new Random();
+
+            for (int i = 0; i < MaxParticles; i++)
+            {
+                Rectangle picked = rects[rnd.Next(0, rects.Length - 1)];
+
+                Particles[i] = new Particle(State, particleTexture, new Vector2(0, 0), picked.Width, picked.Height);
+                Particles[i].Spawner = this;
+                Particles[i].Animations.CurrentFrame = new Frame(picked.X, picked.Y, picked.Width, picked.Height);
+            }
+        }
+        
         public void ParseTextureToParticles(Texture2D texture, int offsetX, int offsetY, int cropRectWith, int cropRectHeight, int chunkWidth = 1, int chunkHeight = 1)
         {
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="48" tilewidth="16" tileheight="16" infinite="0" nextobjectid="34">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="64" height="48" tilewidth="16" tileheight="16" infinite="0" nextobjectid="39">
  <tileset firstgid="1" name="sample" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="spritesheet-jn.png" width="256" height="256"/>
  </tileset>
@@ -183,6 +183,18 @@
     <property name="speed" type="float" value="0.1"/>
    </properties>
    <ellipse/>
+  </object>
+  <object id="34" name="goldfish" x="424" y="299.333">
+   <point/>
+  </object>
+  <object id="35" name="goldfish" x="519.5" y="624">
+   <point/>
+  </object>
+  <object id="36" name="goldfish" x="909.5" y="136">
+   <point/>
+  </object>
+  <object id="37" name="player_spawn" x="79.6667" y="32">
+   <point/>
   </object>
  </objectgroup>
 </map>

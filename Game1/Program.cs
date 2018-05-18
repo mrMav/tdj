@@ -13,7 +13,7 @@ namespace TDJGame
         [STAThread]
         static void Main()
         {
-            using (var game = new Game())
+            using (var game = new TDJGame())
                 game.Run();
         }
     }

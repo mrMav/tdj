@@ -35,7 +35,7 @@ namespace TDJGame
         List<Tile> spikesPointingUp;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
-        SoundEffect bubble;
+        List<Sprite> goldenFishs;
 
         #endregion
 
@@ -52,6 +52,7 @@ namespace TDJGame
             frameCounter = new FrameCounter();
             enemies = new List<Sprite>();
             backgroundParticles = new List<ParticleEmitter>();
+            goldenFishs = new List<Sprite>();
 
         }
 
@@ -65,9 +66,7 @@ namespace TDJGame
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
-
-            bubble = this.content.Load<SoundEffect>("sfx_bubble");
-
+            
             /*
              * A single pixel to draw lines and stuff
              */
@@ -130,6 +129,10 @@ namespace TDJGame
 
                     Console.WriteLine("added puffer");
 
+                }
+                else if(obj.Name.ToLower() == "goldfish")
+                {
+                    goldenFishs.Add(new GoldFish(this, tilemapTexture, new Vector2(obj.X, obj.Y), 16, 16));
                 }
                 else if(obj.Name.ToLower() == "particles")
                 {
@@ -405,6 +408,16 @@ namespace TDJGame
                 p.ForEachParticle(KillOutOfBoundsParticle);
             }
 
+            foreach(GoldFish g in goldenFishs)
+            {
+                g.Update(gameTime);
+
+                if(Physics.Overlap(g, player))
+                {
+                    g.Kill();
+                }
+            }
+
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
@@ -460,8 +473,6 @@ namespace TDJGame
             depthbasedtint.B = colorvalue;
             spriteBatch.Draw(backgroundWaterGradientStrip, new Rectangle(0, 0, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), depthbasedtint);
 
-            Console.WriteLine(1f - player.Body.Y / (level.Height * level.TileHeight));
-
             Vector2 skypos = camera.GetWorldToScreenPosition(new Vector2(0, 3f));
             spriteBatch.Draw(backgroundSkyGradientStrip, new Rectangle(0, (int)skypos.Y - Graphics.PreferredBackBufferHeight, Graphics.PreferredBackBufferWidth, Graphics.PreferredBackBufferHeight), Color.White);
 
@@ -487,6 +498,12 @@ namespace TDJGame
 
             // enemies
             foreach (Sprite s in enemies)
+            {
+                s.Draw(gameTime, spriteBatch);
+            }
+
+            // the gold stuff
+            foreach (Sprite s in goldenFishs)
             {
                 s.Draw(gameTime, spriteBatch);
             }
