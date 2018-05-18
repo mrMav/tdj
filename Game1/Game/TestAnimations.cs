@@ -233,7 +233,7 @@ namespace TDJGame
                 emitter1.Activated = true;
             }
 
-            player.UpdateMotion(gameTime, kState, level);
+            player.UpdateMotion(gameTime, kState);
 
             foreach (Sprite s in enemies)
             {

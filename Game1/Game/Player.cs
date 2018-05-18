@@ -18,8 +18,8 @@ namespace TDJGame
         public bool Press;
 
         public float Energy;
-        public float FloatingUpSpeed = 2f;
-        public float FloatingDownSpeed = 4f;
+        public float FloatingUpSpeed;
+        public float FloatingDownSpeed;
         public float MaxEnergy = 200f;
 
         public bool IsBobing = false;
@@ -32,7 +32,7 @@ namespace TDJGame
         public float ShootRate = 80f;
         public float BulletCost = 10f;
 
-        public float KnockBackAmmount = 64f;
+        public float KnockBackAmmount = 12f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -50,9 +50,16 @@ namespace TDJGame
             Body.Velocity.X = 0;
             Body.Velocity.Y = -2f;
 
-            Body.Acceleration.X = 0.1f;
+            FloatingUpSpeed = 0.8f;
+            FloatingDownSpeed = FloatingUpSpeed * 2;
+
+            Body.Acceleration.X = 1f;
             Body.MaxVelocity = 3f;
-            Body.Drag.X = 0.9f;
+            Body.Drag.X = 0.6f;
+            Body.Drag.Y = 0.6f;
+            
+            Body.Enabled = true;
+            Body.Tag = "player";
 
             /* Create a few bullets */
             Bullets = new List<Bullet>();
@@ -70,7 +77,7 @@ namespace TDJGame
 
         }
 
-        public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState, Level level)
+        public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState)
         {
 
             if (Alive)
@@ -82,18 +89,18 @@ namespace TDJGame
 
                     this.Body.PreMovementUpdate(gameTime);
 
-                    float ellapsedTimeMultiplier = 1000f;
+                    float ellapsedTimeMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * 1000f;
 
                     // move left
                     if (keyboardState.IsKeyDown(Keys.A))
                     {
-                        this.Body.Velocity.X -= this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                        this.Body.Velocity.X -= this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = -1;
                     }
                     // move right
                     if (keyboardState.IsKeyDown(Keys.D))
                     {
-                        this.Body.Velocity.X += this.Body.Acceleration.X * (float)gameTime.ElapsedGameTime.TotalSeconds * ellapsedTimeMultiplier;
+                        this.Body.Velocity.X += this.Body.Acceleration.X * ellapsedTimeMultiplier;
                         this.FacingDirection = 1;
                     }
 
@@ -107,9 +114,8 @@ namespace TDJGame
                     {
                         Floating = !Floating;
                         Press = false;
-                        
-                    }
 
+                    }
                     if (Press && keyboardState.IsKeyUp(Keys.Space) && Floating) //Switch entre estados
                     {
                         Floating = !Floating;
@@ -123,7 +129,7 @@ namespace TDJGame
                     {
                         if (Body.Position.Y >= 0)
                         {
-                            Body.Velocity.Y = -FloatingUpSpeed; //Floating Up
+                            Body.Velocity.Y -= FloatingUpSpeed; //Floating Up
                         }
 
                         // bob a bit
@@ -142,22 +148,23 @@ namespace TDJGame
 
                     } else
                     {
-
                         IsBobing = false;
-
                     }
                     
-                    if (!Floating && Body.Position.Y <= State.Graphics.PreferredBackBufferHeight - Size.Y)
+                    if (!Floating)
                     {
+
                         if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
 
                         if (Energy > 25f)
                         {
-                            Body.Velocity.Y = FloatingDownSpeed; //Floating Down
+                            Body.Velocity.Y += FloatingDownSpeed; //Floating Down
                             Energy -= 0.35f;
                         }
                         else
+                        {
                             Floating = true;
+                        }
                     }
 
                     // makes the player bob on surface
@@ -171,99 +178,105 @@ namespace TDJGame
                         Body.Velocity.Y = Math2.SinWave((x * BobFrequency - phaseShift), BobAmplitude);
 
                     }
-                    
-                    /* ---- */
 
-                    // cap velocity
-                    if (Body.Velocity.Length() > Body.MaxVelocity)
+                }
+
+                // apply drag
+                Body.Velocity.X *= Body.Drag.X;
+                Body.Velocity.Y *= Body.Drag.Y;
+
+                // cap velocity
+                Body.Velocity.X = MathHelper.Clamp(Body.Velocity.X, -2f, 2f);
+                Body.Velocity.Y = MathHelper.Clamp(Body.Velocity.Y, -4f, 4f);
+
+            }
+            
+        }
+
+        public void UpdateCollisions(GameTime gameTime, Level level)
+        {
+            Body.PreCollisionUpdate(gameTime);
+
+            // apply x velocity
+            Body.X += Body.Velocity.X;
+
+            // solve x collisions
+            for (int i = 0; i < level.CollidableTiles.Count; i++)
+            {
+                Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
+            }
+
+            // apply y velocity
+            Body.Y += Body.Velocity.Y;
+
+            // solve y collisions
+            for (int i = 0; i < level.CollidableTiles.Count; i++)
+            {
+                Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
+            }
+
+            // bound to world
+            if(Body.Y < -16f)
+            {
+                Body.Y = -16f;
+            }
+
+            Body.Update(gameTime);
+        }
+
+        public void UpdateProjectiles(GameTime gameTime, KeyboardState keyboardState)
+        {
+            
+            if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
+            {
+
+                if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
+                {
+
+                    this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
+
+                    // get the first dead bullet
+                    Bullet b = null;
+                    for (int i = 0; i < Bullets.Count; i++)
                     {
-                        Body.Velocity.Normalize();
-                        Body.Velocity *= Body.MaxVelocity;
-                    }
-
-                    this.Body.PreCollisionUpdate(gameTime);
-
-                    // apply x velocity
-                    this.Body.X += this.Body.Velocity.X;
-
-                    // solve x collisions
-                    for (int i = 0; i < level.CollidableTiles.Count; i++)
-                    {
-                        Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
-                    }
-
-                    // apply y velocity
-                    this.Body.Y += this.Body.Velocity.Y;
-
-                    // solve y collisions
-                    for (int i = 0; i < level.CollidableTiles.Count; i++)
-                    {
-                        Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y
-                    }
-
-                    // apply drag
-                    Body.Velocity.X *= Body.Drag.X;
-                    Body.Velocity.Y = 0;
-
-                    this.Body.Update(gameTime);
-
-                    /* Shooting */
-
-                    if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
-                    {
-
-                        if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
+                        if (!Bullets[i].Alive)
                         {
-
-                            //Console.WriteLine("Shooting at " + gameTime.TotalGameTime.TotalMilliseconds);
-                            this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
-
-                            // get the first dead bullet
-                            Bullet b = null;
-                            for (int i = 0; i < Bullets.Count; i++)
-                            {
-                                if (!Bullets[i].Alive)
-                                {
-                                    b = Bullets[i];
-                                    break;
-                                }
-
-                            }
-
-                            if (b != null)
-                            {
-
-                                Random rnd = new Random();
-                                int YVariation = 4;
-
-                                b.Reset();
-                                b.Revive();
-
-                                b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
-
-                                b.Body.X = Body.X + (FacingDirection > 0 ? 24 : -2);
-                                b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 10;  //TODO: fix 16 offset with final sprites
-
-                                b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
-                                b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
-
-                                // subtract bullet cost to energy
-                                Energy -= BulletCost;
-
-                            }
+                            b = Bullets[i];
+                            break;
                         }
 
                     }
 
-                    foreach (Bullet b in Bullets)
+                    if (b != null)
                     {
-                        b.Update(gameTime);
+
+                        Random rnd = new Random();
+                        int YVariation = 4;
+
+                        b.Reset();
+                        b.Revive();
+
+                        b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+
+                        b.Body.X = Body.X + (FacingDirection > 0 ? 24 : -2);
+                        b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 10;  //TODO: fix 16 offset with final sprites
+
+                        b.Body.Velocity.X = (ShootingVelocity + (rnd.Next(-2, 2) * 0.1f)) * FacingDirection;  // some variation to the speed
+                        b.Body.Velocity.Y = (rnd.Next(-3, -1) * 0.01f);  // make it float a bit
+
+                        // subtract bullet cost to energy
+                        Energy -= BulletCost;
+
                     }
-                    
                 }
 
             }
-            
+
+            foreach (Bullet b in Bullets)
+            {
+                b.Update(gameTime);
+            }
+
         }
 
         public void ApplyKnockBack(Sprite sprite)
@@ -282,7 +295,7 @@ namespace TDJGame
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
 
-            if (Visible)
+            if (Visible && Alive)
             {
                 if (FacingDirection < 0)
                 {

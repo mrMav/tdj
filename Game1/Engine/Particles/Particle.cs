@@ -51,6 +51,8 @@ namespace Engine.Particles
             {
                 MillisecondsAfterSpawn += gameTime.ElapsedGameTime.TotalMilliseconds;
 
+                double percent = MillisecondsAfterSpawn / LifespanMilliseconds;
+
                 Body.Velocity.X += Body.Acceleration.X;
                 Body.Velocity.Y += Body.Acceleration.Y;
                 
