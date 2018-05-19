@@ -105,6 +105,36 @@ namespace TDJGame
                         b.Body.Velocity.X = 0;
                         b.Body.Velocity.Y = ShootingVelocity;
                     }
+
+                    b = null;
+                    // get the first dead bullet                    
+                    for (int i = 0; i < Bullets.Count; i++)
+                    {
+                        if (!Bullets[i].Alive)
+                        {
+                            b = Bullets[i];
+                            break;
+                        }
+
+                    }
+
+                    if (b != null)
+                    {
+
+                        Random rnd = new Random();
+                        int YVariation = 4;
+
+                        b.Reset();
+                        b.Revive();
+
+                        b.ShotAtMilliseconds = gameTime.TotalGameTime.TotalMilliseconds;
+
+                        b.Body.X = Body.X + (FacingDirection > 0 ? 24 : -2);
+                        b.Body.Y = this.Body.Y + rnd.Next(-YVariation, YVariation) + 10;  //TODO: fix 16 offset with final sprites
+
+                        b.Body.Velocity.X = 0;
+                        b.Body.Velocity.Y = ShootingVelocity * -1;
+                    }
                 }
 
                 foreach (Bullet b in Bullets)

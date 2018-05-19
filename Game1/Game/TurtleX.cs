@@ -37,45 +37,6 @@ namespace TDJGame
         {
             base.Update(gameTime);
 
-            //Body.X += Body.Velocity.X;
-            //Body.Y += Body.Velocity.Y;
-
-            //CurrentDistance += Body.Velocity.X;
-
-            //if ((Math.Abs(player.Body.X - Body.X) < detectSight))
-            //{
-            //    if ((Math.Abs(player.Body.X - Body.X) < 30) && (Math.Abs(player.Body.Y - Body.Y) < 30))
-            //    {
-            //        player.ReceiveDamage(10);
-            //        Kill();
-            //    }
-
-            //    if (player.Body.X - Body.X <= 0)
-            //    {
-            //        FacingDirection = 0;
-            //        Body.Velocity.X = -0.7f;
-            //    }
-            //    else if (player.Body.X - Body.X > 0)
-            //    {
-            //        FacingDirection = 1;
-            //        Body.Velocity.X = 0.7f;
-            //    }
-            //}
-
-            //else
-            //{
-            //    if (CurrentDistance <= 0) //arranjar maneira do inimigo começar na posição final do x que é = obj.width ou seja andar no sentido oposto
-            //    {
-            //        FacingDirection = 1;  // go right now
-            //        Body.Velocity.X *= -1;
-            //    }
-            //    else if (CurrentDistance + Body.Bounds.Width >= TravelDistance)
-            //    {
-            //        FacingDirection = -1;  // go left now
-            //        Body.Velocity.X *= -1;
-            //    }
-            //}
-
             if (Alive)
             {
 
