@@ -8,14 +8,14 @@ using Engine.Animations;
 
 namespace TDJGame
 {
-    public class JellyFish : Sprite
+    public class JellyFish : Enemy
     {
         float TravelSpeed;
         Vector2 CenterPoint;
         Vector2 Radius;
         
         public JellyFish(GameState state, Texture2D texture, Vector2 position, int width, int height, Vector2 centerPoint, Vector2 radius, float travelSpeed = 0.5f)
-            : base(state, texture, position, width, height, false)
+            : base(state, texture, position, width, height, 48, 112)
         {
             TravelSpeed = travelSpeed;
 

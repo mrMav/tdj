@@ -152,3 +152,9 @@
 /processorParam:Quality=Best
 /build:sfx_bubble.wav
 
+#begin BubbleNoisesSingle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:BubbleNoisesSingle.wav
+

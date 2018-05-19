@@ -93,6 +93,25 @@ namespace Engine.Animations
 
         }
 
+        public Animation(Sprite parent, string name, Frame[] frames, double frameRate = 60, bool loop = true, bool killOnComplete = false)
+        {
+
+            Parent = parent;
+            Name = name;
+
+            Frames = frames;
+            Delay = 1000 / frameRate;
+
+            KillOnComplete = killOnComplete;
+
+            Loop = loop;
+            LoopCount = 0;
+            IsPlaying = false;
+            FrameIndex = 0;
+            CurrentFrame = null;
+            TimeNextFrame = 0;
+
+        }
         public void Update(GameTime gameTime)
         {
 
@@ -120,7 +139,8 @@ namespace Engine.Animations
 
                 if(KillOnComplete)
                 {
-                    Parent.Kill();
+                    Parent.Alive = false;
+                    Parent.Visible = false;
                 }
 
             }

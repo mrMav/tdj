@@ -68,6 +68,21 @@ namespace Engine.Physics
 
         }
 
+        public static AABB GetOverlapingAABB(Sprite a, Sprite b)
+        {
+
+            a.Body.UpdateCollisionRect();
+            b.Body.UpdateCollisionRect();
+
+            AABB intersection = MinkowskiDifference(a.Body.CollisionRect, b.Body.CollisionRect);
+
+            if (intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0)
+                return intersection;
+            else
+                return null;
+
+        }
+
         public static void AABBPenetrationCollisionResponse(AABB intersection, Body body, int side)
         {
             Vector2 penetration = Vector2.Zero;

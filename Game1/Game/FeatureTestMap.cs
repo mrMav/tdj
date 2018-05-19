@@ -18,7 +18,7 @@ namespace TDJGame
     {
 
         #region [Properties]
-
+        
         Camera2D camera;
         FrameCounter frameCounter;
         SpriteFont font;
@@ -36,7 +36,7 @@ namespace TDJGame
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
-        Trigger endLevelTriggerAABB;
+        List<Trigger> triggers;
 
         #endregion
 
@@ -44,6 +44,7 @@ namespace TDJGame
         {
             Key = key;
             Graphics = graphics;
+
         }
 
         public override void Initialize()
@@ -54,6 +55,8 @@ namespace TDJGame
             enemies = new List<Sprite>();
             backgroundParticles = new List<ParticleEmitter>();
             goldenFishs = new List<Sprite>();
+            triggers = new List<Trigger>();
+            SFX = new Dictionary<string, SoundEffect>();
 
         }
 
@@ -63,7 +66,7 @@ namespace TDJGame
             MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = 2.45f;
+            camera.Zoom = (float)Graphics.PreferredBackBufferHeight  * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
@@ -73,6 +76,12 @@ namespace TDJGame
              */
             pixel = new Texture2D(Graphics.GraphicsDevice, 1, 1);
             DrawMe.Fill(pixel, Color.White);
+
+            /*
+             * Load sfx
+             */
+            SFX.Add("bubble", content.Load<SoundEffect>("sfx_bubble"));
+            SFX.Add("bubble_noise_single", content.Load<SoundEffect>("BubbleNoisesSingle"));
 
             /*
              * Player init
@@ -95,6 +104,7 @@ namespace TDJGame
             XMLLevelLoader XMLloader = new XMLLevelLoader();
             level = XMLloader.LoadLevel(this, @"Content\featureTestMap.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
+
 
             /*
              * parse objects
@@ -169,9 +179,9 @@ namespace TDJGame
                     player.Body.X = obj.X;
                     player.Body.Y = obj.Y;
                 }
-                else if(obj.Name.ToLower() == "end_level_trigger")
+                else if(obj.Name.ToLower() == "change_state_trigger")
                 {
-                    endLevelTriggerAABB = new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value"));
+                    triggers.Add(new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value")));
                 }
 
             }
@@ -249,6 +259,7 @@ namespace TDJGame
             spikesPointingDown = null;
             spikesPointingUp = null;
             enemies = null;
+            SFX = null;
 
         }
 
@@ -275,10 +286,10 @@ namespace TDJGame
 
             foreach (Sprite s in enemies)
             {
+                s.Update(gameTime);
+
                 if (s.Alive)
                 {
-                    s.Update(gameTime);
-
                     if (Physics.Overlap(s, player) && !player.IsBlinking)  // when blinking, take no damage
                     {
                         TriggerPlayerHurt(gameTime, s);
@@ -295,19 +306,30 @@ namespace TDJGame
              */
             #region [Hazards Overlap]
 
-            foreach (Tile spike in spikesPointingDown)
+            if (!player.IsBlinking)
             {
-                if (Physics.Overlap(spike, player) && !player.IsBlinking)
+
+                foreach (Tile spike in spikesPointingDown)
                 {
-                    TriggerPlayerHurt(gameTime, spike);
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;  // breaking at the first overlap
+                                // avoids various knockback forces
+                                // being applied.
+                                // this solved the issue (as far as I tested)
+                                // of glitching through the solid tiles
+                    }
                 }
-            }
-            foreach (Tile spike in spikesPointingUp)
-            {
-                if (Physics.Overlap(spike, player) && !player.IsBlinking)
+                foreach (Tile spike in spikesPointingUp)
                 {
-                    TriggerPlayerHurt(gameTime, spike);
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
                 }
+
             }
 
             /*
@@ -335,7 +357,12 @@ namespace TDJGame
                                 b.Kill();
                                 s.ReceiveDamage(b.Damage);
                                 s.StartBlinking(gameTime);
-                                // we should remove dead actors from the list
+                                
+                                if(!s.Alive)
+                                {
+                                    camera.ActivateShake(gameTime, 150, 6, 0.015f, true, -0.01f);
+                                }
+
 
                             }
                         }
@@ -383,7 +410,7 @@ namespace TDJGame
             }
 
             #endregion
-            
+
             /*
              * Next up, we have the world collisions
              * and resolution.
@@ -391,7 +418,7 @@ namespace TDJGame
             #region [World Collisions]
 
             bool cameraShakeResponse = player.UpdateCollisions(gameTime, level);
-            
+
             RepositionOutOfBoundsPlayer(gameTime);
 
             #endregion
@@ -466,9 +493,12 @@ namespace TDJGame
                 StateManager.Instance.StartGameState("FeatureTestMap");
             }
 
-            if(Physics.Overlap(player.Body.Bounds, endLevelTriggerAABB))
+            foreach (Trigger t in triggers)
             {
-                StateManager.Instance.StartGameState(endLevelTriggerAABB.Value);
+                if (Physics.Overlap(player.Body.Bounds, t))
+                {
+                    StateManager.Instance.StartGameState(t.Value);
+                }
             }
 
             #endregion
@@ -526,7 +556,17 @@ namespace TDJGame
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);
+                //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
+
+            //foreach (Sprite s in spikesPointingDown)
+            //{                
+            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            //}
+            //foreach (Sprite s in spikesPointingUp)
+            //{
+            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            //}
 
             // the gold stuff
             foreach (Sprite s in goldenFishs)

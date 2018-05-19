@@ -39,13 +39,12 @@ namespace TDJGame
         public Vector2 Size;
         public ParticleEmitter movementParticleEmitter;
         public ParticleEmitter anchorParticleEmitter;
-
-        // 1 right -1 left
-        public int FacingDirection = 1;
-
+                
         public Player(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
             : base(state, texture, position, width, height, true)
         {
+
+            FacingDirection = 1;
 
             Energy = MaxEnergy;
             Size = new Vector2(16, 32);
@@ -79,7 +78,7 @@ namespace TDJGame
             movementParticleEmitter = new ParticleEmitter(State, 0, 0, 128);
             movementParticleEmitter.EmitterBox.Resize(1, 4);
             movementParticleEmitter.MakeParticles(texture, 16, 16);
-            movementParticleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
+            movementParticleEmitter.ParticleVelocity = new Vector2(0, 0.01f);
             movementParticleEmitter.SetAcceleration(0, -0.005f);
             movementParticleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
             movementParticleEmitter.YVelocityVariationRange = new Vector2(-40f, 40f);
@@ -91,12 +90,13 @@ namespace TDJGame
             movementParticleEmitter.FinalScale = 1.1f;
 
             anchorParticleEmitter = new ParticleEmitter(State, 0, 0, 10);
-            anchorParticleEmitter.EmitterBox.Resize(1, 4);
+            //anchorParticleEmitter.EmitterBox.Resize(1, 4);
+            anchorParticleEmitter.EmitterBox.Resize(Body.Bounds.Width, Body.Bounds.Height);
             anchorParticleEmitter.MakeRandomParticles(texture, new Rectangle[] { new Rectangle(0, 80, 16, 16), new Rectangle(16, 80, 16, 16) });
             float dispersion = 200f;
             anchorParticleEmitter.XVelocityVariationRange = new Vector2(-dispersion, dispersion);
             anchorParticleEmitter.YVelocityVariationRange = new Vector2(-dispersion, dispersion);
-            anchorParticleEmitter.SpawnRate = 0f;
+            anchorParticleEmitter.SpawnRate = 150f;
             anchorParticleEmitter.ParticleLifespanMilliseconds = 750f;
             anchorParticleEmitter.ParticleLifespanVariationMilliseconds = 100f;
             anchorParticleEmitter.InitialScale = 0.5f;
@@ -118,8 +118,6 @@ namespace TDJGame
 
                 if (this.IsControllable && keyboardState != null)
                 {
-
-                    this.Body.PreMovementUpdate(gameTime);
 
                     float ellapsedTimeMultiplier = (float)gameTime.ElapsedGameTime.TotalSeconds * 1000f;
 
@@ -234,6 +232,7 @@ namespace TDJGame
             bool CameraShakeResponse = false;
 
             Body.PreCollisionUpdate(gameTime);
+            Body.PreMovementUpdate(gameTime);
 
             // apply x velocity
             Body.X += Body.Velocity.X;
@@ -241,7 +240,7 @@ namespace TDJGame
             // solve x collisions
             for (int i = 0; i < level.CollidableTiles.Count; i++)
             {
-                Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
+                Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x                
             }
 
             // apply y velocity
@@ -331,6 +330,13 @@ namespace TDJGame
                         // subtract bullet cost to energy
                         Energy -= BulletCost;
 
+                        float pitch = rnd.Next(-100, 10) * 0.01f;
+
+                        SoundEffect sfx;
+                        State.SFX.TryGetValue("bubble", out sfx);
+                        sfx?.Play(1f, pitch, 0f);
+
+
                     }
                 }
 
@@ -362,36 +368,20 @@ namespace TDJGame
 
             float intersectionAngle = (float)Math.Atan2((sprite.Body.Y - Body.Y), (sprite.Body.X - Body.X));
 
-            // apply 
-            Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
-            Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
-            
+            // apply based on sprite
+            //Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
+            //Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
+
+            Body.Velocity.X = Body.Velocity.X * -10f;
+            Body.Velocity.Y = Body.Velocity.Y * -10f;
+
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            base.Draw(gameTime, spriteBatch);
 
             this.movementParticleEmitter.Draw(gameTime, spriteBatch);
-
-            if (Visible && Alive)
-            {
-                if (FacingDirection < 0)
-                {
-                    spriteBatch.Draw(
-                             Texture,
-                             position: Body.Position,
-                             sourceRectangle: Animations.CurrentFrame.TextureSourceRect,
-                             effects: SpriteEffects.FlipHorizontally,
-                             color: Tint
-                        );
-
-                }
-                else
-                {
-                    spriteBatch.Draw(this.Texture, this.Body.Position, Animations.CurrentFrame.TextureSourceRect, this.Tint);
-                }
-
-            }
 
             foreach (Bullet b in Bullets)
             {
@@ -402,7 +392,6 @@ namespace TDJGame
             }
 
             this.anchorParticleEmitter.Draw(gameTime, spriteBatch);
-
 
         }
 

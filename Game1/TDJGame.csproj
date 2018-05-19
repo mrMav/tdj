@@ -60,6 +60,7 @@
     <Compile Include="Engine\GameState.cs" />
     <Compile Include="Game\Bullet.cs" />
     <Compile Include="Game\CreditsState.cs" />
+    <Compile Include="Game\Enemy.cs" />
     <Compile Include="Game\EnergyBar.cs" />
     <Compile Include="Game\FeatureTestMap.cs" />
     <Compile Include="Game\GoldFish.cs" />
