@@ -14,7 +14,7 @@ namespace TDJGame
     {
         private ParticleEmitter deathParticles;
 
-        public Enemy(GameState state, Texture2D texture, Vector2 position, int width, int height, int xCoordinateParticles = 0, int yCoordinateParticles = 0)
+        public Enemy(GameState state, Texture2D texture, Vector2 position, int width, int height, int xCoordinateParticles = 0, int yCoordinateParticles = 0, int ParticlesSize = 2)
             : base(state, texture, position, width, height, false)
         {
             
@@ -25,7 +25,7 @@ namespace TDJGame
 
             #region [Particles Death Animation]
 
-            int psize = 2;
+            int psize = ParticlesSize;
             int maxp = (int)Math.Pow(width / psize, 2);
             deathParticles = new ParticleEmitter(state, 0, 0, (int)Math.Pow(width / 2, 2));
             deathParticles.ParseTextureToParticles(texture, xCoordinateParticles, yCoordinateParticles, width, height, psize, psize);

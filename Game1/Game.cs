@@ -30,8 +30,8 @@ namespace TDJGame
         protected override void Initialize()
         {
             graphics.SynchronizeWithVerticalRetrace = true;
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
             StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));

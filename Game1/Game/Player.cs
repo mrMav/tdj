@@ -33,7 +33,7 @@ namespace TDJGame
         public float ShootRate = 80f;
         public float BulletCost = 10f;
 
-        public float KnockBackAmmount = 12f;
+        public float KnockBackAmmount = 6f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -111,7 +111,6 @@ namespace TDJGame
 
         public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState)
         {
-
             if (Alive)
             {
                 base.Update(gameTime);
@@ -361,20 +360,27 @@ namespace TDJGame
 
         }
 
-        public void ApplyKnockBack(Sprite sprite)
+        public void ApplyKnockBack(float multiplyer = 10f)
         {
 
             Floating = true;
 
-            float intersectionAngle = (float)Math.Atan2((sprite.Body.Y - Body.Y), (sprite.Body.X - Body.X));
+            Body.Velocity.X = Body.Velocity.X * -multiplyer;
+            Body.Velocity.Y = Body.Velocity.Y * -multiplyer;
+
+        }
+
+        public void ApplyKnockBackBasedOnSprite(Sprite sprite)
+        {
+
+            Floating = true;
 
             // apply based on sprite
-            //Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
-            //Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
+            float intersectionAngle = (float)Math.Atan2((sprite.Body.Y - Body.Y), (sprite.Body.X - Body.X));
 
-            Body.Velocity.X = Body.Velocity.X * -10f;
-            Body.Velocity.Y = Body.Velocity.Y * -10f;
-
+            Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
+            Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
+            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

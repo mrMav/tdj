@@ -144,6 +144,20 @@ namespace TDJGame
                     Console.WriteLine("added puffer");
 
                 }
+                else if (obj.Name.ToLower() == "turtlex")
+                {
+                    Vector2 position = new Vector2(obj.X, obj.Y);
+
+                    float speed = float.Parse(obj.GetProperty("speed"));
+
+                    TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
+                    p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
+
+                    enemies.Add(p);
+
+                    Console.WriteLine("added turtlex");
+
+                }
                 else if(obj.Name.ToLower() == "goldfish")
                 {
                     goldenFishs.Add(new GoldFish(this, tilemapTexture, new Vector2(obj.X, obj.Y), 16, 16));
@@ -286,6 +300,27 @@ namespace TDJGame
 
             foreach (Sprite s in enemies)
             {
+
+                if(s.Body.Tag == "turtlex")
+                {
+                    TurtleX t = (TurtleX)s;
+                    float inflictDamage = t.UpdateMov(gameTime, player);
+
+                    if(inflictDamage > 0f)
+                    {
+                        TriggerPlayerHurt(gameTime, t, inflictDamage);
+                        t.Kill();
+                    }
+
+                    if(inflictDamage == -1f)
+                    {
+                        t.Kill();
+                        camera.ActivateShake(gameTime, 400f, 6, 0.01f, true, -0.02f);
+                    }
+
+                    continue;
+                }
+
                 s.Update(gameTime);
 
                 if (s.Alive)
@@ -491,6 +526,7 @@ namespace TDJGame
                 // show end game screen
                 // now we will just restart this state
                 StateManager.Instance.StartGameState("FeatureTestMap");
+                return;
             }
 
             foreach (Trigger t in triggers)
@@ -498,6 +534,7 @@ namespace TDJGame
                 if (Physics.Overlap(player.Body.Bounds, t))
                 {
                     StateManager.Instance.StartGameState(t.Value);
+                    return;
                 }
             }
 
@@ -599,12 +636,25 @@ namespace TDJGame
 
         }
 
-        public void TriggerPlayerHurt(GameTime gameTime, Sprite theHurtingSprite)
+        public void TriggerPlayerHurt(GameTime gameTime, Sprite theHurtingSprite = null, float damage = -1f)
         {
-            //player.ReceiveDamage(theHurtingSprite.Damage);
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
-            player.ApplyKnockBack(theHurtingSprite);
+
+            if(damage < 0f)
+            {
+                player.ReceiveDamage(theHurtingSprite.Damage);
+            } else
+            {
+                player.ReceiveDamage(damage);
+                Console.WriteLine("damage: " + damage);
+            }
+            
+            if(theHurtingSprite != null)
+            {
+                player.ApplyKnockBackBasedOnSprite(theHurtingSprite);
+            }
+
         }
 
         public int ChangeSpriteTintBlue(Sprite s)
