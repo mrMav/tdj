@@ -158,3 +158,27 @@
 /processorParam:Quality=Best
 /build:BubbleNoisesSingle.wav
 
+#begin Anchor.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Anchor.wav
+
+#begin Anchor2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Anchor2.wav
+
+#begin Falling.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Falling.wav
+
+#begin Anchor3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Anchor3.wav
+

@@ -152,6 +152,9 @@ namespace TDJGame
                         Press = false;
                         Energy -= 25f; // mudar para n remover valor quando player vai para cima
                         anchorParticleEmitter.Activated = true;
+                        SoundEffect anchor;
+                        State.SFX.TryGetValue("anchor", out anchor);
+                        anchor?.Play(0.5f,-0.9f,0f);
 
                     }
 
@@ -255,6 +258,9 @@ namespace TDJGame
                 if (collided && Body.MovingDown)
                 {
                     CameraShakeResponse = true;
+                    SoundEffect fall;
+                    State.SFX.TryGetValue("fall", out fall);
+                    fall?.Play();
                 }
 
             }

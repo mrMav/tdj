@@ -82,6 +82,8 @@ namespace TDJGame
              */
             SFX.Add("bubble", content.Load<SoundEffect>("sfx_bubble"));
             SFX.Add("bubble_noise_single", content.Load<SoundEffect>("BubbleNoisesSingle"));
+            SFX.Add("anchor", content.Load<SoundEffect>("Anchor"));
+            SFX.Add("fall", content.Load<SoundEffect>("Falling"));
 
             /*
              * Player init
