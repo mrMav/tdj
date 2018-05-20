@@ -72,6 +72,16 @@ namespace Engine.Animations
             return anim;
 
         }
+        public Animation Add(string name, Frame[] frames, int frameRate, bool loop, bool killoncomplete = false)
+        {
+            Animation anim = new Animation(Parent, name, frames, frameRate, loop, killoncomplete);
+
+            Animations.Add(name, anim);
+
+            return anim;
+
+        }
+
 
         public Animation Play(string key)
         {
@@ -79,6 +89,7 @@ namespace Engine.Animations
 
             if (Animations.TryGetValue(key, out anim))
             {
+                //Console.WriteLine("playing anim " + key);
 
                 CurrentAnimation = anim;
                 CurrentAnimation.Reset();
@@ -95,6 +106,8 @@ namespace Engine.Animations
 
             if(CurrentAnimation != null)
             {
+                //Console.WriteLine("updating anim" + CurrentAnimation.Name);
+
                 CurrentAnimation.Update(gameTime);
 
                 CurrentFrame = CurrentAnimation.CurrentFrame;

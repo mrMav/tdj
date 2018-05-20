@@ -33,6 +33,8 @@ namespace Engine.Tiled
             
             this.Tint = Color.White;
 
+            this.FacingDirection = 1;
+
         }
     }
 }

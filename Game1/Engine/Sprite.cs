@@ -33,7 +33,9 @@ namespace Engine
         public bool IsControllable;
         public bool IsBlinking = false;
         public double BlinkingTimer = 0;
-        public double BlinkingInterval = 500;
+        public double BlinkingInterval = 1000;
+
+        public int FacingDirection = 1;
 
         // constructor
         public Sprite(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = false)
@@ -54,7 +56,6 @@ namespace Engine
         // logic update
         public virtual void Update(GameTime gameTime)
         {
-
             Animations.Update(gameTime);
 
             if (IsBlinking)
@@ -86,8 +87,22 @@ namespace Engine
         // render
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if(Visible)
+            if (FacingDirection < 0)
+            {
+
+                spriteBatch.Draw(
+                         Texture,
+                         position: Body.Position,
+                         sourceRectangle: this.Animations.CurrentFrame.TextureSourceRect,
+                         effects: SpriteEffects.FlipHorizontally,
+                         color: Tint
+                    );
+
+            }
+            else
+            {
                 spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
+            }
         }
 
         public virtual void Kill()

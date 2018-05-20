@@ -42,7 +42,7 @@
   </object>
   <object id="13" name="JellyFish" type="Enemy" x="162.75" y="-2.5" width="172.5" height="110">
    <properties>
-    <property name="speed" type="float" value="5"/>
+    <property name="speed" type="float" value="1"/>
    </properties>
    <ellipse/>
   </object>

@@ -3,20 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Engine;
 using Microsoft.Xna.Framework.Media;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class TDJGame : Game
     {
 
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Song menuSong;
-
-        public Game()
+        
+        public TDJGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -27,9 +29,9 @@ namespace TDJGame
 
         protected override void Initialize()
         {
-
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
+            graphics.SynchronizeWithVerticalRetrace = true;
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
             graphics.ApplyChanges();
 
             StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
@@ -39,7 +41,9 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
             StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
             StateManager.Instance.AddGameState(new TestAnimations("TestAnimations", graphics));
-
+            StateManager.Instance.AddGameState(new TestCamera("TestCamera", graphics));
+            StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
+            
             base.Initialize();
         }
 
@@ -53,7 +57,8 @@ namespace TDJGame
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("MenuState");
+            StateManager.Instance.StartGameState("FeatureTestMap");
+
         }
 
         protected override void UnloadContent()

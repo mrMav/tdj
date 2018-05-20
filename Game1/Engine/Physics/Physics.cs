@@ -9,7 +9,7 @@ namespace Engine.Physics
     /// </summary>
     public class Physics
     {
-        public static void Collide(Sprite a, Sprite b, int side)
+        public static bool Collide(Sprite a, Sprite b, int side)
         {
 
             a.Body.UpdateCollisionRect();
@@ -26,7 +26,12 @@ namespace Engine.Physics
                 SetCollisionSide(intersection, a.Body, b.Body);
 
                 AABBPenetrationCollisionResponse(intersection, a.Body, side);
+
+                return true;
+
             }
+
+            return false;
 
         }
 
@@ -51,6 +56,30 @@ namespace Engine.Physics
             AABB intersection = MinkowskiDifference(a.Body.CollisionRect, b.Body.CollisionRect);
 
             return intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0;
+
+        }
+
+        public static bool Overlap(AABB a, AABB b)
+        {
+
+            AABB intersection = MinkowskiDifference(a, b);
+
+            return intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0;
+
+        }
+
+        public static AABB GetOverlapingAABB(Sprite a, Sprite b)
+        {
+
+            a.Body.UpdateCollisionRect();
+            b.Body.UpdateCollisionRect();
+
+            AABB intersection = MinkowskiDifference(a.Body.CollisionRect, b.Body.CollisionRect);
+
+            if (intersection.X < 0 && intersection.X + intersection.Width > 0 && intersection.Y < 0 && intersection.Y + intersection.Height > 0)
+                return intersection;
+            else
+                return null;
 
         }
 

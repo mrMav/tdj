@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace Engine
 {
@@ -18,6 +20,8 @@ namespace Engine
 
         public GraphicsDeviceManager Graphics { get; set; }
 
+        public Dictionary<string, SoundEffect> SFX;
+
         #endregion
         public GameState() { }
 
@@ -25,6 +29,8 @@ namespace Engine
         {
             this.Key = key;
             this.Game = game;
+
+            SFX = new Dictionary<string, SoundEffect>();
 
             this.ContentLoaded = false;
         }

@@ -32,6 +32,9 @@ namespace TDJGame
         ParticleEmitter playerDeathEmitter;
         double updateTime;
 
+        float startedShakeMilliseconds = 0;
+        float currentShakeMilliseconds = 0;
+
         #endregion
 
         public TestAnimations(string key, GraphicsDeviceManager graphics)
@@ -45,7 +48,7 @@ namespace TDJGame
             base.Initialize();
 
             enemies = new List<Sprite>();
-
+            
         }
 
         public override void LoadContent()
@@ -206,7 +209,13 @@ namespace TDJGame
                 Camera.Position.Y += dist.Y * 0.2f;
             }
 
-            Camera.GetTransform(Graphics.GraphicsDevice);
+            if (kState.IsKeyDown(Keys.S))
+            {
+                if (!Camera.Shaking)
+                    Camera.ActivateShake(gameTime);
+            }
+
+            Camera.Update(gameTime, Graphics.GraphicsDevice);
 
             #endregion
 
@@ -224,13 +233,26 @@ namespace TDJGame
                 emitter1.Activated = true;
             }
 
-            player.UpdateMotion(gameTime, kState, level);
+            player.UpdateMotion(gameTime, kState);
 
             foreach (Sprite s in enemies)
             {
                 s.Update(gameTime);
             }
 
+            #region [Shake]
+
+            //if (kState.IsKeyDown(Keys.S))
+            //{
+            //    startedShakeMilliseconds = (float)gameTime.TotalGameTime.TotalMilliseconds;
+            //}
+
+            //player.Body.Y += UpdateShake(gameTime);
+
+            #endregion
+
+
+            //player.Body.Y = y;
 
             //emitter1.ParticleVelocity.X = (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds);
             //emitter1.ParticleVelocity.Y = (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds);
@@ -259,15 +281,15 @@ namespace TDJGame
             spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Camera.Transform);
 
 
-            //level.Draw(gameTime, spriteBatch);
+            level.Draw(gameTime, spriteBatch);
 
-            //player.Draw(gameTime, spriteBatch);
+            player.Draw(gameTime, spriteBatch);
             emitter1.Draw(gameTime, spriteBatch);
 
-            //foreach (Sprite s in enemies)
-            //{
-            //    s.Draw(gameTime, spriteBatch);
-            //}
+            foreach (Sprite s in enemies)
+            {
+                s.Draw(gameTime, spriteBatch);
+            }
 
             spriteBatch.End();
 
@@ -276,7 +298,7 @@ namespace TDJGame
             //spriteBatch.DrawString(font, "'X' and 'C' to switch between animations", new Vector2(8, 16), Color.LightGreen);
 
             spriteBatch.DrawString(font, $"{(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
-            spriteBatch.DrawString(font, $"{(updateTime)}", new Vector2(0, 16), Color.Red);
+            spriteBatch.DrawString(font, Camera.GetDebugString(), new Vector2(0, 16), Color.Red);
 
             if (player.Animations.CurrentAnimation != null)
             {
@@ -287,5 +309,34 @@ namespace TDJGame
             spriteBatch.End();
 
         }
+
+        public float UpdateShake(GameTime gameTime)
+        {
+
+            // https://www.graphpad.com/guides/prism/7/curve-fitting/reg_damped_sine_wave.htm?toc=0&printWindow
+
+            //currentShakeMilliseconds -= startedShakeMilliseconds; 
+
+            float gameMs = (float)gameTime.TotalGameTime.TotalMilliseconds - startedShakeMilliseconds;
+            float initialAmplitude = 3f;
+            float decayConstant = 0.01f;
+            float angularFrequency = 150f;
+            float y = initialAmplitude *
+                (float)Math.Exp(-decayConstant * gameMs) *
+                (float)Math.Sin((2 * Math.PI * gameMs / angularFrequency) + 0);
+
+            // Amplitude is the height of top of the waves, in Y units.
+            // Wavelength is the time it takes for a complete cycle, in units of X
+            // Frequency is the number of cycles per time unit.It is calculated as the reciprocal of wavelength, and is expressed in the inverse of the time units of X.
+            // PhaseShift in radians.A phaseshift of 0 sets Y equal to 0 at X = 0.
+            // K is the decay constant, in the reciprocal of the time units of the X axis.
+            // HalfLlife is the time it takes for the maximum amplitude to decrease by a factor of 2.It is computed as 0.693 / K.
+
+            Console.WriteLine($"{gameMs}, {y}");
+
+            return y;
+
+        }
+
     }
 }
