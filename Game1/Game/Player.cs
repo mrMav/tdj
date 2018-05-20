@@ -194,7 +194,7 @@ namespace TDJGame
                         if (Energy > 25f)
                         {
                             Body.Velocity.Y += FloatingDownSpeed; //Floating Down
-                            Energy -= 0.35f;
+                            Energy -= 0.15f;
                         }
                         else
                         {
