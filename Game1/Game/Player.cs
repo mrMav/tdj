@@ -34,6 +34,7 @@ namespace TDJGame
         public float BulletCost = 10f;
 
         public float KnockBackAmmount = 6f;
+        public float FireKnockBackAmmount = 2f;
 
         public List<Bullet> Bullets;
         public Vector2 Size;
@@ -310,6 +311,7 @@ namespace TDJGame
                         if (!Bullets[i].Alive)
                         {
                             b = Bullets[i];
+                            FireKnockBack(this);
                             break;
                         }
 
@@ -387,6 +389,24 @@ namespace TDJGame
             Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * KnockBackAmmount;
             Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * KnockBackAmmount;
             
+        }
+
+        public void FireKnockBack(Sprite sprite)
+        {
+            //apply based on sprite
+            float intersectionAngle = (float)Math.Atan2((sprite.Body.Y - Body.Y), (sprite.Body.X - Body.X));
+
+            if (this.FacingDirection == 1)
+            {
+                Body.Velocity.X += (float)Math.Cos(intersectionAngle + Math.PI) * FireKnockBackAmmount;
+                Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * FireKnockBackAmmount;
+            }
+
+            else
+            {
+                Body.Velocity.X -= (float)Math.Cos(intersectionAngle + Math.PI) * FireKnockBackAmmount;
+                Body.Velocity.Y += (float)Math.Sin(intersectionAngle + Math.PI) * FireKnockBackAmmount;
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
