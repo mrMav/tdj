@@ -33,7 +33,7 @@ namespace Engine
         public bool IsControllable;
         public bool IsBlinking = false;
         public double BlinkingTimer = 0;
-        public double BlinkingInterval = 500;
+        public double BlinkingInterval = 1000;
 
         public int FacingDirection = 1;
 

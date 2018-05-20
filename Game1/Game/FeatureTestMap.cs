@@ -84,11 +84,11 @@ namespace TDJGame
             SFX.Add("bubble_noise_single", content.Load<SoundEffect>("BubbleNoisesSingle"));
             SFX.Add("anchor", content.Load<SoundEffect>("Anchor3"));
             SFX.Add("fall", content.Load<SoundEffect>("Falling"));
-
+            SFX.Add("enemyDeath", content.Load<SoundEffect>("EnemyDeath"));
             /*
              * Player init
              */
-            player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
+          player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);  // woman
             player.Animations.CurrentFrame = new Frame(0, 144, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
