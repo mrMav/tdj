@@ -22,6 +22,8 @@ namespace TDJGame
         public float FloatingUpSpeed;
         public float FloatingDownSpeed;
         public float MaxEnergy = 200f;
+        public float EnergyDrain = 0.2f;
+        public float EnergyGain = 1f;
 
         public bool IsBobing = false;
         public float BobStarted = 0f;
@@ -179,7 +181,7 @@ namespace TDJGame
                         // recharge
                         if (Energy < MaxEnergy)
                         {
-                            Energy += 1;
+                            Energy += EnergyGain;
                         }
 
                     } else
@@ -195,7 +197,7 @@ namespace TDJGame
                         if (Energy > 25f)
                         {
                             Body.Velocity.Y += FloatingDownSpeed; //Floating Down
-                            Energy -= 0.15f;
+                            Energy -= EnergyDrain;
                         }
                         else
                         {
