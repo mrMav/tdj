@@ -71,9 +71,6 @@ namespace TDJGame
         public override void Kill()
         {
             Alive = false;
-            SoundEffect eDeath;
-            State.SFX.TryGetValue("enemyDeath", out eDeath);
-            eDeath?.Play();
             Animations.Play("death_interval");
         }
 

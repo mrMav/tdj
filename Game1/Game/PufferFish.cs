@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using Engine.Animations;
 using Engine.Particles;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
@@ -163,5 +164,16 @@ namespace TDJGame
                 }                
             }
         }
+
+
+        public override void Kill()
+        {
+            base.Kill();
+            SoundEffect pDeath;
+            State.SFX.TryGetValue("enemyDeath", out pDeath);
+            pDeath?.Play(1,0f,0);
+
+        }
+
     }
 }

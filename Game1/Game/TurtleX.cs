@@ -6,6 +6,7 @@ using Engine.Physics;
 using System.Collections.Generic;
 using System;
 using Engine.Animations;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
@@ -116,6 +117,14 @@ namespace TDJGame
         {
             FacingDirection = newDirection;
             Body.Velocity.X *= -1;
+        }
+
+        public override void Kill()
+        {
+            base.Kill();
+            SoundEffect tDeath;
+            State.SFX.TryGetValue("enemyDeath", out tDeath);
+            tDeath?.Play(1, -0.3f, 0);
         }
     }
 }

@@ -5,6 +5,7 @@ using Engine;
 using Engine.Physics;
 using System;
 using Engine.Animations;
+using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
@@ -37,6 +38,14 @@ namespace TDJGame
             Body.X = CenterPoint.X + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.X;
             Body.Y = CenterPoint.Y + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.Y;
             
+        }
+
+        public override void Kill()
+        {
+            base.Kill();
+            SoundEffect jDeath;
+            State.SFX.TryGetValue("enemyDeath", out jDeath);
+            jDeath?.Play(1, 0.65f, 0);
         }
     }
 }
