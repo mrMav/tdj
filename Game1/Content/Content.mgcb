@@ -188,3 +188,9 @@
 /processorParam:Quality=Best
 /build:EnemyDeath.wav
 
+#begin InkStuff.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:InkStuff.wav
+

@@ -37,6 +37,8 @@ namespace TDJGame
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
         List<Trigger> triggers;
+        Song song;
+
 
         #endregion
 
@@ -44,7 +46,8 @@ namespace TDJGame
         {
             Key = key;
             Graphics = graphics;
-
+            
+            
         }
 
         public override void Initialize()
@@ -57,20 +60,24 @@ namespace TDJGame
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
+            
+
 
         }
 
         public override void LoadContent()
         {
             base.LoadContent();
-            MediaPlayer.Stop();
 
             camera = new Camera2D(Vector2.Zero);
             camera.Zoom = (float)Graphics.PreferredBackBufferHeight  * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
-            
+            song = content.Load<Song>("InkStuff");
+            MediaPlayer.Play(song);
+            MediaPlayer.IsRepeating = true;
+
             /*
              * A single pixel to draw lines and stuff
              */

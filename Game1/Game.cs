@@ -52,8 +52,8 @@ namespace TDJGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            //menuSong = Content.Load<Song>("menuSong");
-            //MediaPlayer.Play(menuSong);
+            menuSong = Content.Load<Song>("menuSong");
+            MediaPlayer.Play(menuSong);
 
             StateManager.Instance.LoadContent(Content);
 
