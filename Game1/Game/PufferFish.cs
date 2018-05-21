@@ -13,8 +13,8 @@ namespace TDJGame
 {
     public class PufferFish : Enemy
     {
-        float TravelSpeed;
-        float TravelDistance;
+        public float TravelSpeed;
+        public float TravelDistance;
         public float CurrentDistance;
 
         public float LastShot = 0f;

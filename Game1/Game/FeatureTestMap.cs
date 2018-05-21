@@ -141,6 +141,14 @@ namespace TDJGame
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
                     p.Animations.CurrentFrame = new Frame(0, 112, 32, 32);
 
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_side") == "right")
+                    {                        
+                        p.Body.X = obj.X + obj.Width;
+                        p.CurrentDistance = obj.Width - 33;
+                    }
+
+
                     enemies.Add(p);
 
                     Console.WriteLine("added puffer");
