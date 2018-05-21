@@ -14,7 +14,7 @@ namespace TDJGame
         float TravelSpeed;
         Vector2 CenterPoint;
         Vector2 Radius;
-        
+                
         public JellyFish(GameState state, Texture2D texture, Vector2 position, int width, int height, Vector2 centerPoint, Vector2 radius, float travelSpeed = 0.5f)
             : base(state, texture, position, width, height, 48, 112)
         {
@@ -35,8 +35,8 @@ namespace TDJGame
 
             float threshold = 0.002f;
 
-            Body.X = CenterPoint.X + (float)Math.Cos(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.X;
-            Body.Y = CenterPoint.Y + (float)Math.Sin(gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.Y;
+            Body.X = CenterPoint.X + (float)Math.Cos(FacingDirection * gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.X;
+            Body.Y = CenterPoint.Y + (float)Math.Sin(FacingDirection * gameTime.TotalGameTime.TotalMilliseconds * threshold * TravelSpeed) * Radius.Y;
             
         }
 
