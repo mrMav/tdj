@@ -75,6 +75,7 @@ namespace TDJGame
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
             song = content.Load<Song>("InkStuff");
+            MediaPlayer.Volume = 0.5f;
             MediaPlayer.Play(song);
             MediaPlayer.IsRepeating = true;
 
