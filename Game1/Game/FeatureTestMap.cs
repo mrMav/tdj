@@ -134,6 +134,17 @@ namespace TDJGame
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
                     j.Animations.CurrentFrame = new Frame(48, 112, 16, 32);
 
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_rotation") == "right")
+                    {
+                        j.FacingDirection = 1;
+                    } else
+                    {
+                        j.FacingDirection = -1;
+                    }
+
+                    Console.WriteLine(obj.GetProperty("start_rotation"));
+
                     enemies.Add(j);
 
                     Console.WriteLine("added jelly");
@@ -149,6 +160,14 @@ namespace TDJGame
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
                     p.Animations.CurrentFrame = new Frame(0, 112, 32, 32);
 
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_side") == "right")
+                    {                        
+                        p.Body.X = obj.X + obj.Width;
+                        p.CurrentDistance = obj.Width - 33;
+                    }
+
+
                     enemies.Add(p);
 
                     Console.WriteLine("added puffer");
@@ -162,6 +181,13 @@ namespace TDJGame
 
                     TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
                     p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
+
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_side") == "right")
+                    {
+                        p.Body.X = obj.X + obj.Width;
+                        p.CurrentDistance = obj.Width - 33;
+                    }
 
                     enemies.Add(p);
 
