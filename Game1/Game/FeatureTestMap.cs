@@ -61,8 +61,6 @@ namespace TDJGame
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
             
-
-
         }
 
         public override void LoadContent()
@@ -77,7 +75,7 @@ namespace TDJGame
             song = content.Load<Song>("InkStuff");
             MediaPlayer.Volume = 0.5f;
             MediaPlayer.Play(song);
-            MediaPlayer.IsRepeating = true;
+            //MediaPlayer.IsRepeating = true;
 
             /*
              * A single pixel to draw lines and stuff
@@ -296,6 +294,8 @@ namespace TDJGame
         {
             base.UnloadContent();
 
+            Console.WriteLine("Unloading");
+
             camera = null;
             frameCounter = null;
             font = null;
@@ -310,6 +310,7 @@ namespace TDJGame
             spikesPointingUp = null;
             enemies = null;
             SFX = null;
+            song = null;
 
         }
 
@@ -522,11 +523,15 @@ namespace TDJGame
 
             foreach(GoldFish g in goldenFishs)
             {
-                g.Update(gameTime);
-
-                if(Physics.Overlap(g, player))
+                if (g.Alive)
                 {
-                    g.Kill();
+                    g.Update(gameTime);
+
+                    if (Physics.Overlap(g, player))
+                    {
+                        g.Kill();
+                        Console.WriteLine("Killed a GoldFish");
+                    }
                 }
             }
 
@@ -559,6 +564,7 @@ namespace TDJGame
 
             if (!player.Alive)
             {
+                
                 // show end game screen
                 // now we will just restart this state
                 StateManager.Instance.StartGameState("FeatureTestMap");
