@@ -84,16 +84,7 @@ namespace TDJGame
             /*
              * Enemies
              */
-            enemies.Add(new TurtleX(this, tilemapTexture, new Vector2(20 * 16, 8 * 16), 32, 32, 5 * 16, 174 * 16 - 149 * 16, 1.5f));
-
-            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(149 * 16, 11 * 16), 32, 32, 174 * 16 - 149 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(150 * 16, 2 * 16), 32, 32, 174 * 16 - 150 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(191 * 16, 2 * 16), 32, 32, 210 * 16 - 191 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(181 * 16, 11 * 16), 32, 32, 210 * 16 - 181 * 16, 1.5f));
-            pufferFish.Add(new PufferFish(this, tilemapTexture, new Vector2(219 * 16, 5 * 16), 32, 32, 235 * 16 - 219 * 16, 1.5f));
-
-            enemies.Add(new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(60 * 16, 6 * 16), new Vector2(4 * 16, 4 * 16), 0.5f));
-            enemies.Add(new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, new Vector2(120 * 16, 6 * 16), new Vector2(10 * 16, 5 * 16), 0.5f));
+            
 
             /*
              * Level init

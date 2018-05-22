@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 
 namespace TDJGame
 {
@@ -13,6 +15,8 @@ namespace TDJGame
         [STAThread]
         static void Main()
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+
             using (var game = new TDJGame())
                 game.Run();
         }

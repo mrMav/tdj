@@ -33,7 +33,7 @@ namespace TDJGame
             Body.Tag = "turtlex";
         }
 
-        public float UpdateMov(GameTime gameTime, Player player)
+        public int UpdateMov(GameTime gameTime, Player player)
         {
             base.Update(gameTime);
 
@@ -65,10 +65,10 @@ namespace TDJGame
                     if (percentOfTimePassedSinceDetect >= 1f)
                     {
                         // explode
-                        float distancePercentage = distanceDiff.Length() / DetectSight;
-                        float inflictDamage = (1f - distancePercentage) * Damage;
+                        int distancePercentage = (int)(distanceDiff.Length() / DetectSight);
+                        int inflictDamage = (1 - distancePercentage) * Damage;
                         
-                        return inflictDamage >= 0f ? inflictDamage : -1f;
+                        return inflictDamage >= 0 ? inflictDamage : -1;
 
                     }
 
@@ -108,7 +108,7 @@ namespace TDJGame
 
             }
 
-            return 0f;
+            return 0;
 
         }
 

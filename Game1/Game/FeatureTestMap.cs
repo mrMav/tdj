@@ -22,19 +22,23 @@ namespace TDJGame
         Camera2D camera;
         FrameCounter frameCounter;
         SpriteFont font;
-        Texture2D tilemapTexture;
         Level level;
+
+        Texture2D tilemapTexture;
+        Texture2D texturePlayerHealth;
+        Texture2D texturePlayerEnergy;
         Texture2D pixel;
         Texture2D backgroundWaterGradientStrip;
         Texture2D backgroundSkyGradientStrip;
-        EnergyBar energyBar;
-        EnergyBar healthBar;
+
         Player player;
-        List<Sprite> enemies;
+        EnergyBar energyBar;
+
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
+        List<Sprite> enemies;
         List<Sprite> goldenFishs;
         List<Trigger> triggers;
 
@@ -70,7 +74,13 @@ namespace TDJGame
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
-            
+
+            /*
+             * Player Health & Energy
+             */
+            texturePlayerHealth = this.content.Load<Texture2D>("HeartDraft");
+            texturePlayerEnergy = this.content.Load<Texture2D>("EnergyBar");
+
             /*
              * A single pixel to draw lines and stuff
              */
@@ -85,10 +95,11 @@ namespace TDJGame
             SFX.Add("anchor", content.Load<SoundEffect>("Anchor3"));
             SFX.Add("fall", content.Load<SoundEffect>("Falling"));
             SFX.Add("enemyDeath", content.Load<SoundEffect>("EnemyDeath"));
+
             /*
              * Player init
              */
-          player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
+            player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
             player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);  // woman
             player.Animations.CurrentFrame = new Frame(0, 144, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
@@ -221,8 +232,7 @@ namespace TDJGame
             /*
              * UI Elements init
              */
-            healthBar = new EnergyBar(Graphics, new Vector2(16, 16), 256, 16, new Color(0, 255, 0));
-            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 256, 16, new Color(255, 0, 0));
+            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 64, 8, new Color(255, 0, 0));
 
             /*
              * Build Background Gradient
@@ -270,7 +280,8 @@ namespace TDJGame
             pixel = null;
             backgroundWaterGradientStrip = null;
             energyBar = null;
-            healthBar = null;
+            texturePlayerHealth = null;
+            texturePlayerEnergy = null;
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
@@ -306,7 +317,7 @@ namespace TDJGame
                 if(s.Body.Tag == "turtlex")
                 {
                     TurtleX t = (TurtleX)s;
-                    float inflictDamage = t.UpdateMov(gameTime, player);
+                    int inflictDamage = t.UpdateMov(gameTime, player);
 
                     if(inflictDamage > 0f)
                     {
@@ -436,7 +447,6 @@ namespace TDJGame
                                     if (Physics.Overlap(b, player) && !player.IsBlinking)
                                     {
                                         TriggerPlayerHurt(gameTime, b);
-
                                     }
                                 }
                             }
@@ -497,7 +507,6 @@ namespace TDJGame
             }
 
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
-            healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
             if(cameraShakeResponse && !camera.Shaking)
             {
@@ -626,7 +635,11 @@ namespace TDJGame
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             energyBar.Draw(spriteBatch, gameTime);
-            healthBar.Draw(spriteBatch, gameTime);
+            //256, 16
+            spriteBatch.Draw(texturePlayerEnergy, new Vector2(16, 32 + 4), Color.White);
+            for (int i = 1; i <= player.playerHealth; i++)
+                spriteBatch.Draw(texturePlayerHealth, new Vector2(16*i, 16), Color.White);
+
 
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
@@ -638,17 +651,17 @@ namespace TDJGame
 
         }
 
-        public void TriggerPlayerHurt(GameTime gameTime, Sprite theHurtingSprite = null, float damage = -1f)
+        public void TriggerPlayerHurt(GameTime gameTime, Sprite theHurtingSprite = null, int damage = -1)
         {
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
 
             if(damage < 0f)
             {
-                player.ReceiveDamage(theHurtingSprite.Damage);
+                player.PlayerReceiveDamage(theHurtingSprite.Damage);
             } else
             {
-                player.ReceiveDamage(damage);
+                player.PlayerReceiveDamage(damage);
                 Console.WriteLine("damage: " + damage);
             }
             

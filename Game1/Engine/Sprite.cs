@@ -26,9 +26,11 @@ namespace Engine
         // gameplay handy properties
         public float MaxHealth = 30f;
         public float Health;
-        public float Damage = 10f;
+        public int Damage = 1;
         public bool Alive = true;
         public bool Visible = true;
+
+        public int playerHealth, playerMaxHealth = 4;
 
         public bool IsControllable;
         public bool IsBlinking = false;
@@ -49,6 +51,7 @@ namespace Engine
             Body = new Body(position.X, position.Y, width, height);
 
             Health = MaxHealth;
+            playerHealth = playerMaxHealth;
             IsControllable = isControllable;
                         
         }
@@ -116,6 +119,7 @@ namespace Engine
             Alive = true;
             Visible = true;
             Health = MaxHealth;
+            playerHealth = playerMaxHealth;
         }
 
         public virtual void ReceiveDamage(float ammount)
@@ -123,6 +127,17 @@ namespace Engine
             Health -= ammount;
 
             if(Health <= 0f)
+            {
+                Kill();
+            }
+
+        }
+
+        public virtual void PlayerReceiveDamage(int ammount)
+        {
+            playerHealth -= ammount;
+
+            if (playerHealth <= 0)
             {
                 Kill();
             }
