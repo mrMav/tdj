@@ -28,7 +28,8 @@ namespace TDJGame
             TravelSpeed = travelSpeed;
 
             DetectSight = sight;
-            
+
+            Animations.CurrentFrame = new Frame(192, 208, 32, 32); //just put animation
             Body.Enabled = true;
             Body.Velocity.X = TravelSpeed;
             Body.Tag = "turtlex";

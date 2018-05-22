@@ -54,6 +54,7 @@ namespace TDJGame
 
             Body.Velocity.X = 0;
             Body.Velocity.Y = -2f;
+            
 
             FloatingUpSpeed = 0.8f;
             FloatingDownSpeed = FloatingUpSpeed * 2;
@@ -71,7 +72,7 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(state, texture, Vector2.Zero, this);
-                b.Animations.CurrentFrame = new Frame(48, 96, 16, 16);
+                b.Animations.CurrentFrame = new Frame(0, 78, 16, 16);
                 b.Body.SetSize(6, 6, 5, 5);
                 b.Body.Drag.Y *= 1.1f;
 
@@ -82,10 +83,10 @@ namespace TDJGame
             movementParticleEmitter.EmitterBox.Resize(1, 4);
             movementParticleEmitter.MakeParticles(texture, 16, 16);
             movementParticleEmitter.ParticleVelocity = new Vector2(0, 0.01f);
-            movementParticleEmitter.SetAcceleration(0, -0.005f);
+            movementParticleEmitter.SetAcceleration(0, -0.005f);                                            ////SEARCH HERE - Pardo////
             movementParticleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
             movementParticleEmitter.YVelocityVariationRange = new Vector2(-40f, 40f);
-            movementParticleEmitter.SetTextureCropRectangle(new Rectangle(3 * 16, 6 * 16, 16, 16));
+            movementParticleEmitter.SetTextureCropRectangle(new Rectangle(0, 78, 16, 16));
             movementParticleEmitter.SpawnRate = 40f;
             movementParticleEmitter.ParticleLifespanMilliseconds = 750f;
             movementParticleEmitter.ParticleLifespanVariationMilliseconds = 50f;
@@ -95,7 +96,7 @@ namespace TDJGame
             anchorParticleEmitter = new ParticleEmitter(State, 0, 0, 10);
             //anchorParticleEmitter.EmitterBox.Resize(1, 4);
             anchorParticleEmitter.EmitterBox.Resize(Body.Bounds.Width, Body.Bounds.Height);
-            anchorParticleEmitter.MakeRandomParticles(texture, new Rectangle[] { new Rectangle(0, 80, 16, 16), new Rectangle(16, 80, 16, 16) });
+            anchorParticleEmitter.MakeRandomParticles(texture, new Rectangle[] { new Rectangle(80, 256, 16, 16), new Rectangle(96, 256, 16, 16) });
             float dispersion = 200f;
             anchorParticleEmitter.XVelocityVariationRange = new Vector2(-dispersion, dispersion);
             anchorParticleEmitter.YVelocityVariationRange = new Vector2(-dispersion, dispersion);

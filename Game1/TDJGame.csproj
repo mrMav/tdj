@@ -65,6 +65,7 @@
     <Compile Include="Game\FeatureTestMap.cs" />
     <Compile Include="Game\GoldFish.cs" />
     <Compile Include="Game\JellyFish.cs" />
+    <Compile Include="Game\Level1State.cs" />
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
@@ -145,6 +146,9 @@
     </None>
     <None Include="app.manifest" />
     <None Include="Content\featureTestMap.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Level1.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\prototipo.tmx">

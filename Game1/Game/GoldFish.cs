@@ -40,7 +40,7 @@ namespace TDJGame
             emitter.EmitterBox.Resize(width, height);
 
             //emitter.MakeParticles(texture, 16, 16);
-            //emitter.SetTextureCropRectangle(new Rectangle(3 * 16, 6 * 16, 16, 16));
+            emitter.SetTextureCropRectangle(new Rectangle(112, 256, 16, 16));
 
             emitter.SetAcceleration(0, -0.001f);
             emitter.XVelocityVariationRange = new Vector2(-10, 10);
@@ -52,7 +52,7 @@ namespace TDJGame
             emitter.FinalScale = 0.2f;
             emitter.Activated = true;
 
-            Animations.CurrentFrame = new Frame(64, 96, 16, 16);
+            Animations.CurrentFrame = new Frame(0,256, 16, 16);
         }
 
         public override void Update(GameTime gameTime)

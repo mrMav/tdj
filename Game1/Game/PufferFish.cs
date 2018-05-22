@@ -29,8 +29,9 @@ namespace TDJGame
         {
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;
-                        
-            Body.SetSize(18, 13, 5, 9);
+
+            Animations.CurrentFrame = new Frame(64, 144, 32, 32);
+            Body.SetSize(25, 18, 6, 9);
             Body.Enabled = true;
             Body.Velocity.X = TravelSpeed;
             Body.Tag = "pufferfish";
@@ -40,8 +41,8 @@ namespace TDJGame
             for(int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(state, texture, Vector2.Zero, this);
-                b.Animations.CurrentFrame = new Frame(32, 112, 16, 32);
-                b.Body.SetSize(7, 9, 4, 12);
+                b.Animations.CurrentFrame = new Frame(0, 144, 16, 16);
+                b.Body.SetSize(7, 9, 5, 3); //due to a change
 
                 Bullets.Add(b);
             }

@@ -14,11 +14,11 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
-    public class FeatureTestMap : GameState
+    public class Level1State : GameState
     {
 
         #region [Properties]
-        
+
         Camera2D camera;
         FrameCounter frameCounter;
         SpriteFont font;
@@ -42,12 +42,12 @@ namespace TDJGame
 
         #endregion
 
-        public FeatureTestMap(string key, GraphicsDeviceManager graphics)
+        public Level1State(string key, GraphicsDeviceManager graphics)
         {
             Key = key;
             Graphics = graphics;
-            
-            
+
+
         }
 
         public override void Initialize()
@@ -60,7 +60,7 @@ namespace TDJGame
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
-            
+
 
 
         }
@@ -70,10 +70,10 @@ namespace TDJGame
             base.LoadContent();
 
             camera = new Camera2D(Vector2.Zero);
-            camera.Zoom = (float)Graphics.PreferredBackBufferHeight  * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
+            camera.Zoom = (float)Graphics.PreferredBackBufferHeight * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
 
             font = content.Load<SpriteFont>("Font");
-            tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
+            tilemapTexture = this.content.Load<Texture2D>("SpriteSheet");
             song = content.Load<Song>("InkStuff");
             MediaPlayer.Volume = 0.3f;
             MediaPlayer.Play(song);
@@ -96,13 +96,13 @@ namespace TDJGame
             /*
              * Player init
              */
-          player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
-            player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);  // woman
-            player.Animations.CurrentFrame = new Frame(0, 144, 32, 32);  // actual player
+            player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
+            /*player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);*/  // woman
+            player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 7;
-            player.Body.Y = 16 * 5;
+            player.Body.X = 16 * 3; /*330*/ //spawn x
+            player.Body.Y = 16 * 3; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
 
@@ -112,8 +112,8 @@ namespace TDJGame
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(this, @"Content\featureTestMap.tmx", tilemapTexture);
-            level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
+            level = XMLloader.LoadLevel(this, @"Content\Level1.tmx", tilemapTexture);
+            level.SetCollisionTiles(new int[] { 2,33,34,35,47,66,});
 
 
             /*
@@ -132,13 +132,14 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                    j.Animations.CurrentFrame = new Frame(48, 112, 16, 32);
+                   
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_rotation") == "right")
                     {
                         j.FacingDirection = 1;
-                    } else
+                    }
+                    else
                     {
                         j.FacingDirection = -1;
                     }
@@ -158,11 +159,11 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                    p.Animations.CurrentFrame = new Frame(0, 112, 32, 32);
+                   
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_side") == "right")
-                    {                        
+                    {
                         p.Body.X = obj.X + obj.Width;
                         p.CurrentDistance = obj.Width - 33;
                     }
@@ -173,32 +174,12 @@ namespace TDJGame
                     Console.WriteLine("added puffer");
 
                 }
-                else if (obj.Name.ToLower() == "turtlex")
-                {
-                    Vector2 position = new Vector2(obj.X, obj.Y);
-
-                    float speed = float.Parse(obj.GetProperty("speed"));
-
-                    TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
-                    p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
-
-                    // make it start on the right side of its path
-                    if (obj.GetProperty("start_side") == "right")
-                    {
-                        p.Body.X = obj.X + obj.Width;
-                        p.CurrentDistance = obj.Width - 33;
-                    }
-
-                    enemies.Add(p);
-
-                    Console.WriteLine("added turtlex");
-
-                }
-                else if(obj.Name.ToLower() == "goldfish")
+               
+                else if (obj.Name.ToLower() == "goldfish")
                 {
                     goldenFishs.Add(new GoldFish(this, tilemapTexture, new Vector2(obj.X, obj.Y), 16, 16));
                 }
-                else if(obj.Name.ToLower() == "particles")
+                else if (obj.Name.ToLower() == "particles")
                 {
 
                     ParticleEmitter particleEmitter = new ParticleEmitter(this, obj.X, obj.Y, 256);
@@ -208,13 +189,13 @@ namespace TDJGame
                     particleEmitter.SetAcceleration(0, -0.005f);
                     particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
                     particleEmitter.YVelocityVariationRange = new Vector2(-20f, 0f);
-                    particleEmitter.SetTextureCropRectangle(new Rectangle(3*16, 6*16, 16, 16));
+                    particleEmitter.SetTextureCropRectangle(new Rectangle(0, 78, 16, 16));
                     particleEmitter.SpawnRate = 250f;
                     particleEmitter.ParticleLifespanMilliseconds = 5000f;
                     particleEmitter.ParticleLifespanVariationMilliseconds = 1000f;
                     particleEmitter.InitialScale = 0.1f;
                     particleEmitter.FinalScale = 1.5f;
-                    
+
                     particleEmitter.ForEachParticle(ChangeSpriteTintBlue);
 
                     backgroundParticles.Add(particleEmitter);
@@ -224,12 +205,12 @@ namespace TDJGame
                     Console.WriteLine("added particles");
 
                 }
-                else if(obj.Name.ToLower() == "player_spawn")
+                else if (obj.Name.ToLower() == "player_spawn")
                 {
                     player.Body.X = obj.X;
                     player.Body.Y = obj.Y;
                 }
-                else if(obj.Name.ToLower() == "change_state_trigger")
+                else if (obj.Name.ToLower() == "change_state_trigger")
                 {
                     triggers.Add(new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value")));
                 }
@@ -238,19 +219,19 @@ namespace TDJGame
 
 
             // build spikes tiles list
-            spikesPointingDown = level.GetTilesListByID(new int[] { 97 });
-            spikesPointingUp = level.GetTilesListByID(new int[] { 98 });
+            spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
+            spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
 
             foreach (Tile spike in spikesPointingDown)
             {
-                spike.Body.SetSize(12, 6, 2, 0);
+                spike.Body.SetSize(12, 6, 1, 0);
             }
             foreach (Tile spike in spikesPointingUp)
             {
                 spike.Body.SetSize(12, 6, 2, 10);
             }
 
-            topWaterTiles = level.GetTilesListByID(new int[] { 49, 50, 51 });
+            topWaterTiles = level.GetTilesListByID(new int[] { 97, 98, 99 });
 
             /*
              * UI Elements init
@@ -315,7 +296,7 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
-            
+
             /*
              * Input State refresh
              */
@@ -337,18 +318,18 @@ namespace TDJGame
             foreach (Sprite s in enemies)
             {
 
-                if(s.Body.Tag == "turtlex")
+                if (s.Body.Tag == "turtlex")
                 {
                     TurtleX t = (TurtleX)s;
                     float inflictDamage = t.UpdateMov(gameTime, player);
 
-                    if(inflictDamage > 0f)
+                    if (inflictDamage > 0f)
                     {
                         TriggerPlayerHurt(gameTime, t, inflictDamage);
                         t.Kill();
                     }
 
-                    if(inflictDamage == -1f)
+                    if (inflictDamage == -1f)
                     {
                         t.Kill();
                         camera.ActivateShake(gameTime, 400f, 6, 0.01f, true, -0.02f);
@@ -428,8 +409,8 @@ namespace TDJGame
                                 b.Kill();
                                 s.ReceiveDamage(b.Damage);
                                 s.StartBlinking(gameTime);
-                                
-                                if(!s.Alive)
+
+                                if (!s.Alive)
                                 {
                                     camera.ActivateShake(gameTime, 150, 6, 0.015f, true, -0.01f);
                                 }
@@ -501,7 +482,7 @@ namespace TDJGame
 
             // water waves
             float count = 1f;
-            foreach(Tile t in topWaterTiles)
+            foreach (Tile t in topWaterTiles)
             {
                 float x = (float)gameTime.TotalGameTime.TotalMilliseconds;
                 float phaseShift = (count / topWaterTiles.Count) * (float)Math.PI * 19.7f;
@@ -520,11 +501,11 @@ namespace TDJGame
                 p.ForEachParticle(KillOutOfBoundsParticle);
             }
 
-            foreach(GoldFish g in goldenFishs)
+            foreach (GoldFish g in goldenFishs)
             {
                 g.Update(gameTime);
 
-                if(Physics.Overlap(g, player))
+                if (Physics.Overlap(g, player))
                 {
                     g.Kill();
                 }
@@ -533,7 +514,7 @@ namespace TDJGame
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
             healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
-            if(cameraShakeResponse && !camera.Shaking)
+            if (cameraShakeResponse && !camera.Shaking)
             {
                 //camera.ActivateShake(gameTime, 250f, 4f, 0.05f, true, 0.01f); // static
                 camera.ActivateShake(gameTime, 250f, Math.Abs(player.Body.DeltaY()) * 3, 0.05f, true, 0.01f); // based on delta
@@ -561,7 +542,7 @@ namespace TDJGame
             {
                 // show end game screen
                 // now we will just restart this state
-                StateManager.Instance.StartGameState("FeatureTestMap");
+                StateManager.Instance.StartGameState("Level1State");
                 return;
             }
 
@@ -623,23 +604,23 @@ namespace TDJGame
             }
 
             // world tiles
-            level.Layers[1].Draw(gameTime, spriteBatch);
+            //level.Layers[1].Draw(gameTime, spriteBatch);
 
             // enemies
             foreach (Sprite s in enemies)
             {
                 s.Draw(gameTime, spriteBatch);
-                //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
+                DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
 
-            //foreach (Sprite s in spikesPointingDown)
-            //{                
-            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
-            //}
-            //foreach (Sprite s in spikesPointingUp)
-            //{
-            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
-            //}
+            foreach (Sprite s in spikesPointingDown)
+            {
+                DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            }
+            foreach (Sprite s in spikesPointingUp)
+            {
+                DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            }
 
             // the gold stuff
             foreach (Sprite s in goldenFishs)
@@ -649,7 +630,7 @@ namespace TDJGame
 
             // player
             player.Draw(gameTime, spriteBatch);
-            //DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
+            DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
 
             spriteBatch.End();
 
@@ -677,16 +658,17 @@ namespace TDJGame
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
 
-            if(damage < 0f)
+            if (damage < 0f)
             {
                 player.ReceiveDamage(theHurtingSprite.Damage);
-            } else
+            }
+            else
             {
                 player.ReceiveDamage(damage);
                 Console.WriteLine("damage: " + damage);
             }
-            
-            if(theHurtingSprite != null)
+
+            if (theHurtingSprite != null)
             {
                 player.ApplyKnockBackBasedOnSprite(theHurtingSprite);
             }
@@ -702,7 +684,7 @@ namespace TDJGame
         public int KillOutOfBoundsParticle(Particle p)
         {
 
-            if(p.Body.Y <= 0f)
+            if (p.Body.Y <= 0f)
             {
                 p.Kill();
             }
@@ -722,12 +704,12 @@ namespace TDJGame
             float levelWidth = level.Width * level.TileWidth;
             float levelHeight = level.Height * level.TileHeight;
 
-            if(player.Body.X < 0 || player.Body.X > levelWidth || player.Body.Y > levelHeight)
+            if (player.Body.X < 0 || player.Body.X > levelWidth || player.Body.Y > levelHeight)
             {
-                
-                foreach(TiledObject obj in level.Objects)
+
+                foreach (TiledObject obj in level.Objects)
                 {
-                    if(obj.Name.ToLower() == "player_spawn")
+                    if (obj.Name.ToLower() == "player_spawn")
                     {
                         player.Body.X = obj.X;
                         player.Body.Y = obj.Y;
@@ -744,11 +726,11 @@ namespace TDJGame
 
         void DrawBodyShape(Sprite sprite, SpriteBatch spriteBatch, Color color)
         {
-            
+
             spriteBatch.Draw(pixel, new Rectangle((int)sprite.Body.CollisionRect.Position.X,
                                                   (int)sprite.Body.CollisionRect.Position.Y,
                                                   (int)sprite.Body.CollisionRect.Width,
-                                                  (int)sprite.Body.CollisionRect.Height),  color);
+                                                  (int)sprite.Body.CollisionRect.Height), color);
         }
 
         void DrawLine(SpriteBatch spriteBatch, Vector2 start, Vector2 end, Color color)
@@ -774,4 +756,3 @@ namespace TDJGame
 
     }
 }
-

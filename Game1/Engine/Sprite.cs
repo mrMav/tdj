@@ -24,7 +24,7 @@ namespace Engine
         public Body Body;
 
         // gameplay handy properties
-        public float MaxHealth = 30f;
+        public float MaxHealth = 40f;
         public float Health;
         public float Damage = 10f;
         public bool Alive = true;

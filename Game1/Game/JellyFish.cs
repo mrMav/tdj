@@ -23,7 +23,8 @@ namespace TDJGame
             CenterPoint = centerPoint;
             Radius = radius;
 
-            Animations.CurrentFrame = new Frame(12 * 16, 0 * 16, 16, 32);
+            Animations.CurrentFrame = new Frame(16, 176, 32, 32);
+            Body.SetSize(16,32,9,6);
             
             Body.Enabled = true;
             Body.Tag = "jellyfish";
