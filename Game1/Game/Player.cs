@@ -22,8 +22,8 @@ namespace TDJGame
         public float FloatingUpSpeed;
         public float FloatingDownSpeed;
         public float MaxEnergy = 200f;
-        public float EnergyDrain = 0.2f;
-        public float EnergyGain = 1f;
+        public float EnergyDrain = 0.3f;
+        public float EnergyGain = 0.6f;
 
         public bool IsBobing = false;
         public float BobStarted = 0f;
