@@ -604,23 +604,23 @@ namespace TDJGame
             }
 
             // world tiles
-            //level.Layers[1].Draw(gameTime, spriteBatch);
+            level.Layers[1].Draw(gameTime, spriteBatch);
 
             // enemies
             foreach (Sprite s in enemies)
             {
-                s.Draw(gameTime, spriteBatch);
-                DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
+              s.Draw(gameTime, spriteBatch);
+               //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
 
-            foreach (Sprite s in spikesPointingDown)
-            {
-                DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
-            }
-            foreach (Sprite s in spikesPointingUp)
-            {
-                DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
-            }
+            //foreach (Sprite s in spikesPointingDown)
+            //{
+            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            //}
+            //foreach (Sprite s in spikesPointingUp)
+            //{
+            //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
+            //}
 
             // the gold stuff
             foreach (Sprite s in goldenFishs)
@@ -630,7 +630,7 @@ namespace TDJGame
 
             // player
             player.Draw(gameTime, spriteBatch);
-            DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
+            //DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
 
             spriteBatch.End();
 
