@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="left-up" width="600" height="14" tilewidth="16" tileheight="16" infinite="0" nextobjectid="72">
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="left-up" width="600" height="14" tilewidth="16" tileheight="16" infinite="0" nextobjectid="73">
  <tileset firstgid="1" source="../../../source/repos/source/repos/tdj/Game1/Content/Prototipo.tsx"/>
  <tileset firstgid="1" source="InkTileset.tsx"/>
  <layer name="Background" width="600" height="14" offsetx="2" offsety="2.75">
@@ -173,6 +173,11 @@
     <property name="speed" value="2.5"/>
    </properties>
    <ellipse/>
+  </object>
+  <object id="72" name="change_state_trigger" x="7138" y="210" width="80" height="15">
+   <properties>
+    <property name="value" value="featureTestMap"/>
+   </properties>
   </object>
  </objectgroup>
 </map>
