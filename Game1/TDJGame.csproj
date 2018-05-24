@@ -66,6 +66,7 @@
     <Compile Include="Game\GoldFish.cs" />
     <Compile Include="Game\JellyFish.cs" />
     <Compile Include="Game\Level1State.cs" />
+    <Compile Include="Game\Level2State.cs" />
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
@@ -149,6 +150,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Level1.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Level2.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\prototipo.tmx">

@@ -37,7 +37,7 @@ namespace TDJGame
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
         List<Trigger> triggers;
-        Song song;
+        //Song song;
 
 
         #endregion
@@ -72,9 +72,9 @@ namespace TDJGame
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("spritesheet-jn");
-            song = content.Load<Song>("InkStuff");
-            MediaPlayer.Volume = 0.3f;
-            MediaPlayer.Play(song);
+            //song = content.Load<Song>("InkStuff");
+            //MediaPlayer.Volume = 0.3f;
+            //MediaPlayer.Play(song);
             //MediaPlayer.IsRepeating = true;
 
             /*
@@ -310,7 +310,7 @@ namespace TDJGame
             spikesPointingUp = null;
             enemies = null;
             SFX = null;
-            song = null;
+            //song = null;
 
         }
 

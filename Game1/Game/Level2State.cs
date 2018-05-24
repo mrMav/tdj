@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
-    public class Level1State : GameState
+    public class Level2State : GameState
     {
 
         #region [Properties]
@@ -42,7 +42,7 @@ namespace TDJGame
 
         #endregion
 
-        public Level1State(string key, GraphicsDeviceManager graphics)
+        public Level2State(string key, GraphicsDeviceManager graphics)
         {
             Key = key;
             Graphics = graphics;
@@ -101,8 +101,8 @@ namespace TDJGame
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 430        ; /*330*/ //spawn x
-            player.Body.Y = 16 * 3; //spawn y
+            player.Body.X = 16 * 3; /*330*/ //spawn x
+            player.Body.Y = 16 * 6; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
 
@@ -112,8 +112,8 @@ namespace TDJGame
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(this, @"Content\Level1.tmx", tilemapTexture);
-            level.SetCollisionTiles(new int[] { 2,33,34,35,47,66,});
+            level = XMLloader.LoadLevel(this, @"Content\Level2.tmx", tilemapTexture);
+            level.SetCollisionTiles(new int[] { 2, 33, 34, 35, 47, 66, });
 
 
             /*
@@ -132,7 +132,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
-                   
+
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_rotation") == "right")
@@ -159,7 +159,7 @@ namespace TDJGame
                     float speed = float.Parse(obj.GetProperty("speed"));
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
-                   
+
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_side") == "right")
@@ -174,7 +174,28 @@ namespace TDJGame
                     Console.WriteLine("added puffer");
 
                 }
-               
+                else if (obj.Name.ToLower() == "turtlex")
+                {
+                    Vector2 position = new Vector2(obj.X, obj.Y);
+
+                    float speed = float.Parse(obj.GetProperty("speed"));
+
+                    TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
+                    
+
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_side") == "right")
+                    {
+                        p.Body.X = obj.X + obj.Width;
+                        p.CurrentDistance = obj.Width - 33;
+                    }
+
+                    enemies.Add(p);
+
+                    Console.WriteLine("added turtlex");
+
+                }
+
                 else if (obj.Name.ToLower() == "goldfish")
                 {
                     goldenFishs.Add(new GoldFish(this, tilemapTexture, new Vector2(obj.X, obj.Y), 16, 16));
@@ -542,7 +563,7 @@ namespace TDJGame
             {
                 // show end game screen
                 // now we will just restart this state
-                StateManager.Instance.StartGameState("Level1State");
+                StateManager.Instance.StartGameState("Level2State");
                 return;
             }
 
@@ -609,8 +630,8 @@ namespace TDJGame
             // enemies
             foreach (Sprite s in enemies)
             {
-              s.Draw(gameTime, spriteBatch);
-               //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
+                s.Draw(gameTime, spriteBatch);
+                //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
 
             //foreach (Sprite s in spikesPointingDown)

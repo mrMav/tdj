@@ -44,7 +44,8 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new TestCamera("TestCamera", graphics));
             StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
             StateManager.Instance.AddGameState(new Level1State("Level1State", graphics));
-            
+            StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
+
             base.Initialize();
         }
 
