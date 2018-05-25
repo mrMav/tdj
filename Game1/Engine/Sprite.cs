@@ -122,9 +122,9 @@ namespace Engine
             playerHealth = playerMaxHealth;
         }
 
-        public virtual void ReceiveDamage(float ammount)
+        public virtual void ReceiveDamage(int ammount)
         {
-            Health -= ammount;
+            Health -= (int)ammount * 10;
 
             if(Health <= 0f)
             {

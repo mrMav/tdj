@@ -338,14 +338,13 @@ namespace TDJGame
 
                         // subtract bullet cost to energy
                         Energy -= BulletCost;
+                        Karma.playerShotsFired = Karma.ShotFired(Karma.playerShotsFired);
 
                         float pitch = rnd.Next(-100, 10) * 0.01f;
 
                         SoundEffect sfx;
                         State.SFX.TryGetValue("bubble", out sfx);
                         sfx?.Play(1f, pitch, 0f);
-
-
                     }
                 }
 

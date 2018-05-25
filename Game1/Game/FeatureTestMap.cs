@@ -61,7 +61,6 @@ namespace TDJGame
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
-
         }
 
         public override void LoadContent()
@@ -108,13 +107,17 @@ namespace TDJGame
             player.Body.Y = 16 * 5;
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
+            Karma.maxKarma = 0;
+            Karma.playerShotsFired = 0;
+            Karma.playerTotalDamage = 0f;
+            Karma.playerCollect = 0;
 
-            //player.Animations.Play("woman-run");
+        //player.Animations.Play("woman-run");
 
-            /*
-             * Level init
-             */
-            XMLLevelLoader XMLloader = new XMLLevelLoader();
+        /*
+         * Level init
+         */
+        XMLLevelLoader XMLloader = new XMLLevelLoader();
             level = XMLloader.LoadLevel(this, @"Content\featureTestMap.tmx", tilemapTexture);
             level.SetCollisionTiles(new int[] { 1, 2, 17, 18, 33, 34 });
 
@@ -138,6 +141,7 @@ namespace TDJGame
                     j.Animations.CurrentFrame = new Frame(48, 112, 16, 32);
 
                     enemies.Add(j);
+                    Karma.maxKarma = Karma.DefineMaxKarma(Karma.maxKarma, j.Health);
 
                     Console.WriteLine("added jelly");
 
@@ -153,6 +157,7 @@ namespace TDJGame
                     p.Animations.CurrentFrame = new Frame(0, 112, 32, 32);
 
                     enemies.Add(p);
+                    Karma.maxKarma = Karma.DefineMaxKarma(Karma.maxKarma, p.Health);
 
                     Console.WriteLine("added puffer");
 
@@ -167,6 +172,7 @@ namespace TDJGame
                     p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
 
                     enemies.Add(p);
+                    Karma.maxKarma = Karma.DefineMaxKarma(Karma.maxKarma, p.Health);
 
                     Console.WriteLine("added turtlex");
 
@@ -213,7 +219,6 @@ namespace TDJGame
 
             }
 
-
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 97 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 98 });
@@ -233,6 +238,7 @@ namespace TDJGame
              * UI Elements init
              */
             energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 64, 8, new Color(255, 0, 0));
+            Karma.karma = Karma.maxKarma;
 
             /*
              * Build Background Gradient
@@ -301,6 +307,12 @@ namespace TDJGame
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
+            if (kState.IsKeyDown(Keys.N))
+            {
+                StateManager.Instance.StartGameState("FinalKarmaState");
+                return;
+            }
+
             #endregion
 
             /*
@@ -325,7 +337,7 @@ namespace TDJGame
                         t.Kill();
                     }
 
-                    if(inflictDamage == -1f)
+                    if(inflictDamage == -1)
                     {
                         t.Kill();
                         camera.ActivateShake(gameTime, 400f, 6, 0.01f, true, -0.02f);
@@ -405,13 +417,15 @@ namespace TDJGame
                                 b.Kill();
                                 s.ReceiveDamage(b.Damage);
                                 s.StartBlinking(gameTime);
+                                Karma.karma = Karma.ReduceKarma(Karma.karma, b.Damage * 10);
+
+                                //Karma Changes
+                                Karma.playerTotalDamage = Karma.AddPlayerDamage(Karma.playerTotalDamage, b.Damage);
                                 
                                 if(!s.Alive)
                                 {
                                     camera.ActivateShake(gameTime, 150, 6, 0.015f, true, -0.01f);
                                 }
-
-
                             }
                         }
                     }
@@ -498,11 +512,15 @@ namespace TDJGame
 
             foreach(GoldFish g in goldenFishs)
             {
-                g.Update(gameTime);
-
-                if(Physics.Overlap(g, player))
+                if (g.Alive)
                 {
-                    g.Kill();
+                    g.Update(gameTime);
+
+                    if (Physics.Overlap(g, player))
+                    {
+                        Karma.playerCollect = Karma.TotalCollectables(Karma.playerCollect);
+                        g.Kill();
+                    }
                 }
             }
 
@@ -656,13 +674,12 @@ namespace TDJGame
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
 
-            if(damage < 0f)
+            if(damage < 0)
             {
                 player.PlayerReceiveDamage(theHurtingSprite.Damage);
             } else
             {
                 player.PlayerReceiveDamage(damage);
-                Console.WriteLine("damage: " + damage);
             }
             
             if(theHurtingSprite != null)

@@ -76,10 +76,12 @@
     <Compile Include="Game\Bullet.cs" />
     <Compile Include="Game\CreditsState.cs" />
     <Compile Include="Game\Enemy.cs" />
+    <Compile Include="Game\Karma.cs" />
     <Compile Include="Game\EnergyBar.cs" />
     <Compile Include="Game\FeatureTestMap.cs" />
     <Compile Include="Game\GoldFish.cs" />
     <Compile Include="Game\JellyFish.cs" />
+    <Compile Include="Game\FinalKarmaState.cs" />
     <Compile Include="Game\MenuState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
