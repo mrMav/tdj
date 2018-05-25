@@ -12,7 +12,6 @@ namespace TDJGame
     {
 
         #region [Properties]
-
         SpriteFont font;
 
         #endregion
@@ -34,7 +33,6 @@ namespace TDJGame
             font = this.content.Load<SpriteFont>("Font");
 
             this.ContentLoaded = true;
-
         }
 
         public override void UnloadContent()
@@ -45,17 +43,14 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
-            KeyboardState kState = Keyboard.GetState();
-            MouseState mState = Mouse.GetState();
 
-            Rectangle mouseRectangle = new Rectangle(mState.X, mState.Y, 1, 1);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             graphicsDevice.Clear(Color.Salmon);
             spriteBatch.Begin();
-            spriteBatch.DrawString(font, "ShotsFired: " + Karma.playerShotsFired + "\nKarma: " + Karma.karma + "\nDamage Dealt: " + Karma.playerTotalDamage + "\nCollected: " + Karma.playerCollect, new Vector2(10,10), Color.Black);
+            spriteBatch.DrawString(font, "RANK:\n" + Karma.DetermineRank() + "\n\nShotsFired: " + Karma.playerShotsFired + "\nKarma: " + Karma.karma + "\nDamage Dealt: " + Karma.playerTotalDamage + "\nCollected: " + Karma.playerCollect, new Vector2(10,10), Color.Black);
             spriteBatch.End();
         }
     }

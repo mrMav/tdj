@@ -47,5 +47,13 @@ namespace TDJGame
             Console.WriteLine("Karma: " + karma);
             return karma;
         }
+
+        public static string DetermineRank()
+        {
+            if (karma == maxKarma) return "Pacifist";
+            if (karma == 0) return "Killer";
+
+            return "Neutral"; 
+        }
     }
 }
