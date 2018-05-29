@@ -111,6 +111,14 @@ namespace TDJGame
 
             Floating = true;
 
+            /*Animations*/
+
+            Animation shootingAnim = Animations.Add("shooting", new Frame[] {new Frame(16,64,32,32), new Frame(288,64,32,32), new Frame(320,64,32,32), new Frame(352,64,32,32)
+            , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 14, false, false);
+
+            Animation idleAnim = Animations.Add("idle", new Frame[] {new Frame(16,64,32,32), new Frame(288,64,32,32), new Frame(320,64,32,32), new Frame(352,64,32,32)
+            , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 14, false, false); //wrong values for now :D
+
         }
 
         public void UpdateMotion(GameTime gameTime, KeyboardState keyboardState)
@@ -301,10 +309,10 @@ namespace TDJGame
 
             if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
             {
-
+                Animations.Play("shooting");
                 if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)
                 {
-
+                    
                     this.LastShot = (float)gameTime.TotalGameTime.TotalMilliseconds + this.ShootRate;
 
                     // get the first dead bullet

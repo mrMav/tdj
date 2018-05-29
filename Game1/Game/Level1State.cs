@@ -99,7 +99,7 @@ namespace TDJGame
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
             /*player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);*/  // woman
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
-            //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
+            //player.Animations.Add("shooting", new int[] { 147, 149, 151, 153, 155}, 6, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
             player.Body.X = 16 * 3        ; /*330*/ //spawn x
             player.Body.Y = 16 * 3; //spawn y
