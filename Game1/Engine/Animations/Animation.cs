@@ -87,6 +87,7 @@ namespace Engine.Animations
             Loop = loop;
             LoopCount = 0;
             IsPlaying = false;
+            IsFinished = false;
             FrameIndex = 0;
             CurrentFrame = null;
             TimeNextFrame = 0;
@@ -173,7 +174,7 @@ namespace Engine.Animations
         public void Reset()
         {
             LoopCount = -1;
-            IsPlaying = false;
+            IsPlaying = true;
             IsFinished = false;
             FrameIndex = Frames.Length - 1;
             CurrentFrame = null;
@@ -182,6 +183,7 @@ namespace Engine.Animations
 
         public void Stop()
         {
+            IsPlaying = false;
             IsFinished = true;
         }
 

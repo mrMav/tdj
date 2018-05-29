@@ -89,7 +89,12 @@ namespace Engine.Animations
 
             if (Animations.TryGetValue(key, out anim))
             {
-                //Console.WriteLine("playing anim " + key);
+                // check if the current animation that is playing
+                // is not already the one we want to play
+                if(CurrentAnimation?.Name == key && CurrentAnimation.IsPlaying)
+                {
+                    return CurrentAnimation;
+                }
 
                 CurrentAnimation = anim;
                 CurrentAnimation.Reset();
