@@ -19,7 +19,7 @@ namespace TDJGame
 
         bool PlayerDetected = false;
         double MillisecondsAfterDetect = 0f;
-        double ExplostionTimeOut = 2000f;
+        double ExplostionTimeOut = 1500f;
 
         public TurtleX(GameState state, Texture2D texture, Vector2 position, int width, int height, float sight, float travelDistance = 32f, float travelSpeed = 0.5f)
             : base(state, texture, position, width, height, 96, 112, 16)
@@ -67,7 +67,7 @@ namespace TDJGame
                     if (percentOfTimePassedSinceDetect >= 1f)
                     {
                         // explode
-                        float distancePercentage = distanceDiff.Length() / DetectSight;
+                        float distancePercentage = distanceDiff.Length() / DetectSight; //check damage, should remove 1 full heart + aumentar radius
                         float inflictDamage = (1f - distancePercentage) * Damage;
                         
                         return inflictDamage >= 0f ? inflictDamage : -1f;

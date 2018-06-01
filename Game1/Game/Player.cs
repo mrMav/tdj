@@ -42,7 +42,7 @@ namespace TDJGame
         public Vector2 Size;
         public ParticleEmitter movementParticleEmitter;
         public ParticleEmitter anchorParticleEmitter;
-                
+
         public Player(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
             : base(state, texture, position, width, height, true)
         {
@@ -54,7 +54,7 @@ namespace TDJGame
 
             Body.Velocity.X = 0;
             Body.Velocity.Y = -2f;
-            
+
 
             FloatingUpSpeed = 0.8f;
             FloatingDownSpeed = FloatingUpSpeed * 2;
@@ -63,13 +63,13 @@ namespace TDJGame
             Body.MaxVelocity = 3f;
             Body.Drag.X = 0.6f;
             Body.Drag.Y = 0.6f;
-            
+
             Body.Enabled = true;
             Body.Tag = "player";
 
             /* Create a few bullets */
             Bullets = new List<Bullet>();
-            for(int i = 0; i < 50; i++)
+            for (int i = 0; i < 50; i++)
             {
                 Bullet b = new Bullet(state, texture, Vector2.Zero, this);
                 b.Animations.CurrentFrame = new Frame(0, 78, 16, 16);
@@ -114,10 +114,13 @@ namespace TDJGame
             /*Animations*/
 
             Animation shootingAnim = Animations.Add("shooting", new Frame[] {new Frame(16,64,32,32), new Frame(288,64,32,32), new Frame(320,64,32,32), new Frame(352,64,32,32)
-            , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 14, false, false);
+            , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 10, false, false);
 
             Animation idleAnim = Animations.Add("idle", new Frame[] {new Frame(16,64,32,32), new Frame(288,64,32,32), new Frame(320,64,32,32), new Frame(352,64,32,32)
             , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 14, false, false); //wrong values for now :D
+
+            Animation walkingAnim = Animations.Add("walking", new Frame[] { new Frame(240, 64, 32, 32) , new Frame(80, 64, 32, 32), new Frame(112, 64, 32, 32), new Frame(144, 64, 32, 32), new Frame(176, 64, 32, 32),
+            new Frame(208, 64, 32, 32)}, 8, false, false);
 
         }
 
@@ -174,6 +177,8 @@ namespace TDJGame
 
                     if (Floating)
                     {
+                       
+
                         if (Body.Position.Y >= 0)
                         {
                             Body.Velocity.Y -= FloatingUpSpeed; //Floating Up
@@ -200,6 +205,12 @@ namespace TDJGame
                     
                     if (!Floating)
                     {
+
+                        if(keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D))
+                        {
+                                Animations.Play("walking");
+                        }
+
 
                         if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
 

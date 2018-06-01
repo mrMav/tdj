@@ -47,6 +47,10 @@ namespace TDJGame
                 Bullets.Add(b);
             }
 
+            /* Animations */
+
+            Animation swimAnim = Animations.Add("swim", new Frame[] { new Frame(96, 144, 32, 32), new Frame(128, 144, 32, 32), new Frame(160, 144, 32, 32) , new Frame(192, 144, 32, 32)}, 7,true,false);
+            Animation shootAnim = Animations.Add("shoot", new Frame[] { new Frame(240, 144, 32, 32), new Frame(272, 144, 32, 32), new Frame(302, 144, 32, 32), new Frame(334, 144, 32, 32) }, 5, false, false);
         }
 
         public override void Update(GameTime gameTime)
@@ -54,7 +58,9 @@ namespace TDJGame
             base.Update(gameTime);
 
             if (Alive)
-            {                
+            {
+                Animations.Play("swim");
+
                 Body.X += Body.Velocity.X;
                 Body.Y += Body.Velocity.Y;
 
@@ -122,6 +128,8 @@ namespace TDJGame
 
                     if (b != null)
                     {
+
+                        Animations.Play("shoot"); //probabbly not here
 
                         Random rnd = new Random();
                         int YVariation = 4;
