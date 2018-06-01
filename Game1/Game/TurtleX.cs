@@ -33,6 +33,10 @@ namespace TDJGame
             Body.Enabled = true;
             Body.Velocity.X = TravelSpeed;
             Body.Tag = "turtlex";
+
+            /* Animations */
+
+            Animation swimAnim = Animations.Add("swim", new Frame[] { new Frame(192, 208, 32, 32), new Frame(224, 208, 32, 32), new Frame(256, 208, 32, 32), new Frame(288, 208, 32, 32) }, 7, true, false);
         }
 
         public float UpdateMov(GameTime gameTime, Player player)
@@ -41,7 +45,7 @@ namespace TDJGame
 
             if (Alive)
             {
-
+                Animations.Play("swim");
                 /* Detect player in a radius = to sight */
 
                 Vector2 distanceDiff = Body.Position - player.Body.Position;
@@ -67,7 +71,7 @@ namespace TDJGame
                     if (percentOfTimePassedSinceDetect >= 1f)
                     {
                         // explode
-                        float distancePercentage = distanceDiff.Length() / DetectSight; //check damage, should remove 1 full heart + aumentar radius
+                        float distancePercentage = distanceDiff.Length() * 2 / DetectSight; //check damage, should remove 1 full heart + aumentar radius
                         float inflictDamage = (1f - distancePercentage) * Damage;
                         
                         return inflictDamage >= 0f ? inflictDamage : -1f;

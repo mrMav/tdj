@@ -33,6 +33,8 @@ namespace TDJGame
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
+        List<Tile> spikesPointingLeft;
+        List<Tile> spikesPointingRight;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
@@ -101,7 +103,7 @@ namespace TDJGame
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 3; /*330*/ //spawn x
+            player.Body.X = 16 * 150; /*330*/ //spawn x
             player.Body.Y = 16 * 6; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
@@ -242,6 +244,8 @@ namespace TDJGame
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
+            spikesPointingLeft = level.GetTilesListByID(new int[] { 516 });
+            spikesPointingRight = level.GetTilesListByID(new int[] { 517 });
 
             foreach (Tile spike in spikesPointingDown)
             {
@@ -250,6 +254,16 @@ namespace TDJGame
             foreach (Tile spike in spikesPointingUp)
             {
                 spike.Body.SetSize(12, 6, 2, 10);
+            }
+
+            foreach (Tile spike in spikesPointingLeft)
+            {
+                spike.Body.SetSize(6, 12, 10, 2);
+            }
+
+            foreach (Tile spike in spikesPointingRight)
+            {
+                spike.Body.SetSize(6, 12, 0, 2);
             }
 
             topWaterTiles = level.GetTilesListByID(new int[] { 97, 98, 99 });
@@ -310,6 +324,8 @@ namespace TDJGame
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
+            spikesPointingLeft = null;
+            spikesPointingRight = null;
             enemies = null;
             SFX = null;
 
@@ -403,6 +419,23 @@ namespace TDJGame
                     }
                 }
 
+                foreach (Tile spike in spikesPointingLeft)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
+
+                foreach (Tile spike in spikesPointingRight)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
             }
 
             /*
@@ -634,11 +667,11 @@ namespace TDJGame
                 //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
 
-            //foreach (Sprite s in spikesPointingDown)
+            //foreach (Sprite s in spikesPointingLeft)
             //{
             //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
             //}
-            //foreach (Sprite s in spikesPointingUp)
+            //foreach (Sprite s in spikesPointingRight)
             //{
             //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
             //}
