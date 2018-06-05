@@ -149,6 +149,9 @@
     <None Include="Content\featureTestMap.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Content\KarmaScreen.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Level1.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

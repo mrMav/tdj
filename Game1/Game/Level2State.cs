@@ -103,7 +103,7 @@ namespace TDJGame
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 150; /*330*/ //spawn x
+            player.Body.X = 16 * 3; /*330*/ //spawn x
             player.Body.Y = 16 * 6; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
@@ -237,6 +237,13 @@ namespace TDJGame
                 {
                     triggers.Add(new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value")));
                 }
+
+                //add speed change here
+
+                //else if(obj.Name.ToLower() == "teleportBox")
+                //{
+                    
+                //}
 
             }
 

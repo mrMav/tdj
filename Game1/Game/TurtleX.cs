@@ -22,7 +22,7 @@ namespace TDJGame
         double ExplostionTimeOut = 1500f;
 
         public TurtleX(GameState state, Texture2D texture, Vector2 position, int width, int height, float sight, float travelDistance = 32f, float travelSpeed = 0.5f)
-            : base(state, texture, position, width, height, 96, 112, 16)
+            : base(state, texture, position, width, height, 192, 208, 8)
         {
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;

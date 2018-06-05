@@ -25,7 +25,7 @@ namespace TDJGame
         public Vector2 Size;
         
         public PufferFish(GameState state, Texture2D texture, Vector2 position, int width, int height, float travelDistance = 32f, float travelSpeed = 0.5f)
-            : base(state, texture, position, width, height, 0, 112)
+            : base(state, texture, position, width, height, 64, 144)
         {
             TravelDistance = travelDistance;
             TravelSpeed = travelSpeed;
@@ -49,7 +49,7 @@ namespace TDJGame
 
             /* Animations */
 
-            Animation swimAnim = Animations.Add("swim", new Frame[] { new Frame(96, 144, 32, 32), new Frame(128, 144, 32, 32), new Frame(160, 144, 32, 32) , new Frame(192, 144, 32, 32)}, 7,true,false);
+            Animation swimAnim = Animations.Add("swim", new Frame[] { new Frame(96, 144, 32, 32), new Frame(128, 144, 32, 32), new Frame(160, 144, 32, 32) , new Frame(192, 144, 32, 32)}, 5,true,false);
             Animation shootAnim = Animations.Add("shoot", new Frame[] { new Frame(240, 144, 32, 32), new Frame(272, 144, 32, 32), new Frame(302, 144, 32, 32), new Frame(334, 144, 32, 32) }, 5, false, false);
         }
 
