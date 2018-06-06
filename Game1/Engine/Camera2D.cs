@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine.Physics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -12,6 +13,7 @@ namespace Engine
     public class Camera2D
     {
 
+        private float OriginalZoom;
         public float _zoom;
         public float Zoom
         {
@@ -31,9 +33,12 @@ namespace Engine
             }
         }
 
+
         protected float Rotation { get; set; }
 
         public Matrix Transform { get; set; }
+
+        public AABB Bounds;
 
         public Vector2 Position;
         public Vector2 TargetPosition;
@@ -58,6 +63,7 @@ namespace Engine
             this.Position = position == null ? Vector2.Zero : position;
             this.ShakeOffset = Vector2.Zero;
             this.Shaking = false;
+            this.Bounds = new AABB(0, 0, 50, 50);  // what size it this really?
         }
 
         public void Move(float x, float y)
@@ -69,7 +75,7 @@ namespace Engine
         public void Update(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
             // need to reset the zoom;
-            Zoom = 2.45f;
+            Zoom = 2.45f;  // this cant be hard coded like this....
 
             if(Shaking)
             {
@@ -105,6 +111,9 @@ namespace Engine
             //Move(distToOrigin.X, distToOrigin.Y);
 
             GetTransform(graphicsDevice);
+
+            this.Bounds.X = this.Position.X;
+            this.Bounds.Y = this.Position.Y;
 
         }
 
@@ -177,6 +186,15 @@ namespace Engine
 
             ShakeOffset.X = v * d1;
             ShakeOffset.Y = v * d2;
+
+        }
+
+        public AABB SetCameraBoundsRectangle(float with, float height)
+        {
+
+            this.Bounds.Resize(with, height);
+
+            return this.Bounds;
 
         }
 

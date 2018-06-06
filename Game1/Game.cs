@@ -45,6 +45,7 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
             StateManager.Instance.AddGameState(new Level1State("Level1State", graphics));
             StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
+            StateManager.Instance.AddGameState(new NewTestState("NewTestState", graphics));
 
             base.Initialize();
         }
@@ -55,11 +56,11 @@ namespace TDJGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             menuSong = Content.Load<Song>("menuSong");
-            MediaPlayer.Play(menuSong);
+            //MediaPlayer.Play(menuSong);
 
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("Level1State");
+            StateManager.Instance.StartGameState("Level2State");
 
         }
 

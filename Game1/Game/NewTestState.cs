@@ -15,11 +15,11 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
-    public class Level2State : GameState
+    public class NewTestState : GameState
     {
 
         #region [Properties]
-
+        
         Camera2D camera;
         FrameCounter frameCounter;
         SpriteFont font;
@@ -34,8 +34,6 @@ namespace TDJGame
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
-        List<Tile> spikesPointingLeft;
-        List<Tile> spikesPointingRight;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
@@ -50,7 +48,7 @@ namespace TDJGame
 
         #endregion
 
-        public Level2State(string key, GraphicsDeviceManager graphics)
+        public NewTestState(string key, GraphicsDeviceManager graphics)
         {
             Key = key;
             Graphics = graphics;
@@ -68,9 +66,8 @@ namespace TDJGame
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
-
-
-
+            stopwatch = new Stopwatch();
+            
         }
 
         public override void LoadContent()
@@ -79,12 +76,13 @@ namespace TDJGame
 
             camera = new Camera2D(Vector2.Zero);
             camera.Zoom = (float)Graphics.PreferredBackBufferHeight * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
+            camera.SetCameraBoundsRectangle(Graphics.PreferredBackBufferWidth / camera.Zoom - 32f, Graphics.PreferredBackBufferHeight / camera.Zoom - 32f);
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheet");
             song = content.Load<Song>("InkStuff");
             MediaPlayer.Volume = 0.3f;
-            MediaPlayer.Play(song);
+            //MediaPlayer.Play(song);
             MediaPlayer.IsRepeating = true;
 
             /*
@@ -107,10 +105,10 @@ namespace TDJGame
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
             /*player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);*/  // woman
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
-            //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
+            //player.Animations.Add("shooting", new int[] { 147, 149, 151, 153, 155}, 6, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 3; /*330*/ //spawn x
-            player.Body.Y = 16 * 6; //spawn y
+            player.Body.X = 16 * 440; /*330*/ //spawn x
+            player.Body.Y = 16 * 3; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
 
@@ -182,27 +180,6 @@ namespace TDJGame
                     Console.WriteLine("added puffer");
 
                 }
-                else if (obj.Name.ToLower() == "turtlex")
-                {
-                    Vector2 position = new Vector2(obj.X, obj.Y);
-
-                    float speed = float.Parse(obj.GetProperty("speed"));
-
-                    TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
-                    
-
-                    // make it start on the right side of its path
-                    if (obj.GetProperty("start_side") == "right")
-                    {
-                        p.Body.X = obj.X + obj.Width;
-                        p.CurrentDistance = obj.Width - 33;
-                    }
-
-                    enemies.Add(p);
-
-                    Console.WriteLine("added turtlex");
-
-                }
 
                 else if (obj.Name.ToLower() == "goldfish")
                 {
@@ -244,21 +221,12 @@ namespace TDJGame
                     triggers.Add(new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value")));
                 }
 
-                //add speed change here
-
-                //else if(obj.Name.ToLower() == "teleportBox")
-                //{
-                    
-                //}
-
             }
 
 
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
-            spikesPointingLeft = level.GetTilesListByID(new int[] { 516 });
-            spikesPointingRight = level.GetTilesListByID(new int[] { 517 });
 
             foreach (Tile spike in spikesPointingDown)
             {
@@ -267,16 +235,6 @@ namespace TDJGame
             foreach (Tile spike in spikesPointingUp)
             {
                 spike.Body.SetSize(12, 6, 2, 10);
-            }
-
-            foreach (Tile spike in spikesPointingLeft)
-            {
-                spike.Body.SetSize(6, 12, 10, 2);
-            }
-
-            foreach (Tile spike in spikesPointingRight)
-            {
-                spike.Body.SetSize(6, 12, 0, 2);
             }
 
             topWaterTiles = level.GetTilesListByID(new int[] { 97, 98, 99 });
@@ -337,8 +295,6 @@ namespace TDJGame
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
-            spikesPointingLeft = null;
-            spikesPointingRight = null;
             enemies = null;
             SFX = null;
 
@@ -434,23 +390,6 @@ namespace TDJGame
                     }
                 }
 
-                foreach (Tile spike in spikesPointingLeft)
-                {
-                    if (Physics.Overlap(spike, player))
-                    {
-                        TriggerPlayerHurt(gameTime, spike);
-                        break;
-                    }
-                }
-
-                foreach (Tile spike in spikesPointingRight)
-                {
-                    if (Physics.Overlap(spike, player))
-                    {
-                        TriggerPlayerHurt(gameTime, spike);
-                        break;
-                    }
-                }
             }
 
             /*
@@ -461,14 +400,7 @@ namespace TDJGame
             foreach (Bullet b in player.Bullets)
             {
                 if (b.Alive)
-                {
-                    foreach (Tile t in level.CollidableTiles)
-                    {
-                        if (Physics.Overlap(b, t))
-                        {
-                            b.Kill();
-                        }
-                    }
+                {                    
                     foreach (Sprite s in enemies)
                     {
                         if (s.Alive)
@@ -507,14 +439,6 @@ namespace TDJGame
                         {
                             if (b.Alive)
                             {
-                                foreach (Tile t in level.CollidableTiles)
-                                {
-                                    if (Physics.Overlap(b, t))
-                                    {
-                                        b.Kill();
-                                    }
-                                }
-
                                 if (player.Alive)
                                 {
                                     if (Physics.Overlap(b, player) && !player.IsBlinking)
@@ -526,7 +450,6 @@ namespace TDJGame
                             }
                         }
                     }
-
                 }
             }
 
@@ -538,7 +461,184 @@ namespace TDJGame
              */
             #region [World Collisions]
 
-            bool cameraShakeResponse = player.UpdateCollisions(gameTime, level);
+            // build loop on only the on screen tiles
+
+            Vector2 screenTopLeftCornerToWorldCoords = camera.GetScreenToWorldPosition(Vector2.Zero);
+
+            int topTileXIndex = (int)screenTopLeftCornerToWorldCoords.X / level.TileWidth;
+            int topTileYIndex = (int)screenTopLeftCornerToWorldCoords.Y / level.TileHeight;
+
+            int ammountOfTilesWidthOnScreen = (int)(Graphics.PreferredBackBufferWidth / camera.Zoom / level.TileWidth);
+            int ammountOfTilesHeightOnScreen = (int)(Graphics.PreferredBackBufferHeight / camera.Zoom / level.TileHeight);
+
+            for (int y = topTileYIndex; y < ammountOfTilesHeightOnScreen + topTileYIndex; y++)
+            {
+
+                for (int x = topTileXIndex; x < ammountOfTilesWidthOnScreen + topTileXIndex; x++)
+                {
+
+                    // layer 1 is the one we are using for collisions
+                    if (y >= 0 && y < level.Layers[1].TileMap.GetLength(0) &&
+                       x >= 0 && x < level.Layers[1].TileMap.GetLength(1))
+                    {
+                        
+                        Tile currentTile = level.Layers[1].TileMap[y, x];
+
+                        if (currentTile == null)
+                        {
+                            continue;
+                        }
+
+                        if (!currentTile.Body.Enabled)
+                        {
+                            continue;
+                        }
+
+                        // collide player projectiles
+
+                        foreach (Bullet b in player.Bullets)
+                        {
+                            if (b.Alive)
+                            {
+                                if (Physics.Overlap(b, currentTile))
+                                {
+                                    b.Kill();
+                                }
+                            }
+                        }
+
+                        // enemies projectiles
+
+                        foreach (Sprite p in enemies)
+                        {
+                            if (p.Alive)
+                            {
+
+                                if (p.GetType() == typeof(PufferFish))
+                                {
+                                    PufferFish puf = (PufferFish)p;
+
+                                    foreach (Bullet b in puf.Bullets)
+                                    {
+                                        if (b.Alive)
+                                        {
+                                            if (Physics.Overlap(b, currentTile))
+                                            {
+                                                b.Kill();
+                                            }                                                                                  
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // apply player velocities and collide
+            // in order to avoid wall sticking
+            // it's necessary to first move in x
+            // and solve and then move in y and solve again
+
+            #region [Player World Collisions]
+
+            bool cameraShakeResponse = false;
+
+            player.Body.PreCollisionUpdate(gameTime);
+            player.Body.PreMovementUpdate(gameTime);
+
+            // apply x velocity
+            player.Body.X += player.Body.Velocity.X;
+
+            for (int y = topTileYIndex; y < ammountOfTilesHeightOnScreen + topTileYIndex; y++)
+            {
+
+                for (int x = topTileXIndex; x < ammountOfTilesWidthOnScreen + topTileXIndex; x++)
+                {
+
+                    // layer 1 is the one we are using for collisions
+                    int xLength = level.Layers[1].TileMap.GetLength(1);
+                    int yLength = level.Layers[1].TileMap.GetLength(0);
+
+                    if (y >= 0 && y < yLength &&
+                       x >= 0 && x < xLength)
+                    {
+
+                        Tile currentTile = level.Layers[1].TileMap[y, x];
+
+                        if (currentTile == null)
+                        {
+                            continue;
+                        }
+
+                        if (!currentTile.Body.Enabled)
+                        {
+                            continue;
+                        }
+                        
+                        // solve x collisions
+                        Physics.Collide(player, currentTile, 0); // collide in x
+
+                    }
+                }
+            }
+
+            // apply y velocity
+            player.Body.Y += player.Body.Velocity.Y;
+
+            for (int y = topTileYIndex; y < ammountOfTilesHeightOnScreen + topTileYIndex; y++)
+            {
+
+                for (int x = topTileXIndex; x < ammountOfTilesWidthOnScreen + topTileXIndex; x++)
+                {
+
+                    // layer 1 is the one we are using for collisions
+                    int xLength = level.Layers[1].TileMap.GetLength(1);
+                    int yLength = level.Layers[1].TileMap.GetLength(0);
+
+                    if (y >= 0 && y < yLength &&
+                       x >= 0 && x < xLength)
+                    {
+
+                        Tile currentTile = level.Layers[1].TileMap[y, x];
+
+                        if (currentTile == null)
+                        {
+                            continue;
+                        }
+
+                        if (!currentTile.Body.Enabled)
+                        {
+                            continue;
+                        }
+                        
+                        // solve y collisions
+                        bool collided = Physics.Collide(player, currentTile, 1); // collide in y           
+
+                        //if the player was moving down:
+                        if (collided && player.Body.MovingDown)
+                        {
+                            cameraShakeResponse = true;
+                            SoundEffect fall;
+                            SFX.TryGetValue("fall", out fall);
+                            fall?.Play();
+                        }                        
+                    }
+                }
+            }
+
+            // bound to world
+            if (player.Body.Y < -16f)
+            {
+                player.Body.Y = -16f;
+            }
+
+            player.Body.Update(gameTime);
+
+            #endregion
+
+
+            //bool cameraShakeResponse = player.UpdateCollisions(gameTime, level);
 
             RepositionOutOfBoundsPlayer(gameTime);
 
@@ -599,6 +699,44 @@ namespace TDJGame
             camera.Position.Y = MathHelper.Clamp(camera.Position.Y, -1000f, (level.Height * level.TileHeight) - (halfscreenheight / camera.Zoom));
 
             camera.Update(gameTime, Graphics.GraphicsDevice);
+            
+            Vector2 screenTopLeftCornerToWorldCoords2 = camera.GetScreenToWorldPosition(Vector2.Zero);
+
+            camera.Bounds.X = screenTopLeftCornerToWorldCoords2.X + 16f;
+            camera.Bounds.Y = screenTopLeftCornerToWorldCoords2.Y + 16f;
+
+            // build loop on only the visible tiles
+
+            //Vector2 screenTopLeftCornerToWorldCoords = camera.GetScreenToWorldPosition(Vector2.Zero);
+
+            //int topTileXIndex = (int)screenTopLeftCornerToWorldCoords.X / level.TileWidth;
+            //int topTileYIndex = (int)screenTopLeftCornerToWorldCoords.Y / level.TileHeight;
+
+            //int ammountOfTilesWidthOnScreen = (int)(Graphics.PreferredBackBufferWidth / camera.Zoom / level.TileWidth);
+            //int ammountOfTilesHeightOnScreen = (int)(Graphics.PreferredBackBufferHeight / camera.Zoom / level.TileHeight);
+            
+            //for (int y = topTileYIndex; y < ammountOfTilesHeightOnScreen + topTileYIndex; y++)
+            //{
+
+            //    for (int x = topTileXIndex; x < ammountOfTilesWidthOnScreen + topTileXIndex; x++)
+            //    {
+
+            //        // layer 1 is the one we are using for collisions
+            //        if(y >= 0 && y < level.Layers[1].TileMap.GetLength(0) &&
+            //           x >= 0 && x < level.Layers[1].TileMap.GetLength(1))
+            //        {
+
+            //            if(level.Layers[1].TileMap[y, x] != null)
+            //            {
+            //                level.Layers[1].TileMap[y, x].Tint = new Color(0, 240, 0, 240);
+            //            }
+
+            //        }
+
+            //    }
+
+            //}
+
 
             #endregion
 
@@ -611,7 +749,7 @@ namespace TDJGame
             {
                 // show end game screen
                 // now we will just restart this state
-                StateManager.Instance.StartGameState("Level2State");
+                StateManager.Instance.StartGameState("Level1State");
                 return;
             }
 
@@ -693,11 +831,11 @@ namespace TDJGame
                 //DrawBodyShape(s, spriteBatch, new Color(150, 0, 0, 150));
             }
 
-            //foreach (Sprite s in spikesPointingLeft)
+            //foreach (Sprite s in spikesPointingDown)
             //{
             //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
             //}
-            //foreach (Sprite s in spikesPointingRight)
+            //foreach (Sprite s in spikesPointingUp)
             //{
             //    DrawBodyShape(s, spriteBatch, new Color(0, 0, 150, 150));
             //}
@@ -712,6 +850,10 @@ namespace TDJGame
             player.Draw(gameTime, spriteBatch);
             //DrawBodyShape(player, spriteBatch, new Color(100, 0, 0, 150));
 
+
+            // draw camera bounds for testing purposes
+            spriteBatch.Draw(pixel, new Rectangle((int)camera.Bounds.X, (int)camera.Bounds.Y, (int)camera.Bounds.Width, (int)camera.Bounds.Height), new Color(20, 0, 0, 20));
+
             spriteBatch.End();
 
             #endregion
@@ -725,7 +867,7 @@ namespace TDJGame
 
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
-            spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom} Bounds: {(int)camera.Bounds.X}, {(int)camera.Bounds.Y}, {(int)camera.Bounds.Width}, {(int)camera.Bounds.Height}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
 
             spriteBatch.End();
 
@@ -740,11 +882,11 @@ namespace TDJGame
 
             if (damage < 0f)
             {
-                player.ReceiveDamage(theHurtingSprite.Damage);
+                //player.ReceiveDamage(theHurtingSprite.Damage);
             }
             else
             {
-                player.ReceiveDamage(damage);
+                //player.ReceiveDamage(damage);
                 Console.WriteLine("damage: " + damage);
             }
 

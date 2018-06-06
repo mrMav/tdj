@@ -250,7 +250,7 @@ namespace TDJGame
             }
             
         }
-
+        
         public bool UpdateCollisions(GameTime gameTime, Level level)
         {
 
@@ -265,7 +265,11 @@ namespace TDJGame
             // solve x collisions
             for (int i = 0; i < level.CollidableTiles.Count; i++)
             {
-                Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x                
+                if(level.CollidableTiles[i].Body.Enabled)
+                {
+                    Physics.Collide(this, level.CollidableTiles[i], 0); // collide in x
+                }
+
             }
 
             // apply y velocity
@@ -275,15 +279,20 @@ namespace TDJGame
             bool collided = false;
             for (int i = 0; i < level.CollidableTiles.Count; i++)
             {
-                collided = Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y                                
-
-                //if the player was moving down:
-                if (collided && Body.MovingDown)
+                if (level.CollidableTiles[i].Body.Enabled)
                 {
-                    CameraShakeResponse = true;
-                    SoundEffect fall;
-                    State.SFX.TryGetValue("fall", out fall);
-                    fall?.Play();
+
+                    collided = Physics.Collide(this, level.CollidableTiles[i], 1); // collide in y           
+                
+                    //if the player was moving down:
+                    if (collided && Body.MovingDown)
+                    {
+                        CameraShakeResponse = true;
+                        SoundEffect fall;
+                        State.SFX.TryGetValue("fall", out fall);
+                        fall?.Play();
+                    }
+
                 }
 
             }

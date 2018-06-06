@@ -87,21 +87,26 @@ namespace Engine
         // render
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (FacingDirection < 0)
+            if (Visible)
             {
 
-                spriteBatch.Draw(
-                         Texture,
-                         position: Body.Position,
-                         sourceRectangle: this.Animations.CurrentFrame.TextureSourceRect,
-                         effects: SpriteEffects.FlipHorizontally,
-                         color: Tint
-                    );
+                if (FacingDirection < 0)
+                {
 
-            }
-            else
-            {
-                spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
+                    spriteBatch.Draw(
+                             Texture,
+                             position: Body.Position,
+                             sourceRectangle: this.Animations.CurrentFrame.TextureSourceRect,
+                             effects: SpriteEffects.FlipHorizontally,
+                             color: Tint
+                        );
+
+                }
+                else
+                {
+                    spriteBatch.Draw(this.Texture, this.Body.Position, this.Animations.CurrentFrame.TextureSourceRect, this.Tint);
+                }
+
             }
         }
 

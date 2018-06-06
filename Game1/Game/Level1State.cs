@@ -297,6 +297,8 @@ namespace TDJGame
         public override void Update(GameTime gameTime)
         {
 
+            Console.WriteLine(gameTime.ElapsedGameTime.TotalSeconds);
+
             /*
              * Input State refresh
              */
