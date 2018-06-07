@@ -8,15 +8,21 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace TDJGame
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+    public static class Globals
+    {        
+
+        public static string CurrentLevel;
+
+        public static Song MenuSong;
+        public static Song LevelSong;
+
+    }
+
     public class TDJGame : Game
     {
 
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Song menuSong;
         
         public TDJGame()
         {
@@ -36,16 +42,18 @@ namespace TDJGame
 
             StateManager.Instance.AddGameState(new StartupState("StartupState", graphics));
             StateManager.Instance.AddGameState(new MenuState("MenuState", graphics));
-            StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
+            //StateManager.Instance.AddGameState(new PlayState("PlayState", graphics));
             StateManager.Instance.AddGameState(new CreditsState("CreditsState", graphics));
-            StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
-            StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
-            StateManager.Instance.AddGameState(new TestAnimations("TestAnimations", graphics));
-            StateManager.Instance.AddGameState(new TestCamera("TestCamera", graphics));
-            StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
-            StateManager.Instance.AddGameState(new Level1State("Level1State", graphics));
-            StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
+            //StateManager.Instance.AddGameState(new TestParticleEmitter("TestParticles", graphics));
+            //StateManager.Instance.AddGameState(new TestObjectImport("TestObjectImport", graphics));
+            //StateManager.Instance.AddGameState(new TestAnimations("TestAnimations", graphics));
+            //StateManager.Instance.AddGameState(new TestCamera("TestCamera", graphics));
+            //StateManager.Instance.AddGameState(new FeatureTestMap("FeatureTestMap", graphics));
+            //StateManager.Instance.AddGameState(new Level1State("Level1State", graphics));
+            //StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
             StateManager.Instance.AddGameState(new NewTestState("NewTestState", graphics));
+            
+            Globals.CurrentLevel = "Level1";
 
             base.Initialize();
         }
@@ -55,12 +63,12 @@ namespace TDJGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            menuSong = Content.Load<Song>("menuSong");
-            //MediaPlayer.Play(menuSong);
-
+            Globals.MenuSong = Content.Load<Song>("menuSong");
+            Globals.LevelSong = Content.Load<Song>("inkStuff");
+            
             StateManager.Instance.LoadContent(Content);
 
-            StateManager.Instance.StartGameState("Level2State");
+            StateManager.Instance.StartGameState("NewTestState");
 
         }
 

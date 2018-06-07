@@ -173,6 +173,8 @@ namespace TDJGame
 
                     }
 
+                    Body.Drag.X = 0.6f;
+
                     /* Floating */
 
                     if (Floating)
@@ -206,11 +208,11 @@ namespace TDJGame
                     if (!Floating)
                     {
 
-                        if(keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D))
+                        if(keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D) && Body.CollidingBottom)
                         {
-                                Animations.Play("walking");
+                            Body.Drag.X = 0.04f;
+                            Animations.Play("walking");
                         }
-
 
                         if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
 

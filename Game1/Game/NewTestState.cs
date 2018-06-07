@@ -40,13 +40,13 @@ namespace TDJGame
         List<Trigger> triggers;
         Song song;
 
-        Stopwatch stopwatch;
+        //Stopwatch stopwatch;
 
-        long tickCount = 0;
-        double sumOfMilliseconds = 0;
-        double averageMilliseconds = 0;
-        double maxMills = double.MinValue;
-        double minMills = double.MaxValue;
+        //long tickCount = 0;
+        //double sumOfMilliseconds = 0;
+        //double averageMilliseconds = 0;
+        //double maxMills = double.MinValue;
+        //double minMills = double.MaxValue;
 
         #endregion
 
@@ -54,8 +54,6 @@ namespace TDJGame
         {
             Key = key;
             Graphics = graphics;
-
-
         }
 
         public override void Initialize()
@@ -68,7 +66,7 @@ namespace TDJGame
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
             SFX = new Dictionary<string, SoundEffect>();
-            stopwatch = new Stopwatch();
+            //stopwatch = new Stopwatch();
             
         }
 
@@ -78,15 +76,14 @@ namespace TDJGame
 
             camera = new Camera2D(Vector2.Zero);
             camera.Zoom = (float)Graphics.PreferredBackBufferHeight * 2.45f / 600f;  // the ideal zoom is 2.45 at 600px of screen height
-            camera.SetCameraBoundsRectangle(Graphics.PreferredBackBufferWidth / camera.Zoom - 32f, Graphics.PreferredBackBufferHeight / camera.Zoom - 32f);
 
             font = content.Load<SpriteFont>("Font");
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheet");
-            song = content.Load<Song>("InkStuff");
-            MediaPlayer.Volume = 0.3f;
-            //MediaPlayer.Play(song);
-            MediaPlayer.IsRepeating = true;
 
+            MediaPlayer.Volume = 0.3f;
+            MediaPlayer.Play(Globals.LevelSong);
+            MediaPlayer.IsRepeating = true;
+            
             /*
              * A single pixel to draw lines and stuff
              */
@@ -120,7 +117,20 @@ namespace TDJGame
              * Level init
              */
             XMLLevelLoader XMLloader = new XMLLevelLoader();
-            level = XMLloader.LoadLevel(this, @"Content\Level2.tmx", tilemapTexture);
+
+            // se o load do mapa falhar, well shit. vai para o menu.
+            try
+            {
+                level = XMLloader.LoadLevel(this, @"Content\" + Globals.CurrentLevel +".tmx", tilemapTexture);
+
+            } catch(Exception e)
+            {
+                Console.WriteLine("Error Loading Map. Error message: " + e.Message);
+
+                StateManager.Instance.StartGameState("MenuState");
+
+            }
+
             level.SetCollisionTiles(new int[] { 2, 33, 34, 35, 47, 66, });
 
 
@@ -225,7 +235,6 @@ namespace TDJGame
 
             }
 
-
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
@@ -283,7 +292,7 @@ namespace TDJGame
 
         public override void UnloadContent()
         {
-            base.UnloadContent();
+
 
             camera = null;
             frameCounter = null;
@@ -300,12 +309,20 @@ namespace TDJGame
             enemies = null;
             SFX = null;
 
+            //MediaPlayer.Stop();
+            //song.Dispose();
+            //song = null;
+
+            //Console.WriteLine(song);
+            //Console.WriteLine("HHERERERasdasd");
+
+            base.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
 
-            stopwatch = Stopwatch.StartNew();
+            //stopwatch = Stopwatch.StartNew();
 
             /*
              * Input State refresh
@@ -656,7 +673,7 @@ namespace TDJGame
             foreach (Tile t in topWaterTiles)
             {
                 float x = (float)gameTime.TotalGameTime.TotalMilliseconds;
-                float phaseShift = (count / topWaterTiles.Count) * (float)Math.PI * 19.7f;
+                float phaseShift = (count / 30) * (float)Math.PI * 19.7f;
                 float freq = 0.005f;
                 float amp = 1f;
 
@@ -751,7 +768,10 @@ namespace TDJGame
             {
                 // show end game screen
                 // now we will just restart this state
-                StateManager.Instance.StartGameState("Level1State");
+                //StateManager.Instance.StartGameState("EndState");
+
+                StateManager.Instance.StartGameState(this.Key);
+
                 return;
             }
 
@@ -759,26 +779,29 @@ namespace TDJGame
             {
                 if (Physics.Overlap(player.Body.Bounds, t))
                 {
-                    StateManager.Instance.StartGameState(t.Value);
+                    Globals.CurrentLevel = t.Value;
+
+                    StateManager.Instance.StartGameState(this.Key);
+
                     return;
                 }
             }
 
             #endregion
 
-            stopwatch.Stop();
+            //stopwatch.Stop();
 
-            ++tickCount;
+            //++tickCount;
 
-            sumOfMilliseconds += stopwatch.Elapsed.TotalMilliseconds;
-            averageMilliseconds = sumOfMilliseconds / tickCount;
+            //sumOfMilliseconds += stopwatch.Elapsed.TotalMilliseconds;
+            //averageMilliseconds = sumOfMilliseconds / tickCount;
 
-            maxMills = stopwatch.Elapsed.TotalMilliseconds > maxMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : maxMills;
-            minMills = stopwatch.Elapsed.TotalMilliseconds < minMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : minMills;
+            //maxMills = stopwatch.Elapsed.TotalMilliseconds > maxMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : maxMills;
+            //minMills = stopwatch.Elapsed.TotalMilliseconds < minMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : minMills;
 
-            Console.WriteLine(
-                $"RealTime: {stopwatch.Elapsed.TotalMilliseconds:0.0000}, Avg: {averageMilliseconds:0.0000}, Min: {minMills}, Max: {maxMills} "
-            );
+            //Console.WriteLine(
+            //    $"RealTime: {stopwatch.Elapsed.TotalMilliseconds:0.0000}, Avg: {averageMilliseconds:0.0000}, Min: {minMills}, Max: {maxMills} "
+            //);
 
         }
 
@@ -794,7 +817,9 @@ namespace TDJGame
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             Color depthbasedtint = Color.White;
-            float multiplyer = (1f - player.Body.Y / (level.Height * level.TileHeight));
+            float depthToPitchBlack = 32 * 16;
+            float levelDepth = level.Height * level.TileHeight;
+            float multiplyer = (1f - player.Body.Y / (depthToPitchBlack < levelDepth ? levelDepth : depthToPitchBlack));
 
             if (multiplyer >= 1f)
                 multiplyer = 1f;
@@ -857,7 +882,7 @@ namespace TDJGame
 
 
             // draw camera bounds for testing purposes
-            spriteBatch.Draw(pixel, new Rectangle((int)camera.Bounds.X, (int)camera.Bounds.Y, (int)camera.Bounds.Width, (int)camera.Bounds.Height), new Color(20, 0, 0, 20));
+            //spriteBatch.Draw(pixel, new Rectangle((int)camera.Bounds.X, (int)camera.Bounds.Y, (int)camera.Bounds.Width, (int)camera.Bounds.Height), new Color(20, 0, 0, 20));
 
             spriteBatch.End();
 
@@ -872,7 +897,7 @@ namespace TDJGame
 
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
-            spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom} Bounds: {(int)camera.Bounds.X}, {(int)camera.Bounds.Y}, {(int)camera.Bounds.Width}, {(int)camera.Bounds.Height}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
+            //spriteBatch.DrawString(font, $"{(int)camera.Position.X}, {(int)camera.Position.Y}, {camera.Zoom} Bounds: {(int)camera.Bounds.X}, {(int)camera.Bounds.Y}, {(int)camera.Bounds.Width}, {(int)camera.Bounds.Height}", new Vector2(0, graphicsDevice.Viewport.Height - 16), Color.Red);
 
             spriteBatch.End();
 
@@ -887,11 +912,11 @@ namespace TDJGame
 
             if (damage < 0f)
             {
-                //player.ReceiveDamage(theHurtingSprite.Damage);
+                player.ReceiveDamage(theHurtingSprite.Damage);
             }
             else
             {
-                //player.ReceiveDamage(damage);
+                player.ReceiveDamage(damage);
                 Console.WriteLine("damage: " + damage);
             }
 

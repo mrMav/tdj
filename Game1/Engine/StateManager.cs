@@ -72,7 +72,7 @@ namespace Engine
 
                 // change current to the new one
                 this.currentGameState = g;
-
+                
                 // flag a reset
                 this.PendingStateChange = true;
 
