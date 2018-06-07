@@ -45,6 +45,8 @@ namespace TDJGame
         long tickCount = 0;
         double sumOfMilliseconds = 0;
         double averageMilliseconds = 0;
+        double maxMills = double.MinValue;
+        double minMills = double.MaxValue;
 
         #endregion
 
@@ -771,8 +773,11 @@ namespace TDJGame
             sumOfMilliseconds += stopwatch.Elapsed.TotalMilliseconds;
             averageMilliseconds = sumOfMilliseconds / tickCount;
 
+            maxMills = stopwatch.Elapsed.TotalMilliseconds > maxMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : maxMills;
+            minMills = stopwatch.Elapsed.TotalMilliseconds < minMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : minMills;
+
             Console.WriteLine(
-                $"RealTime: {stopwatch.Elapsed.TotalMilliseconds}, Avg: {averageMilliseconds}, "
+                $"RealTime: {stopwatch.Elapsed.TotalMilliseconds:0.0000}, Avg: {averageMilliseconds:0.0000}, Min: {minMills}, Max: {maxMills} "
             );
 
         }

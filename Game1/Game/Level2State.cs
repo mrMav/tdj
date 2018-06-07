@@ -47,6 +47,8 @@ namespace TDJGame
         long tickCount = 0;
         double sumOfMilliseconds = 0;
         double averageMilliseconds = 0;
+        double maxMills = double.MinValue;
+        double minMills = double.MaxValue;
 
         #endregion
 
@@ -109,8 +111,10 @@ namespace TDJGame
             player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
             //player.Animations.Add("robot-idle", new int[] { 177, 178, 179, 180, 181, 182 }, 6, false, true);
             //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 3; /*330*/ //spawn x
-            player.Body.Y = 16 * 6; //spawn y
+            //player.Body.X = 16 * 3; /*330*/ //spawn x
+            //player.Body.Y = 16 * 6; //spawn y
+            player.Body.X = 4464 + 294 / 2; /*330*/ //spawn x
+            player.Body.Y = 615  + 212 / 2; //spawn y
             player.Body.SetSize(16, 32, 0, 0);  // woman
             player.Body.SetSize(10, 26, 11, 3);  // actual player
 
@@ -633,8 +637,11 @@ namespace TDJGame
             sumOfMilliseconds += stopwatch.Elapsed.TotalMilliseconds;
             averageMilliseconds = sumOfMilliseconds / tickCount;
 
+            maxMills = stopwatch.Elapsed.TotalMilliseconds > maxMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : maxMills;
+            minMills = stopwatch.Elapsed.TotalMilliseconds < minMills && tickCount > 20 ? stopwatch.Elapsed.TotalMilliseconds : minMills;
+
             Console.WriteLine(
-                $"RealTime: {stopwatch.Elapsed.TotalMilliseconds}, Avg: {averageMilliseconds}, "
+                $"RealTime: {stopwatch.Elapsed.TotalMilliseconds:0.0000}, Avg: {averageMilliseconds:0.0000}, Min: {minMills}, Max: {maxMills} "
             );
 
         }
