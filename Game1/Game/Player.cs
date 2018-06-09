@@ -208,7 +208,7 @@ namespace TDJGame
                     if (!Floating)
                     {
 
-                        if(keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D) && Body.CollidingBottom)
+                        if((keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D)) && Body.CollidingBottom)
                         {
                             Body.Drag.X = 0.04f;
                             Animations.Play("walking");
