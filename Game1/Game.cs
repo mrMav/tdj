@@ -53,7 +53,7 @@ namespace TDJGame
             //StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
             StateManager.Instance.AddGameState(new NewTestState("NewTestState", graphics));
             
-            Globals.CurrentLevel = "Level1";
+            Globals.CurrentLevel = "Level2";
 
             base.Initialize();
         }

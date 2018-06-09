@@ -35,7 +35,7 @@ namespace TDJGame
         public float ShootRate = 80f;
         public float BulletCost = 10f;
 
-        public float KnockBackAmmount = 6f;
+        public float KnockBackAmmount = 10f;
         public float FireKnockBackAmmount = 2f;
 
         public List<Bullet> Bullets;
@@ -213,7 +213,7 @@ namespace TDJGame
 
                         if((keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D)) && Body.CollidingBottom)
                         {
-                            Body.Drag.X = 0.04f;
+                            Body.Drag.X = 0.055f;
                             Animations.Play("walking");
                         }
 
