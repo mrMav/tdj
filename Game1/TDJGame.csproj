@@ -71,6 +71,7 @@
     <Compile Include="Game\NewTestState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
+    <Compile Include="Game\SpeedBox.cs" />
     <Compile Include="Game\Trigger.cs" />
     <Compile Include="Game\TurtleX.cs" />
     <Compile Include="Game\PufferFish.cs" />

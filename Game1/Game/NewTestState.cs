@@ -38,7 +38,7 @@ namespace TDJGame
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
         List<Trigger> triggers;
-        Song song;
+        List<SpeedBox> speedBoxes;
 
         //Stopwatch stopwatch;
 
@@ -65,6 +65,7 @@ namespace TDJGame
             backgroundParticles = new List<ParticleEmitter>();
             goldenFishs = new List<Sprite>();
             triggers = new List<Trigger>();
+            speedBoxes = new List<SpeedBox>();
             SFX = new Dictionary<string, SoundEffect>();
             //stopwatch = new Stopwatch();
             
@@ -102,17 +103,7 @@ namespace TDJGame
              * Player init
              */
             player = new Player(this, tilemapTexture, Vector2.Zero, 32, 32, true);
-            /*player.Animations.CurrentFrame = new Frame(96, 176, 16, 32);*/  // woman
-            player.Animations.CurrentFrame = new Frame(16, 64, 32, 32);  // actual player
-            //player.Animations.Add("shooting", new int[] { 147, 149, 151, 153, 155}, 6, true);
-            //player.Animations.Add("woman-run", new int[] { 183, 184, 185, 186, 187, 188 }, 12, true);
-            player.Body.X = 16 * 440; /*330*/ //spawn x
-            player.Body.Y = 16 * 3; //spawn y
-            player.Body.SetSize(16, 32, 0, 0);  // woman
-            player.Body.SetSize(10, 26, 11, 3);  // actual player
-
-            //player.Animations.Play("woman-run");
-
+            
             /*
              * Level init
              */
@@ -131,7 +122,7 @@ namespace TDJGame
 
             }
 
-            level.SetCollisionTiles(new int[] { 2, 33, 34, 35, 47, 66, });
+            level.SetCollisionTiles(new int[] { 2, 33, 34, 35, 47, 66, 15, 79});
 
 
             /*
@@ -164,10 +155,7 @@ namespace TDJGame
 
                     Console.WriteLine(obj.GetProperty("start_rotation"));
 
-                    enemies.Add(j);
-
-                    Console.WriteLine("added jelly");
-
+                    enemies.Add(j);                    
 
                 }
                 else if (obj.Name.ToLower() == "pufferfish")
@@ -186,42 +174,80 @@ namespace TDJGame
                         p.CurrentDistance = obj.Width - 33;
                     }
 
+                    enemies.Add(p);
+                }
+                else if (obj.Name.ToLower() == "turtlex")
+                {
+                    Vector2 position = new Vector2(obj.X, obj.Y);
+
+                    float speed = float.Parse(obj.GetProperty("speed"));
+
+                    TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
+                    p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
+
+                    // make it start on the right side of its path
+                    if (obj.GetProperty("start_side") == "right")
+                    {
+                        p.Body.X = obj.X + obj.Width;
+                        p.CurrentDistance = obj.Width - 33;
+                    }
 
                     enemies.Add(p);
-
-                    Console.WriteLine("added puffer");
-
+                    
                 }
-
                 else if (obj.Name.ToLower() == "goldfish")
                 {
                     goldenFishs.Add(new GoldFish(this, tilemapTexture, new Vector2(obj.X, obj.Y), 16, 16));
                 }
                 else if (obj.Name.ToLower() == "particles")
                 {
+                    if (obj.GetProperty("type") == "dark_ambient")
+                    {
 
-                    ParticleEmitter particleEmitter = new ParticleEmitter(this, obj.X, obj.Y, 256);
-                    particleEmitter.EmitterBox.Resize(obj.Width, obj.Height);
-                    particleEmitter.MakeParticles(tilemapTexture, 16, 16);
-                    particleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
-                    particleEmitter.SetAcceleration(0, -0.005f);
-                    particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
-                    particleEmitter.YVelocityVariationRange = new Vector2(-20f, 0f);
-                    particleEmitter.SetTextureCropRectangle(new Rectangle(0, 78, 16, 16));
-                    particleEmitter.SpawnRate = 250f;
-                    particleEmitter.ParticleLifespanMilliseconds = 5000f;
-                    particleEmitter.ParticleLifespanVariationMilliseconds = 1000f;
-                    particleEmitter.InitialScale = 0.1f;
-                    particleEmitter.FinalScale = 1.5f;
+                        ParticleEmitter particleEmitter = new ParticleEmitter(this, obj.X, obj.Y, 256);
+                        particleEmitter.EmitterBox.Resize(obj.Width, obj.Height);
 
-                    particleEmitter.ForEachParticle(ChangeSpriteTintBlue);
+                        particleEmitter.MakeRandomParticles(tilemapTexture, new Rectangle[]
+                        {
+                            new Rectangle(128, 257, 3, 3),
+                            new Rectangle(132, 257, 3, 3),
+                            new Rectangle(136, 257, 3, 3)
+                        });
 
-                    backgroundParticles.Add(particleEmitter);
+                        particleEmitter.ParticleVelocity = new Vector2(0, 0);
+                        particleEmitter.SetAcceleration(0, 0);
+                        particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
+                        particleEmitter.YVelocityVariationRange = new Vector2(-20f, 20f);
+                        particleEmitter.SpawnRate = 100f;
+                        particleEmitter.ParticleLifespanMilliseconds = 5000f;
+                        particleEmitter.ParticleLifespanVariationMilliseconds = 1000f;
+                        particleEmitter.InitialScale = 1.5f;
+                        particleEmitter.FinalScale = 0.5f;
+                        
+                        backgroundParticles.Add(particleEmitter);
 
+                    }
+                    else
+                    {
+                        ParticleEmitter particleEmitter = new ParticleEmitter(this, obj.X, obj.Y, 256);
+                        particleEmitter.EmitterBox.Resize(obj.Width, obj.Height);
+                        particleEmitter.MakeParticles(tilemapTexture, 16, 16);
+                        particleEmitter.ParticleVelocity = new Vector2(0, -0.01f);
+                        particleEmitter.SetAcceleration(0, -0.005f);
+                        particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
+                        particleEmitter.YVelocityVariationRange = new Vector2(-20f, 0f);
+                        particleEmitter.SetTextureCropRectangle(new Rectangle(0, 78, 16, 16));
+                        particleEmitter.SpawnRate = 250f;
+                        particleEmitter.ParticleLifespanMilliseconds = 5000f;
+                        particleEmitter.ParticleLifespanVariationMilliseconds = 1000f;
+                        particleEmitter.InitialScale = 0.1f;
+                        particleEmitter.FinalScale = 1.5f;
 
+                        particleEmitter.ForEachParticle(ChangeSpriteTintBlue);
 
-                    Console.WriteLine("added particles");
-
+                        backgroundParticles.Add(particleEmitter);
+                    }
+                    
                 }
                 else if (obj.Name.ToLower() == "player_spawn")
                 {
@@ -232,8 +258,44 @@ namespace TDJGame
                 {
                     triggers.Add(new Trigger(obj.X, obj.Y, obj.Width, obj.Height, obj.GetProperty("value")));
                 }
+                else if (obj.Name.ToLower() == "speedbox")
+                {
+
+                    SpeedBox s = new SpeedBox(obj.X, obj.Y, obj.Width, obj.Height, float.Parse(obj.GetProperty("speedX")), float.Parse(obj.GetProperty("speedY")));
+                    
+                    ParticleEmitter particleEmitter = new ParticleEmitter(this, obj.X, obj.Y, 512);
+                    particleEmitter.EmitterBox.Resize(obj.Width, obj.Height);
+                    particleEmitter.MakeRandomParticles(tilemapTexture, new Rectangle[]
+                        {
+                            new Rectangle(128, 257, 3, 3),
+                            new Rectangle(132, 257, 3, 3),
+                            new Rectangle(136, 257, 3, 3),
+                            new Rectangle(128 - 16, 257, 3, 3),
+                            new Rectangle(132 - 16, 257, 3, 3),
+                            new Rectangle(136 - 16, 257, 3, 3)
+                        });
+                    particleEmitter.ParticleVelocity = new Vector2(s.SpeedIncrease.X * 10, s.SpeedIncrease.Y * 10);
+                    particleEmitter.XVelocityVariationRange = new Vector2(-20f, 20f);
+                    particleEmitter.YVelocityVariationRange = new Vector2(-20f, 20f);
+                    
+                    particleEmitter.SpawnRate = 60f;
+                    particleEmitter.ParticleLifespanMilliseconds = 5000f;
+                    particleEmitter.ParticleLifespanVariationMilliseconds = 1000f;
+                    particleEmitter.InitialScale = 1.0f;
+                    particleEmitter.FinalScale = 0.5f;
+
+
+                    backgroundParticles.Add(particleEmitter);
+                    speedBoxes.Add(s);
+
+                }
+
+                Console.WriteLine("added " + obj.Name);
 
             }
+
+            player.Body.X = 4454;
+            player.Body.Y = 876;
 
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
@@ -340,7 +402,17 @@ namespace TDJGame
              */
             #region [Update Sprites Velocity and Position]
 
+
+
             player.UpdateMotion(gameTime, kState);
+
+            foreach (SpeedBox s in speedBoxes)
+            {
+                if (Physics.Overlap(player.Body.Bounds, s.Bounds))
+                {
+                     s.ApplySpeed(gameTime, player);
+                }
+            }
 
             foreach (Sprite s in enemies)
             {

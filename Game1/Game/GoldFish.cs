@@ -32,16 +32,13 @@ namespace TDJGame
 
             emitter.MakeRandomParticles(texture, new Rectangle[]
             {
-                new Rectangle(48, 80, 3, 3),
-                new Rectangle(52, 80, 3, 3),
-                new Rectangle(56, 80, 3, 3)
+                new Rectangle(128 - 16, 257, 3, 3),
+                new Rectangle(132 - 16, 257, 3, 3),
+                new Rectangle(136 - 16, 257, 3, 3)
             });
 
             emitter.EmitterBox.Resize(width, height);
-
-            //emitter.MakeParticles(texture, 16, 16);
-            emitter.SetTextureCropRectangle(new Rectangle(112, 256, 16, 16));
-
+            
             emitter.SetAcceleration(0, -0.001f);
             emitter.XVelocityVariationRange = new Vector2(-10, 10);
             emitter.YVelocityVariationRange = new Vector2(-10, 0);

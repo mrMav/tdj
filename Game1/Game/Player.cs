@@ -55,7 +55,6 @@ namespace TDJGame
             Body.Velocity.X = 0;
             Body.Velocity.Y = -2f;
 
-
             FloatingUpSpeed = 0.8f;
             FloatingDownSpeed = FloatingUpSpeed * 2;
 
@@ -63,6 +62,8 @@ namespace TDJGame
             Body.MaxVelocity = 3f;
             Body.Drag.X = 0.6f;
             Body.Drag.Y = 0.6f;
+
+            Body.SetSize(10, 26, 11, 3);
 
             Body.Enabled = true;
             Body.Tag = "player";
@@ -80,7 +81,7 @@ namespace TDJGame
             }
 
             movementParticleEmitter = new ParticleEmitter(State, 0, 0, 128);
-            movementParticleEmitter.EmitterBox.Resize(1, 4);
+            movementParticleEmitter.EmitterBox.Resize(1, 24);
             movementParticleEmitter.MakeParticles(texture, 16, 16);
             movementParticleEmitter.ParticleVelocity = new Vector2(0, 0.01f);
             movementParticleEmitter.SetAcceleration(0, -0.005f);                                            ////SEARCH HERE - Pardo////
@@ -112,6 +113,8 @@ namespace TDJGame
             Floating = true;
 
             /*Animations*/
+
+            Animations.CurrentFrame = new Frame(16, 64, 32, 32);
 
             Animation shootingAnim = Animations.Add("shooting", new Frame[] {new Frame(16,64,32,32), new Frame(288,64,32,32), new Frame(320,64,32,32), new Frame(352,64,32,32)
             , new Frame(384,64,32,32), new Frame(416,64,32,32) }, 10, false, false);
@@ -319,8 +322,8 @@ namespace TDJGame
             {
                 this.movementParticleEmitter.Update(gameTime);
                 this.movementParticleEmitter.ForEachParticle(KillOutOfBoundsParticle);
-                this.movementParticleEmitter.EmitterBox.X = Body.X + 8;
-                this.movementParticleEmitter.EmitterBox.Y = Body.Y + 16;
+                this.movementParticleEmitter.EmitterBox.X = Body.X + 11;
+                this.movementParticleEmitter.EmitterBox.Y = Body.Y + 3;
                 this.movementParticleEmitter.Activated = false;
 
                 this.anchorParticleEmitter.Update(gameTime);
