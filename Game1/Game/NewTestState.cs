@@ -293,10 +293,7 @@ namespace TDJGame
                 Console.WriteLine("added " + obj.Name);
 
             }
-
-            player.Body.X = 4454;
-            player.Body.Y = 876;
-
+            
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
