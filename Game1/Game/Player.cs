@@ -35,6 +35,8 @@ namespace TDJGame
         public float ShootRate = 80f;
         public float BulletCost = 10f;
 
+        public int playerHealth, playerMaxHealth = 4;
+
         public float KnockBackAmmount = 6f;
         public float FireKnockBackAmmount = 2f;
 
@@ -46,6 +48,7 @@ namespace TDJGame
         public Player(GameState state, Texture2D texture, Vector2 position, int width, int height, bool isControllable = true)
             : base(state, texture, position, width, height, true)
         {
+            playerHealth = playerMaxHealth;
 
             FacingDirection = 1;
 
@@ -229,6 +232,17 @@ namespace TDJGame
 
             }
             
+        }
+
+        public virtual void pReceiveDamage(int ammount)
+        {
+            playerHealth -= ammount;
+
+            if (playerHealth <= 0)
+            {
+                Kill();
+            }
+
         }
 
         public bool UpdateCollisions(GameTime gameTime, Level level)

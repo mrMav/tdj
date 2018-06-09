@@ -30,8 +30,6 @@ namespace Engine
         public bool Alive = true;
         public bool Visible = true;
 
-        public int playerHealth, playerMaxHealth = 4;
-
         public bool IsControllable;
         public bool IsBlinking = false;
         public double BlinkingTimer = 0;
@@ -51,9 +49,7 @@ namespace Engine
             Body = new Body(position.X, position.Y, width, height);
 
             Health = MaxHealth;
-            playerHealth = playerMaxHealth;
-            IsControllable = isControllable;
-                        
+            IsControllable = isControllable;                        
         }
                 
         // logic update
@@ -119,7 +115,6 @@ namespace Engine
             Alive = true;
             Visible = true;
             Health = MaxHealth;
-            playerHealth = playerMaxHealth;
         }
 
         public virtual void ReceiveDamage(int ammount)
@@ -127,17 +122,6 @@ namespace Engine
             Health -= (int)ammount * 10;
 
             if(Health <= 0f)
-            {
-                Kill();
-            }
-
-        }
-
-        public virtual void PlayerReceiveDamage(int ammount)
-        {
-            playerHealth -= ammount;
-
-            if (playerHealth <= 0)
             {
                 Kill();
             }

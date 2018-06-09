@@ -676,10 +676,10 @@ namespace TDJGame
 
             if(damage < 0)
             {
-                player.PlayerReceiveDamage(theHurtingSprite.Damage);
+                player.pReceiveDamage(theHurtingSprite.Damage);
             } else
             {
-                player.PlayerReceiveDamage(damage);
+                player.pReceiveDamage(damage);
             }
             
             if(theHurtingSprite != null)
