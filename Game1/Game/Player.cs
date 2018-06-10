@@ -34,6 +34,7 @@ namespace TDJGame
         public float ShootingVelocity = 3f;
         public float ShootRate = 80f;
         public float BulletCost = 10f;
+        public float anchorCost = 25f;
 
         public float KnockBackAmmount = 10f;
         public float FireKnockBackAmmount = 2f;
@@ -170,7 +171,7 @@ namespace TDJGame
                     {
                         Floating = !Floating;
                         Press = false;
-                        Energy -= 25f; // mudar para n remover valor quando player vai para cima
+                        Energy -= anchorCost; // mudar para n remover valor quando player vai para cima
                         anchorParticleEmitter.Activated = true;
                         SoundEffect anchor;
                         State.SFX.TryGetValue("anchor", out anchor);
@@ -219,9 +220,22 @@ namespace TDJGame
                             Animations.Play("walking");
                         }
 
-                        if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
+                        if (Energy <= 0)
+                        { 
+                            Energy = 0; //impedir que fique com valores negativos
+                         
+                            
+                        }
 
-                        if (Energy > 25f)
+                        // energy warning sfx
+                        if (Energy <= anchorCost) //if the player doesnt have enough energy he hears an error sound
+                        {
+                            SoundEffect energyWarning;
+                            State.SFX.TryGetValue("energyWarning", out energyWarning);
+                            energyWarning?.Play(0.5f, 0f, 0f);
+                        }
+
+                        if (Energy > anchorCost)
                         {
                             Body.Velocity.Y += FloatingDownSpeed; //Floating Down
                             Energy -= EnergyDrain;
@@ -255,7 +269,7 @@ namespace TDJGame
                 Body.Velocity.Y = MathHelper.Clamp(Body.Velocity.Y, -4f, 4f);
 
             }
-            
+               
         }
         
         public bool UpdateCollisions(GameTime gameTime, Level level)

@@ -33,6 +33,8 @@ namespace TDJGame
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
+        List<Tile> spikesPointingLeft;
+        List<Tile> spikesPointingRight;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
@@ -101,6 +103,11 @@ namespace TDJGame
             SFX.Add("anchor", content.Load<SoundEffect>("Anchor3"));
             SFX.Add("fall", content.Load<SoundEffect>("Falling"));
             SFX.Add("enemyDeath", content.Load<SoundEffect>("EnemyDeath"));
+            SFX.Add("goldenFish", content.Load<SoundEffect>("GoldenFish2"));
+            SFX.Add("energyWarning", content.Load<SoundEffect>("EnergyEmpty")); //done
+            SFX.Add("turtleExplosion", content.Load<SoundEffect>("TurtleExplosion")); //done
+            SFX.Add("playerHurt", content.Load<SoundEffect>("Player hurt")); //done
+            SFX.Add("playerDeath", content.Load<SoundEffect>("Player Death3"));//done faltar esperar uns segundos antes de fazer reload de state
             /*
              * Player init
              */
@@ -303,6 +310,8 @@ namespace TDJGame
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
+            spikesPointingLeft = level.GetTilesListByID(new int[] { 516 });
+            spikesPointingRight = level.GetTilesListByID(new int[] { 517 });
 
             foreach (Tile spike in spikesPointingDown)
             {
@@ -311,6 +320,16 @@ namespace TDJGame
             foreach (Tile spike in spikesPointingUp)
             {
                 spike.Body.SetSize(12, 6, 2, 10);
+            }
+
+            foreach (Tile spike in spikesPointingLeft)
+            {
+                spike.Body.SetSize(6, 12, 10, 2);
+            }
+
+            foreach (Tile spike in spikesPointingRight)
+            {
+                spike.Body.SetSize(6, 12, 0, 2);
             }
 
             topWaterTiles = level.GetTilesListByID(new int[] { 97, 98, 99 });
@@ -372,6 +391,8 @@ namespace TDJGame
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
+            spikesPointingLeft = null;
+            spikesPointingRight = null;
             enemies = null;
             SFX = null;
 
@@ -468,6 +489,7 @@ namespace TDJGame
                 {
                     if (Physics.Overlap(spike, player))
                     {
+
                         TriggerPlayerHurt(gameTime, spike);
                         break;  // breaking at the first overlap
                                 // avoids various knockback forces
@@ -477,6 +499,24 @@ namespace TDJGame
                     }
                 }
                 foreach (Tile spike in spikesPointingUp)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
+
+                foreach (Tile spike in spikesPointingLeft)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
+
+                foreach (Tile spike in spikesPointingRight)
                 {
                     if (Physics.Overlap(spike, player))
                     {
@@ -774,12 +814,17 @@ namespace TDJGame
 
                     g.Update(gameTime);
 
-                    if (Physics.Overlap(g, player))
+                    if (Physics.Overlap(g, player) & g.Alive)
                     {
                         g.Kill();
                         Karma.AddCollectable();
+
+                        SoundEffect gold;
+                        SFX.TryGetValue("goldenFish", out gold);
+                        gold?.Play(1f,0f,0f);
+
                     }
-                }
+            }
 
             }
 
@@ -850,6 +895,11 @@ namespace TDJGame
 
             if (!player.Alive)
             {
+
+                SoundEffect death;
+                SFX.TryGetValue("playerDeath", out death);
+                death?.Play(0.5f, 0f, 0f);
+
                 // show end game screen
                 // now we will just restart this state
                 StateManager.Instance.StartGameState("KarmaScreenState");
@@ -1003,6 +1053,11 @@ namespace TDJGame
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
 
             player.ReceiveDamage(1);
+
+            SoundEffect hurt;
+            SFX.TryGetValue("playerHurt", out hurt);
+            hurt?.Play(0.5f, 0f, 0f);
+
 
             if (theHurtingSprite != null)
             {

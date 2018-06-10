@@ -37,6 +37,8 @@ namespace TDJGame
             /* Animations */
 
             Animation swimAnim = Animations.Add("swim", new Frame[] { new Frame(192, 208, 32, 32), new Frame(224, 208, 32, 32), new Frame(256, 208, 32, 32), new Frame(288, 208, 32, 32) }, 7, true, false);
+
+           
         }
 
         public float UpdateMov(GameTime gameTime, Player player)
@@ -73,7 +75,11 @@ namespace TDJGame
                         // explode
                         float distancePercentage = distanceDiff.Length() * 2 / DetectSight; //check damage, should remove 1 full heart + aumentar radius
                         float inflictDamage = (1f - distancePercentage) * Damage;
-                        
+
+                        SoundEffect explode;
+                        State.SFX.TryGetValue("turtleExplosion", out explode);
+                        explode?.Play(0.2f, 0f, 0f);
+
                         return inflictDamage >= 0f ? inflictDamage : -1f;
 
                     }
