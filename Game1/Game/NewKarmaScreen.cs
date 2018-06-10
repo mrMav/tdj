@@ -89,7 +89,7 @@ namespace TDJGame
             tilemapTexture = this.content.Load<Texture2D>("SpriteSheet");
 
             MediaPlayer.Volume = 0.3f;
-            MediaPlayer.Play(Globals.MenuSong);
+            MediaPlayer.Play(Globals.JingleSong);
             MediaPlayer.IsRepeating = true;
 
             
