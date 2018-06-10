@@ -70,6 +70,7 @@
     <Compile Include="Game\Level1State.cs" />
     <Compile Include="Game\Level2State.cs" />
     <Compile Include="Game\MenuState.cs" />
+    <Compile Include="Game\NewMenuState.cs" />
     <Compile Include="Game\NewTestState.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\PlayState.cs" />
@@ -150,9 +151,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="app.manifest" />
-    <None Include="Content\featureTestMap.tmx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Content\KarmaScreen.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -160,6 +158,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Level2.tmx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Menu.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\prototipo.tmx">
