@@ -73,7 +73,6 @@ namespace TDJGame
             bottomTiles = new List<Sprite>();
             boxes = new List<Sprite>();
 
-            Karma.Reset();
 
             //stopwatch = new Stopwatch();
 
@@ -212,6 +211,8 @@ namespace TDJGame
             if (kState.IsKeyDown(Keys.Space))
             {
                 StateManager.Instance.StartGameState("NewTestState");
+
+                return;
             }
 
             #endregion
@@ -292,7 +293,9 @@ namespace TDJGame
 
             spriteBatch.Draw(tilemapTexture, new Vector2(Graphics.PreferredBackBufferWidth / camera.Zoom / 2 + 32 , bottomTiles[0].Body.Y - 16 - 8), new Rectangle(0, 455, 32, 18), Color.White);
 
-            spriteBatch.DrawString(font, "Time: " + Karma.time / 60 + ":" + Karma.time % 60, new Vector2(16 * 2 + 4, 16 * 5 + 4), Color.White);
+            double time = (Karma.totalTime - Karma.startTime);
+            spriteBatch.DrawString(font, "Time: " + (int)(time / 60) + ":" + (int)(time % 60), new Vector2(16 * 2 + 4, 16 * 5 + 4), Color.White);
+            //spriteBatch.DrawString(font, "Time: " + (Karma.totalTime - Karma.startTime), new Vector2(16 * 2 + 4, 16 * 5 + 4), Color.White);
             spriteBatch.DrawString(font, Karma.playerCollect + "/" + Karma.maxCollectables, new Vector2(16 * 2 + 16, 16 * 8 + 4), Color.White);
             spriteBatch.DrawString(font, "Rank: " + Karma.DetermineRank(), new Vector2(16 * 2 + 16, 16 * 11 + 4), Color.White);
 

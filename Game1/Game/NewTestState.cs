@@ -420,7 +420,10 @@ namespace TDJGame
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
 
-            Karma.time = gameTime.TotalGameTime.TotalSeconds;
+            if(Karma.startTime <= 0)
+                Karma.startTime = gameTime.TotalGameTime.TotalSeconds;
+
+            Karma.totalTime = gameTime.TotalGameTime.TotalSeconds;
 
             #endregion
 

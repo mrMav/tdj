@@ -10,7 +10,8 @@ namespace TDJGame
         public static int playerShotsFired = 0;
         public static float playerTotalDamage = 0f;
         public static int maxCollectables = 0;
-        public static double time = 0;
+        public static double startTime = 0;
+        public static double totalTime = 0;
 
         public static void Reset()
         {
@@ -20,7 +21,8 @@ namespace TDJGame
             playerCollect = 0;
             playerShotsFired = 0;
             maxCollectables = 0;
-            time = 0;
+            totalTime = 0;
+            startTime = 0;
         }
 
         public static void AddShotFired()
