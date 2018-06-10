@@ -210,7 +210,18 @@ namespace TDJGame
 
             if (kState.IsKeyDown(Keys.Space))
             {
-                StateManager.Instance.StartGameState("NewTestState");
+                if (Globals.CurrentLevel == "Level2")
+                {
+
+                    StateManager.Instance.StartGameState("MenuState");
+
+                }
+                else
+                {
+
+                StateManager.Instance.StartGameState("NewTestState");                    
+
+                }
 
                 return;
             }
