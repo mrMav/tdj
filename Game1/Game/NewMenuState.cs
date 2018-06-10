@@ -492,7 +492,7 @@ namespace TDJGame
             #region [ Game Resolution and other checks ]
             
 
-            if (Physics.Overlap(new AABB(mState.Position.X, mState.Position.Y, 1, 1), diveButton))
+            if (Physics.Overlap(new AABB(mState.Position.X, mState.Position.Y, 1, 1), diveButton) && mState.LeftButton == ButtonState.Pressed)
             {
                 // perform desired action from trigger
 
