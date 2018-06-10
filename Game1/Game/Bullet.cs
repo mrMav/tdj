@@ -22,6 +22,7 @@ namespace TDJGame
         {
 
             Spawner = spawner;
+            Damage = 1;
 
             Alive = false;
             Visible = false;

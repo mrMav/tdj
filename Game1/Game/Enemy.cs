@@ -43,6 +43,8 @@ namespace TDJGame
 
             #endregion
 
+            Health = 4;
+
         }
 
         public override void Update(GameTime gameTime)

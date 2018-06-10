@@ -68,6 +68,8 @@ namespace TDJGame
             Body.Enabled = true;
             Body.Tag = "player";
 
+            Health = 5;
+
             /* Create a few bullets */
             Bullets = new List<Bullet>();
             for (int i = 0; i < 50; i++)
@@ -316,8 +318,7 @@ namespace TDJGame
 
         public void UpdateProjectiles(GameTime gameTime, KeyboardState keyboardState)
         {
-
-            
+                        
             if(Alive)
             {
                 this.movementParticleEmitter.Update(gameTime);
@@ -347,7 +348,6 @@ namespace TDJGame
                         if (!Bullets[i].Alive)
                         {
                             b = Bullets[i];
-                            FireKnockBack(this);
                             break;
                         }
 
@@ -372,6 +372,8 @@ namespace TDJGame
 
                         // subtract bullet cost to energy
                         Energy -= BulletCost;
+                        FireKnockBack(this);
+                        Karma.AddShotFired();
 
                         float pitch = rnd.Next(-100, 10) * 0.01f;
 

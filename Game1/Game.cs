@@ -52,7 +52,8 @@ namespace TDJGame
             //StateManager.Instance.AddGameState(new Level1State("Level1State", graphics));
             //StateManager.Instance.AddGameState(new Level2State("Level2State", graphics));
             StateManager.Instance.AddGameState(new NewTestState("NewTestState", graphics));
-            
+            StateManager.Instance.AddGameState(new KarmaScreenState("KarmaScreenState", graphics));
+
             Globals.CurrentLevel = "Level2";
 
             base.Initialize();

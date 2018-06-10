@@ -65,6 +65,8 @@
     <Compile Include="Game\FeatureTestMap.cs" />
     <Compile Include="Game\GoldFish.cs" />
     <Compile Include="Game\JellyFish.cs" />
+    <Compile Include="Game\Karma.cs" />
+    <Compile Include="Game\KarmaScreenState.cs" />
     <Compile Include="Game\Level1State.cs" />
     <Compile Include="Game\Level2State.cs" />
     <Compile Include="Game\MenuState.cs" />

@@ -29,7 +29,6 @@ namespace TDJGame
         Texture2D backgroundWaterGradientStrip;
         Texture2D backgroundSkyGradientStrip;
         EnergyBar energyBar;
-        EnergyBar healthBar;
         Player player;
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
@@ -67,8 +66,11 @@ namespace TDJGame
             triggers = new List<Trigger>();
             speedBoxes = new List<SpeedBox>();
             SFX = new Dictionary<string, SoundEffect>();
+
+            Karma.Reset();
+
             //stopwatch = new Stopwatch();
-            
+                        
         }
 
         public override void LoadContent()
@@ -142,6 +144,7 @@ namespace TDJGame
 
                     JellyFish j = new JellyFish(this, tilemapTexture, Vector2.Zero, 16, 32, center, radius, speed);
 
+                    Karma.maxKarma += j.Health;
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_rotation") == "right")
@@ -166,6 +169,7 @@ namespace TDJGame
 
                     PufferFish p = new PufferFish(this, tilemapTexture, position, 32, 32, obj.Width, speed);
 
+                    Karma.maxKarma += p.Health;
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_side") == "right")
@@ -184,6 +188,8 @@ namespace TDJGame
 
                     TurtleX p = new TurtleX(this, tilemapTexture, position, 32, 32, 64, obj.Width, speed);
                     p.Animations.CurrentFrame = new Frame(96, 112, 32, 32);
+
+                    Karma.maxKarma += p.Health;
 
                     // make it start on the right side of its path
                     if (obj.GetProperty("start_side") == "right")
@@ -312,8 +318,10 @@ namespace TDJGame
             /*
              * UI Elements init
              */
-            healthBar = new EnergyBar(Graphics, new Vector2(16, 16), 256, 16, new Color(0, 255, 0));
-            energyBar = new EnergyBar(Graphics, new Vector2(16, 32 + 4), 256, 16, new Color(255, 0, 0));
+            //healthBar = new EnergyBar(Graphics, new Vector2(16, 16), 256, 16, new Color(0, 255, 0));
+            energyBar = new EnergyBar(Graphics, new Vector2(16+6, 16 + 25), 16*10 - 9, 16, new Color(255, 0, 0));  //16+2, 16 + 8, 16*10, 32+16
+
+            Karma.karma = Karma.maxKarma;
 
             /*
              * Build Background Gradient
@@ -361,7 +369,6 @@ namespace TDJGame
             pixel = null;
             backgroundWaterGradientStrip = null;
             energyBar = null;
-            healthBar = null;
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
@@ -498,6 +505,8 @@ namespace TDJGame
                                 b.Kill();
                                 s.ReceiveDamage(b.Damage);
                                 s.StartBlinking(gameTime);
+                                Karma.ReduceKarma(1f);
+                                Karma.AddPlayerDamage(1f);
 
                                 if (!s.Alive)
                                 {
@@ -760,16 +769,22 @@ namespace TDJGame
 
             foreach (GoldFish g in goldenFishs)
             {
-                g.Update(gameTime);
-
-                if (Physics.Overlap(g, player))
+                if(g.Alive)
                 {
-                    g.Kill();
+
+                    g.Update(gameTime);
+
+                    if (Physics.Overlap(g, player))
+                    {
+                        g.Kill();
+                        Karma.AddCollectable();
+                    }
                 }
+
             }
 
             energyBar.SetPercent((int)(player.Energy * 100f / player.MaxEnergy));
-            healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
+            //healthBar.SetPercent((int)(player.Health * 100f / player.MaxHealth));
 
             if (cameraShakeResponse && !camera.Shaking)
             {
@@ -837,9 +852,10 @@ namespace TDJGame
             {
                 // show end game screen
                 // now we will just restart this state
-                //StateManager.Instance.StartGameState("EndState");
+                StateManager.Instance.StartGameState("KarmaScreenState");
 
-                StateManager.Instance.StartGameState(this.Key);
+                // reboot this level
+                //StateManager.Instance.StartGameState(this.Key);
 
                 return;
             }
@@ -962,7 +978,14 @@ namespace TDJGame
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             energyBar.Draw(spriteBatch, gameTime);
-            healthBar.Draw(spriteBatch, gameTime);
+            //healthBar.Draw(spriteBatch, gameTime);
+
+            // energy asset
+            spriteBatch.Draw(tilemapTexture, new Rectangle(16+2, 16 + 8, 16*10, 32+16), new Rectangle(16, 432, 64, 16), Color.White);
+
+            Rectangle lifeHeart = new Rectangle(0, 432, 16, 16);
+            for (int i = 1; i <= player.Health; i++)
+                spriteBatch.Draw(tilemapTexture, new Rectangle(32 * i - 16, 8, 32, 32), lifeHeart, Color.White);
 
             //spriteBatch.DrawString(font, player.Body.GetDebugString(), new Vector2(0, 48), Color.Red);
             spriteBatch.DrawString(font, $"{Math.Round(frameCounter.CurrentFramesPerSecond)}", Vector2.Zero, Color.LightGreen);
@@ -979,15 +1002,7 @@ namespace TDJGame
             player.StartBlinking(gameTime);
             camera.ActivateShake(gameTime, 250, 6, 0.015f);
 
-            if (damage < 0f)
-            {
-                player.ReceiveDamage(theHurtingSprite.Damage);
-            }
-            else
-            {
-                player.ReceiveDamage(damage);
-                Console.WriteLine("damage: " + damage);
-            }
+            player.ReceiveDamage(1);
 
             if (theHurtingSprite != null)
             {
