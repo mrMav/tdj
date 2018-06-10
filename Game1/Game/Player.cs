@@ -217,7 +217,12 @@ namespace TDJGame
                             Animations.Play("walking");
                         }
 
-                        if (Energy <= 0) Energy = 0; //impedir que fique com valores negativos
+                        if (Energy <= 0)
+                        { 
+                            Energy = 0; //impedir que fique com valores negativos
+                         
+                            
+                        }
 
                         if (Energy > 25f)
                         {
@@ -254,6 +259,13 @@ namespace TDJGame
 
             }
             
+            // energy warning sfx
+            if(Energy == 0)
+            {
+                SoundEffect energyWarning;
+                State.SFX.TryGetValue("energyWarning", out energyWarning);
+                energyWarning?.Play(0.5f, 0f, 0f);
+            }
         }
         
         public bool UpdateCollisions(GameTime gameTime, Level level)

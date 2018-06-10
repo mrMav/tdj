@@ -206,3 +206,45 @@
 /processorParam:TextureFormat=Color
 /build:SpriteSheet.png
 
+#begin EndLevelInk.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:EndLevelInk.mp3
+
+#begin GoldenFish4.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:GoldenFish4.wav
+
+#begin TurtleExplosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:TurtleExplosion.wav
+
+#begin EnergyEmpty.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:EnergyEmpty.wav
+
+#begin Player Death3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Player Death3.wav
+
+#begin Player hurt.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Player hurt.wav
+
+#begin GoldenFish2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:GoldenFish2.wav
+
