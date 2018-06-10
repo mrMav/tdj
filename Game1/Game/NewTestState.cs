@@ -914,9 +914,11 @@ namespace TDJGame
             {
                 if (Physics.Overlap(player.Body.Bounds, t))
                 {
+                    MediaPlayer.Play(Globals.JingleSong);
+
                     Globals.CurrentLevel = t.Value;
 
-                    StateManager.Instance.StartGameState(this.Key);
+                    StateManager.Instance.StartGameState("KarmaScreenState");
 
                     return;
                 }
