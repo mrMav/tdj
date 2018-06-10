@@ -233,7 +233,7 @@ namespace TDJGame
                             energyWarning?.Play(0.5f, 0f, 0f);
                         }
 
-                        if (Energy > 25f)
+                        if (Energy > anchorCost)
                         {
                             Body.Velocity.Y += FloatingDownSpeed; //Floating Down
                             Energy -= EnergyDrain;
