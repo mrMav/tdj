@@ -21,7 +21,7 @@ namespace TDJGame
             
             // this animation doesn't really play anything, it just gives us time to 
             // make some effects until it is killed. It should be a transparent frame
-            Animation deathAnim = Animations.Add("death_interval", new Frame[] { new Frame(400, 400, 32, 32) }, 1, false, true);
+            Animation deathAnim = Animations.Add("death_interval", new Frame[] { new Frame(384, 207, 31, 39) }, 1, false, true);
             deathAnim.Delay = 1000f; // animation duration in milliseconds
 
             #region [Particles Death Animation]
