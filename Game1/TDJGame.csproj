@@ -70,6 +70,7 @@
     <Compile Include="Game\Level1State.cs" />
     <Compile Include="Game\Level2State.cs" />
     <Compile Include="Game\MenuState.cs" />
+    <Compile Include="Game\NewKarmaScreen.cs" />
     <Compile Include="Game\NewMenuState.cs" />
     <Compile Include="Game\NewTestState.cs" />
     <Compile Include="Game\Player.cs" />

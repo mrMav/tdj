@@ -341,6 +341,7 @@ namespace TDJGame
             energyBar = new EnergyBar(Graphics, new Vector2(16+6, 16 + 25), 16*10 - 9, 16, new Color(255, 0, 0));  //16+2, 16 + 8, 16*10, 32+16
 
             Karma.karma = Karma.maxKarma;
+            Karma.maxCollectables = goldenFishs.Count;
 
             /*
              * Build Background Gradient
@@ -418,6 +419,8 @@ namespace TDJGame
 
             KeyboardState kState = Keyboard.GetState();
             MouseState mState = Mouse.GetState();
+
+            Karma.time = gameTime.TotalGameTime.TotalSeconds;
 
             #endregion
 

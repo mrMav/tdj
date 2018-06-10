@@ -9,6 +9,8 @@ namespace TDJGame
         public static int playerCollect = 0;
         public static int playerShotsFired = 0;
         public static float playerTotalDamage = 0f;
+        public static int maxCollectables = 0;
+        public static double time = 0;
 
         public static void Reset()
         {
@@ -17,6 +19,8 @@ namespace TDJGame
             playerTotalDamage = 0f;
             playerCollect = 0;
             playerShotsFired = 0;
+            maxCollectables = 0;
+            time = 0;
         }
 
         public static void AddShotFired()
@@ -41,10 +45,10 @@ namespace TDJGame
 
         public static string DetermineRank()
         {
-            if (karma == maxKarma) return "Pacifist";
-            if (karma == 0) return "Killer";
+            if (karma == maxKarma) return "P";
+            if (karma == 0) return "K";
 
-            return "Neutral";
+            return "N";
         }
     }
 }
