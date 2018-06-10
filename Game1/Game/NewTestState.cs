@@ -34,6 +34,8 @@ namespace TDJGame
         List<Sprite> enemies;
         List<Tile> spikesPointingDown;
         List<Tile> spikesPointingUp;
+        List<Tile> spikesPointingLeft;
+        List<Tile> spikesPointingRight;
         List<Tile> topWaterTiles;
         List<ParticleEmitter> backgroundParticles;
         List<Sprite> goldenFishs;
@@ -302,6 +304,8 @@ namespace TDJGame
             // build spikes tiles list
             spikesPointingDown = level.GetTilesListByID(new int[] { 514 });
             spikesPointingUp = level.GetTilesListByID(new int[] { 515 });
+            spikesPointingLeft = level.GetTilesListByID(new int[] { 516 });
+            spikesPointingRight = level.GetTilesListByID(new int[] { 517 });
 
             foreach (Tile spike in spikesPointingDown)
             {
@@ -310,6 +314,16 @@ namespace TDJGame
             foreach (Tile spike in spikesPointingUp)
             {
                 spike.Body.SetSize(12, 6, 2, 10);
+            }
+
+            foreach (Tile spike in spikesPointingLeft)
+            {
+                spike.Body.SetSize(6, 12, 10, 2);
+            }
+
+            foreach (Tile spike in spikesPointingRight)
+            {
+                spike.Body.SetSize(6, 12, 0, 2);
             }
 
             topWaterTiles = level.GetTilesListByID(new int[] { 97, 98, 99 });
@@ -370,6 +384,8 @@ namespace TDJGame
             player = null;
             spikesPointingDown = null;
             spikesPointingUp = null;
+            spikesPointingLeft = null;
+            spikesPointingRight = null;
             enemies = null;
             SFX = null;
 
@@ -476,6 +492,24 @@ namespace TDJGame
                     }
                 }
                 foreach (Tile spike in spikesPointingUp)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
+
+                foreach (Tile spike in spikesPointingLeft)
+                {
+                    if (Physics.Overlap(spike, player))
+                    {
+                        TriggerPlayerHurt(gameTime, spike);
+                        break;
+                    }
+                }
+
+                foreach (Tile spike in spikesPointingRight)
                 {
                     if (Physics.Overlap(spike, player))
                     {
