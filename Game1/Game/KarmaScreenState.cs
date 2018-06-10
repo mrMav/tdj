@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 
 using Engine;
+using Microsoft.Xna.Framework.Input;
 
 namespace TDJGame
 {
@@ -45,16 +46,12 @@ namespace TDJGame
 
         public override void Update(GameTime gameTime)
         {
-            if(started <= 0)
-            {
-                started = gameTime.TotalGameTime.TotalMilliseconds;
-            }
+            KeyboardState kState = Keyboard.GetState();
 
-            if (started + timeout < gameTime.TotalGameTime.TotalMilliseconds)
+            if (kState.IsKeyDown(Keys.Space))
             {
-                StateManager.Instance.StartGameState("MenuState");
+                StateManager.Instance.StartGameState("NewTestState");
             }
-
 
         }
 
@@ -63,6 +60,7 @@ namespace TDJGame
             graphicsDevice.Clear(Color.Salmon);
             spriteBatch.Begin();
             spriteBatch.DrawString(font, "RANK:\n" + Karma.DetermineRank() + "\n\nShotsFired: " + Karma.playerShotsFired + "\nKarma: " + Karma.karma + "\nDamage Dealt: " + Karma.playerTotalDamage + "\nCollected: " + Karma.playerCollect, new Vector2(10, 10), Color.Black);
+            spriteBatch.DrawString(font, "Press space to exit", new Vector2(256, 10), Color.Black);
             spriteBatch.End();
         }
     }

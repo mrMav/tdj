@@ -9,12 +9,14 @@ using Microsoft.Xna.Framework.Audio;
 namespace TDJGame
 {
     public static class Globals
-    {        
+    {
 
+        public static int CurrentLevelNumber;
         public static string CurrentLevel;
 
         public static Song MenuSong;
         public static Song LevelSong;
+        public static Song JingleSong;
 
     }
 
@@ -54,7 +56,7 @@ namespace TDJGame
             StateManager.Instance.AddGameState(new NewTestState("NewTestState", graphics));
             StateManager.Instance.AddGameState(new KarmaScreenState("KarmaScreenState", graphics));
 
-            Globals.CurrentLevel = "Level2";
+            Globals.CurrentLevel = "Level1";            
 
             base.Initialize();
         }
@@ -66,7 +68,8 @@ namespace TDJGame
 
             Globals.MenuSong = Content.Load<Song>("menuSong");
             Globals.LevelSong = Content.Load<Song>("inkStuff");
-            
+            Globals.JingleSong = Content.Load<Song>("endlevelink");
+
             StateManager.Instance.LoadContent(Content);
 
             StateManager.Instance.StartGameState("NewTestState");
