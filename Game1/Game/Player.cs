@@ -69,7 +69,7 @@ namespace TDJGame
             Body.Enabled = true;
             Body.Tag = "player";
 
-            Health = 5;
+            Health = 4;
 
             /* Create a few bullets */
             Bullets = new List<Bullet>();
