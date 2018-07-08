@@ -216,7 +216,7 @@ namespace TDJGame
 
                         if((keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.D)) && Body.CollidingBottom)
                         {
-                            Body.Drag.X = 0.055f;
+                            Body.Drag.X = 0.068f;
                             Animations.Play("walking");
                         }
 
@@ -347,7 +347,7 @@ namespace TDJGame
                 this.anchorParticleEmitter.Activated = false;
             }
 
-            if (keyboardState.IsKeyDown(Keys.RightControl) && Energy >= BulletCost)
+            if ((keyboardState.IsKeyDown(Keys.RightControl)|| keyboardState.IsKeyDown(Keys.LeftControl)) && Energy >= BulletCost)
             {
                 Animations.Play("shooting");
                 if (this.LastShot < gameTime.TotalGameTime.TotalMilliseconds)

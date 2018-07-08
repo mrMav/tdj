@@ -90,7 +90,7 @@ namespace TDJGame
 
             MediaPlayer.Volume = 0.3f;
             MediaPlayer.Play(Globals.JingleSong);
-            MediaPlayer.IsRepeating = true;
+            MediaPlayer.IsRepeating = false;
 
             
             for(int i = 0; i < Graphics.PreferredBackBufferWidth; i += 16)
